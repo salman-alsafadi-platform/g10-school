@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>المنصة التعليمية الافتراضية - الصف العاشر (سوريا)</title>
     
-    <!-- إعدادات تطبيق الهاتف (PWA Meta Tags) -->
+    <!-- إعدادات تطبيق الهاتف والأيقونات الرمزية للشاشة الرئيسية (PWA & Home Screen Icons) -->
     <meta name="theme-color" content="#1e1b4b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="منصة العاشر">
+    
+    <!-- روابط الأيقونات التي سيتم حقنها بصورة PNG حقيقية تلقائياً -->
+    <link id="app-favicon" rel="icon" type="image/png">
+    <link id="apple-touch-icon" rel="apple-touch-icon">
     <link id="pwa-manifest" rel="manifest">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,10 +44,10 @@
     <div id="pwa-install-banner" class="hidden bg-gradient-to-l from-emerald-900 via-teal-900 to-indigo-950 text-white px-4 py-2.5 shadow-md border-b border-emerald-500/30 z-40">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2.5">
-                <span class="text-xl bg-white/10 p-1.5 rounded-lg">📲</span>
+                <img id="banner-app-icon" src="" alt="شعار المنصة" class="w-9 h-9 rounded-xl shadow border border-white/20">
                 <div>
                     <p class="text-xs md:text-sm font-extrabold text-emerald-200">ثبّت المنصة كتطبيق على شاشة هاتفك الرئيسية!</p>
-                    <p class="text-[11px] text-slate-300">وصول سريع بضغطة واحدة للدوام والدروس بدون البحث عن الرابط</p>
+                    <p class="text-[11px] text-slate-300">تظهر أيقونة المنصة على شاشتك لفتح الدروس والقاعة بضغطة واحدة</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -59,7 +63,7 @@
     <header class="bg-indigo-950 text-white shadow-lg sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <div class="bg-indigo-600 p-2.5 rounded-xl text-2xl shadow">🎓</div>
+                <img id="header-app-logo" src="" alt="شعار" class="w-11 h-11 rounded-xl shadow-md border border-indigo-400/30">
                 <div>
                     <div class="flex items-center flex-wrap gap-2">
                         <h1 class="text-lg md:text-xl font-extrabold">المنصة التعليمية الافتراضية</h1>
@@ -438,17 +442,20 @@
         </div>
     </div>
 
-    <!-- نافذة إرشاد التثبيت اليدوي على الشاشة الرئيسية (للآيفون أو المتصفحات التي لا تدعم التثبيت التلقائي) -->
+    <!-- نافذة إرشاد التثبيت اليدوي على الشاشة الرئيسية -->
     <div id="pwa-guide-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-emerald-600">
             <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-lg font-extrabold text-indigo-950">📲 تثبيت المنصة على شاشة الهاتف</h3>
+                <div class="flex items-center gap-2">
+                    <img id="modal-app-icon" src="" alt="أيقونة" class="w-8 h-8 rounded-lg shadow">
+                    <h3 class="text-lg font-extrabold text-indigo-950">تثبيت المنصة على شاشة الهاتف</h3>
+                </div>
                 <button onclick="closePwaGuideModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
             <div class="space-y-3 text-xs md:text-sm text-slate-700 leading-relaxed">
                 <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
                     <p class="font-bold text-emerald-950 mb-1">🤖 في هواتف أندرويد (Chrome / Samsung):</p>
-                    <p>اضغط على زر القائمة <b>(⋮)</b> في أعلى المتصفح، ثم اختر <b>"تثبيت التطبيق" (Install App)</b> أو <b>"الإضافة إلى الشاشة الرئيسية"</b>.</p>
+                    <p>اضغط على زر القائمة <b>(⋮)</b> في أعلى المتصفح، ثم اختر <b>"تثبيت التطبيق" (Install App)</b> أو <b>"الإضافة إلى الشاشة الرئيسية"</b> وستظهر الأيقونة فوراً على شاشتك.</p>
                 </div>
                 <div class="bg-sky-50 border border-sky-200 p-3 rounded-xl">
                     <p class="font-bold text-sky-950 mb-1">🍏 في هواتف آيفون (Safari):</p>
@@ -530,21 +537,89 @@
     </div>
 
     <script>
-        // إعداد تطبيق الويب التقدمي (PWA) المدمج في ملف واحد
+        // =========================================================================
+        // 1. توليد صورة أيقونة حقيقية (PNG) للشاشة الرئيسية للهاتف (أندرويد + آيفون)
+        // يمكنك أيضاً وضع رابط صورة خارجية بين علامتي التنصيص في CUSTOM_LOGO_URL إذا رغبت
+        // =========================================================================
+        const CUSTOM_LOGO_URL = ""; 
         let deferredPwaPrompt = null;
-        (function setupSingleFilePWA() {
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="36" fill="#1e1b4b"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="110">🎓</text></svg>`;
-            const iconUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgIcon);
+
+        function generateRealPngIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // خلفية متدرجة كحلية وبنفسجية ملكية
+            const grad = ctx.createLinearGradient(0, 0, size, size);
+            grad.addColorStop(0, '#1e1b4b');
+            grad.addColorStop(0.5, '#312e81');
+            grad.addColorStop(1, '#4338ca');
+            ctx.fillStyle = grad;
+
+            // حواف دائرية أنيقة للأيقونة
+            const r = size * 0.22;
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.lineTo(size - r, 0);
+            ctx.quadraticCurveTo(size, 0, size, r);
+            ctx.lineTo(size, size - r);
+            ctx.quadraticCurveTo(size, size, size - r, size);
+            ctx.lineTo(r, size);
+            ctx.quadraticCurveTo(0, size, 0, size - r);
+            ctx.lineTo(0, r);
+            ctx.quadraticCurveTo(0, 0, r, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // إطار ذهبي داخلي خفيف
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+            ctx.lineWidth = size * 0.03;
+            ctx.stroke();
+
+            // رسم رمز قبعة التخرج في الوسط العلوي
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `${Math.floor(size * 0.44)}px sans-serif`;
+            ctx.fillText('🎓', size / 2, size * 0.40);
+
+            // كتابة "منصة العاشر" باللون الذهبي والأبيض أسفل القبعة
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = `bold ${Math.floor(size * 0.16)}px Cairo, sans-serif`;
+            ctx.fillText('منصة العاشر', size / 2, size * 0.77);
+
+            return canvas.toDataURL('image/png');
+        }
+
+        (function setupAppIconsAndPWA() {
+            const icon192 = CUSTOM_LOGO_URL || generateRealPngIcon(192);
+            const icon512 = CUSTOM_LOGO_URL || generateRealPngIcon(512);
+
+            // تعيين الأيقونة للآيفون والمتصفح والواجهة
+            document.getElementById('app-favicon').href = icon192;
+            document.getElementById('apple-touch-icon').href = icon192;
+            document.getElementById('header-app-logo').src = icon192;
+            document.getElementById('banner-app-icon').src = icon192;
+            document.getElementById('modal-app-icon').src = icon192;
+
+            // إنشاء ملف Manifest بصور PNG قياسية يقبلها أندرويد و Chrome فوراً
+            const startUrl = window.location.href.split('#')[0];
             const manifest = {
                 name: "المنصة التعليمية الافتراضية - الصف العاشر",
                 short_name: "منصة العاشر",
-                start_url: window.location.href,
+                description: "المنصة التعليمية الافتراضية لطلاب الصف العاشر - المنهاج السوري",
+                start_url: startUrl,
+                scope: startUrl.substring(0, startUrl.lastIndexOf('/') + 1),
                 display: "standalone",
+                orientation: "portrait",
                 background_color: "#1e1b4b",
                 theme_color: "#1e1b4b",
-                icons: [{ src: iconUrl, sizes: "192x192", type: "image/svg+xml" }]
+                icons: [
+                    { src: icon192, sizes: "192x192", type: "image/png", purpose: "any maskable" },
+                    { src: icon512, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+                ]
             };
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
             document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
         })();
 
