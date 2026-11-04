@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>المنصة التعليمية الافتراضية - الصف العاشر (سوريا)</title>
+    
+    <!-- إعدادات تطبيق الهاتف (PWA Meta Tags) -->
+    <meta name="theme-color" content="#1e1b4b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="منصة العاشر">
+    <link id="pwa-manifest" rel="manifest">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .tab-content { display: none !important; }
+        .tab-content.active { display: block !important; }
+        .staff-only, .admin-only, .staff-block, .admin-only-box { display: none !important; }
+        body.role-teacher .staff-only, body.role-admin .staff-only { display: inline-flex !important; }
+        body.role-teacher .staff-block, body.role-admin .staff-block { display: block !important; }
+        body.role-admin .admin-only { display: inline-flex !important; }
+        body.role-admin .admin-only-box { display: block !important; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- شريط تثبيت التطبيق على الشاشة الرئيسية للهاتف -->
+    <div id="pwa-install-banner" class="hidden bg-gradient-to-l from-emerald-900 via-teal-900 to-indigo-950 text-white px-4 py-2.5 shadow-md border-b border-emerald-500/30 z-40">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xl bg-white/10 p-1.5 rounded-lg">📲</span>
+                <div>
+                    <p class="text-xs md:text-sm font-extrabold text-emerald-200">ثبّت المنصة كتطبيق على شاشة هاتفك الرئيسية!</p>
+                    <p class="text-[11px] text-slate-300">وصول سريع بضغطة واحدة للدوام والدروس بدون البحث عن الرابط</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="triggerPwaInstall()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-4 py-1.5 rounded-lg shadow transition">
+                    ➕ تثبيت التطبيق الآن
+                </button>
+                <button onclick="dismissPwaBanner()" class="text-slate-300 hover:text-white text-xs px-2 py-1">لاحقاً ✕</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الشريط العلوي -->
+    <header class="bg-indigo-950 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-2xl shadow">🎓</div>
+                <div>
+                    <div class="flex items-center flex-wrap gap-2">
+                        <h1 class="text-lg md:text-xl font-extrabold">المنصة التعليمية الافتراضية</h1>
+                        <span id="role-badge" class="bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold">وضع الطالب 👨‍🎓</span>
+                        <span id="sync-status" class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-0.5 rounded-full">⏳ جارٍ الاتصال بالسحابة...</span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <p id="student-info-bar" class="text-xs text-indigo-300">الصف العاشر (علمي / أدبي) - المنهاج السوري</p>
+                        <span id="device-lock-badge" class="hidden text-[10px] bg-emerald-900/80 text-emerald-300 border border-emerald-700 px-2 py-0.5 rounded">📱 محمي ببصمة هذا الجهاز</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button id="header-install-btn" onclick="triggerPwaInstall()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                    📲 تثبيت التطبيق
+                </button>
+                <button onclick="fetchFromCloud(true)" class="bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition">
+                    🔄 تحديث البيانات
+                </button>
+                <button id="teacher-login-btn" onclick="openLoginModal('teacher')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                    👨‍🏫 دخول الأستاذ
+                </button>
+                <button id="admin-login-btn" onclick="openLoginModal('admin')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                    👑 دخول المدير
+                </button>
+                <button id="logout-btn" onclick="logoutUser()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold text-xs items-center gap-1 transition">
+                    🚪 تسجيل خروج
+                </button>
+            </div>
+        </div>
+
+        <nav class="bg-indigo-900/80 border-t border-indigo-800 backdrop-blur">
+            <div class="max-w-7xl mx-auto px-4 flex gap-2 overflow-x-auto py-2">
+                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">📚 القاعة المباشرة وأرشيف الدروس</button>
+                <button id="nav-btn-quiz" onclick="switchTab('quiz-tab', this)" class="nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">🧠 سبر المعلومات</button>
+                <button id="nav-btn-prep" onclick="switchTab('prep-tab', this)" class="staff-only nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">📝 تحضير درس جديد</button>
+                <button id="nav-btn-att" onclick="switchTab('attendance-tab', this)" class="staff-only nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">✅ سجل الحضور وقفل الأجهزة</button>
+                <button id="nav-btn-admin" onclick="switchTab('admin-tab', this)" class="admin-only nav-btn text-amber-300 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">👑 لوحة المدير وحماية الحسابات</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- 1. قسم القاعة المباشرة والمواد والدروس -->
+        <section id="subjects-tab" class="tab-content active space-y-6">
+            <div class="bg-gradient-to-l from-indigo-950 via-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-indigo-700/50">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 bg-emerald-400 rounded-full animate-ping"></span>
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs px-2.5 py-0.5 rounded-full font-extrabold">البث المباشر الموحد لليوم الدراسي</span>
+                        </div>
+                        <h2 class="text-lg md:text-xl font-extrabold text-white">📹 قاعة الدوام الافتراضية (Google Meet)</h2>
+                        <p class="text-xs text-indigo-200">الرابط مفعل طوال اليوم الدراسي؛ يبقى الطلاب داخل القاعة ويتناوب الأساتذة على الحصص حسب التوقيت</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                        <button onclick="joinDailyLiveRoom('علمي')" class="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow-lg flex items-center justify-center gap-2 transition"><span>🔬</span> دخول قاعة العلمي المباشرة</button>
+                        <button onclick="joinDailyLiveRoom('أدبي')" class="flex-1 sm:flex-initial bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow-lg flex items-center justify-center gap-2 transition"><span>📖</span> دخول قاعة الأدبي المباشرة</button>
+                        <button onclick="shareDailyRoomWhatsApp()" class="staff-only bg-green-600 hover:bg-green-500 text-white px-3.5 py-3 rounded-xl font-bold text-xs shadow items-center gap-1 transition">📲 إرسال رابط اليوم للواتساب</button>
+                    </div>
+                </div>
+
+                <div class="staff-block mt-4 pt-4 border-t border-indigo-800/80">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <span class="text-xs font-extrabold text-amber-300">⚙️ إعداد روابط القاعة المباشرة لليوم الدراسي (للأساتذة والمدير):</span>
+                        <a href="https://meet.google.com/new" target="_blank" class="text-xs bg-indigo-800 hover:bg-indigo-700 text-indigo-200 px-3 py-1 rounded-lg font-bold">+ توليد غرفة Google Meet جديدة ↗</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center bg-indigo-950/80 border border-indigo-700 rounded-lg px-2.5 py-1.5">
+                            <span class="text-sky-300 font-bold ml-2 whitespace-nowrap">قاعة العلمي:</span>
+                            <input type="url" id="daily-meet-sci" dir="ltr" placeholder="https://meet.google.com/..." class="bg-transparent text-white w-full focus:outline-none text-left font-mono">
+                        </div>
+                        <div class="flex items-center bg-indigo-950/80 border border-indigo-700 rounded-lg px-2.5 py-1.5">
+                            <span class="text-amber-300 font-bold ml-2 whitespace-nowrap">قاعة الأدبي:</span>
+                            <input type="url" id="daily-meet-lit" dir="ltr" placeholder="https://meet.google.com/... (أو اتركه فارغاً لقاعة موحدة)" class="bg-transparent text-white w-full focus:outline-none text-left font-mono">
+                        </div>
+                        <button onclick="saveDailyMeetLinks()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-2 px-4 rounded-lg shadow transition">💾 تثبيت رابط القاعة لليوم الدراسي</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-800">مواد الصف العاشر وأرشيف الدروس (Drive)</h2>
+                    <p class="text-xs md:text-sm text-slate-500">يُحضّر الأستاذ الدرس، وبعد انتهاء الحصة يرفع رابط التسجيل وملخص الـ Drive هنا ليراجعه الطلاب</p>
+                </div>
+                <button onclick="filterLessons('الكل')" class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm">عرض كل المواد</button>
+            </div>
+
+            <div id="subjects-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 border-b pb-3">
+                    <h3 class="text-base md:text-lg font-extrabold text-indigo-950 flex items-center gap-2">
+                        <span>📌</span> جدول الدروس والتسجيلات المرفوعة (Google Drive / YouTube)
+                        <span id="current-filter-badge" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-0.5 rounded-full">الكل</span>
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase">
+                                <th class="p-3 rounded-r-lg">المادة</th>
+                                <th class="p-3">الفرع</th>
+                                <th class="p-3">أستاذ المادة</th>
+                                <th class="p-3">عنوان الدرس</th>
+                                <th class="p-3">الشرح والملاحظات</th>
+                                <th class="p-3">التاريخ</th>
+                                <th class="p-3 text-center">ملف الملخص (Drive)</th>
+                                <th class="p-3 text-center">تسجيل الحصة (Drive / فيديو)</th>
+                                <th class="p-3 rounded-l-lg text-center">مشاركة / إدارة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessons-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. قسم سبر المعلومات -->
+        <section id="quiz-tab" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex justify-between items-center border-b pb-4 mb-6">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-indigo-950">🧠 سبر المعلومات المؤتمت</h2>
+                            <p class="text-xs text-slate-500">اختر الإجابة الصحيحة ثم اضغط على تصحيح الاختبار</p>
+                        </div>
+                        <div id="quiz-score-badge" class="hidden bg-emerald-100 text-emerald-800 px-4 py-2 rounded-xl font-extrabold text-sm"></div>
+                    </div>
+                    <div id="quiz-questions-container" class="space-y-6"></div>
+                    <div class="mt-6 pt-4 border-t flex justify-end gap-3">
+                        <button onclick="resetQuiz()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2.5 rounded-xl font-bold text-sm">إعادة المحاولة</button>
+                        <button onclick="submitQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow">✅ تصحيح الاختبار</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="staff-block">
+                        <h3 class="text-lg font-extrabold text-indigo-950 mb-3">➕ إضافة سؤال سبر جديد</h3>
+                        <form onsubmit="addQuizQuestion(event)" class="space-y-3 text-sm">
+                            <select id="quiz-sub" class="w-full border rounded-lg p-2 bg-slate-50"></select>
+                            <input type="text" id="quiz-q" required placeholder="نص السؤال..." class="w-full border rounded-lg p-2 bg-slate-50">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="quiz-opt0" required placeholder="الخيار 1" class="border rounded-lg p-2 bg-slate-50">
+                                <input type="text" id="quiz-opt1" required placeholder="الخيار 2" class="border rounded-lg p-2 bg-slate-50">
+                                <input type="text" id="quiz-opt2" required placeholder="الخيار 3" class="border rounded-lg p-2 bg-slate-50">
+                                <input type="text" id="quiz-opt3" required placeholder="الخيار 4" class="border rounded-lg p-2 bg-slate-50">
+                            </div>
+                            <select id="quiz-correct" class="w-full border rounded-lg p-2 bg-slate-50">
+                                <option value="0">الصحيح: الخيار 1</option>
+                                <option value="1">الصحيح: الخيار 2</option>
+                                <option value="2">الصحيح: الخيار 3</option>
+                                <option value="3">الصحيح: الخيار 4</option>
+                            </select>
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow">حفظ ومزامنة السؤال</button>
+                        </form>
+                    </div>
+                    <div class="text-center py-8 text-slate-500 text-sm" id="student-quiz-note">💡 تدرب على الأسئلة المؤتمتة هنا، ولإضافة أو حذف أسئلة السبر يجب تسجيل الدخول كأستاذ أو مدير.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. قسم تحضير الأساتذة -->
+        <section id="prep-tab" class="tab-content">
+            <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-indigo-950">📝 تحضير درس جديد</h2>
+                        <p class="text-xs text-slate-500">حضّر عنوان الدرس وملاحظاته الآن، وبعد انتهاء الحصة يمكنك رفع رابط الـ Drive من جدول الدروس مباشرة</p>
+                    </div>
+                    <span id="prep-teacher-label" class="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1.5 rounded-lg"></span>
+                </div>
+                <form id="prep-form" onsubmit="saveLesson(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1">المادة الدراسية:</label>
+                            <select id="prep-subject" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">الفرع المستهدف:</label>
+                            <select id="prep-branch" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50">
+                                <option value="علمي">علمي 🔬</option>
+                                <option value="أدبي">أدبي 📖</option>
+                                <option value="علمي وأدبي">مشترك (علمي وأدبي) 👥</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">تاريخ الحصة:</label>
+                            <input type="date" id="prep-date" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">عنوان الدرس:</label>
+                        <input type="text" id="prep-title" placeholder="مثال: التوابع العددية والمعادلات من الدرجة الثانية" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50">
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
+                            <label class="block text-sm font-bold">الشرح والملاحظات والواجبات:</label>
+                            <div class="flex flex-wrap gap-1 text-xs">
+                                <button type="button" onclick="insertMath('$\\sqrt{x}$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">√ جذر</button>
+                                <button type="button" onclick="insertMath('$\\frac{a}{b}$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">a/b كسر</button>
+                                <button type="button" onclick="insertMath('$x^2$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">x² أس</button>
+                                <button type="button" onclick="insertMath('$\\Delta = b^2 - 4ac$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">Δ المميز</button>
+                            </div>
+                        </div>
+                        <textarea id="prep-notes" rows="4" required placeholder="اكتب ملخص الدرس أو النقاط الأساسية..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 rounded-xl transition shadow">💾 حفظ تحضير الدرس في الجدول</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. قسم سجل الحضور وقفل الأجهزة -->
+        <section id="attendance-tab" class="tab-content">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-indigo-950">✅ سجل الحضور وإدارة بصمة أجهزة الطلاب</h2>
+                        <p class="text-xs text-slate-500">عند الضغط على (🔓 فك القفل)، سيُطلب من الطالب إعادة تسجيل الدخول فوراً عند فتح المنصة</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm">
+                        <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg font-bold">الحضور: <span id="present-count">0</span></div>
+                        <div class="bg-rose-100 text-rose-800 px-3 py-1.5 rounded-lg font-bold">الغياب: <span id="absent-count">0</span></div>
+                        <button onclick="exportAttendanceCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg font-bold text-xs shadow">📊 تصدير Excel</button>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-extrabold text-slate-700 mb-2">➕ إضافة طالب يدوياً للسجل (سيُقفل على أول موبايل يدخل منه):</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
+                        <input type="text" id="new-student-name" placeholder="الاسم الثلاثي..." class="border border-slate-300 rounded-lg p-2 bg-white">
+                        <input type="text" id="new-student-code" placeholder="الرمز (مثال: A105)" dir="ltr" class="border border-slate-300 rounded-lg p-2 bg-white text-left uppercase font-mono">
+                        <select id="new-student-branch" class="border border-slate-300 rounded-lg p-2 bg-white">
+                            <option value="علمي">علمي</option>
+                            <option value="أدبي">أدبي</option>
+                        </select>
+                        <button onclick="addStudentManual()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-bold">+ إضافة الطالب</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs">
+                                <th class="p-3">#</th>
+                                <th class="p-3">رمز الطالب</th>
+                                <th class="p-3">الاسم الثلاثي</th>
+                                <th class="p-3">الفرع</th>
+                                <th class="p-3 text-center">حماية الجهاز</th>
+                                <th class="p-3 text-center">الحالة</th>
+                                <th class="p-3 text-center">وقت الدخول</th>
+                                <th class="p-3">ملاحظات</th>
+                                <th class="p-3 text-center">حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. لوحة تحكم المدير العام -->
+        <section id="admin-tab" class="tab-content space-y-6">
+            <div class="admin-only-box space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">إجمالي الأساتذة المسجلين</span>
+                        <h3 id="stat-teachers" class="text-2xl font-extrabold text-indigo-900 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">إجمالي الدروس المحضّرة</span>
+                        <h3 id="stat-lessons" class="text-2xl font-extrabold text-emerald-700 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">الطلاب المسجلون (الحاضرون)</span>
+                        <h3 id="stat-students" class="text-2xl font-extrabold text-sky-700 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">حركات الرقابة والأمان</span>
+                        <h3 id="stat-logs" class="text-2xl font-extrabold text-amber-600 mt-1">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-indigo-200 p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <h3 class="text-lg font-extrabold text-indigo-950">☁️ إعدادات الربط السحابي (حصرية للمدير العام فقط)</h3>
+                        <span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-0.5 rounded-full font-bold">🔒 محمية برمجياً</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="url" id="cloud-url" dir="ltr" class="flex-grow border border-indigo-300 rounded-lg p-2.5 bg-slate-50 text-left text-xs font-mono">
+                        <button onclick="saveCloudUrl()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-bold text-xs whitespace-nowrap shadow">🔄 حفظ الرابط وتحديث السحابة</button>
+                        <button onclick="resetCloudUrlToDefault()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2.5 rounded-lg font-bold text-xs whitespace-nowrap">استعادة الرابط الأصلي</button>
+                        <button onclick="syncToCloud(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-bold text-xs whitespace-nowrap shadow">⬆️ رفع البيانات يدوياً</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                        <h3 class="text-lg font-extrabold text-indigo-950 border-b pb-2">👨‍🏫 إدارة الأساتذة وحماية أجهزتهم (موبايل واحد لكل أستاذ)</h3>
+                        <form onsubmit="addTeacherAccount(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                            <input type="text" id="new-t-name" required placeholder="اسم الأستاذ (مثال: أ. مناف)" class="border rounded-lg p-2 bg-slate-50">
+                            <select id="new-t-subject" class="border rounded-lg p-2 bg-slate-50"></select>
+                            <div class="flex gap-1">
+                                <input type="text" id="new-t-pin" required placeholder="الرمز السري" class="border rounded-lg p-2 bg-slate-50 w-full">
+                                <button type="submit" class="bg-indigo-600 text-white px-3 py-2 rounded-lg font-bold whitespace-nowrap">+ إضافة</button>
+                            </div>
+                        </form>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600">
+                                        <th class="p-2">اسم الأستاذ</th>
+                                        <th class="p-2">المادة</th>
+                                        <th class="p-2">الرمز</th>
+                                        <th class="p-2 text-center">حماية الجهاز</th>
+                                        <th class="p-2 text-center">دروسه</th>
+                                        <th class="p-2 text-center">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teachers-list-body" class="divide-y"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl p-3.5 space-y-3 text-xs">
+                            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-rose-200 pb-2.5">
+                                <div>
+                                    <span class="font-extrabold text-rose-950 block">🛡️ حماية حساب المدير العام ببصمة الجهاز:</span>
+                                    <span id="admin-device-status" class="text-[11px] text-rose-800">🔒 مرتبط بجهازك الحالي فقط</span>
+                                </div>
+                                <button onclick="resetAdminDeviceLock()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg font-bold shadow-sm">🔓 فك ارتباط جهاز المدير</button>
+                            </div>
+                            <div class="flex flex-wrap justify-between items-center gap-2">
+                                <span class="font-bold text-rose-900">🔑 تغيير رمز المدير العام:</span>
+                                <div class="flex gap-1">
+                                    <input type="password" id="new-admin-pin" placeholder="أدخل رمز مدير جديد..." class="border rounded px-2 py-1 bg-white">
+                                    <button onclick="updateAdminPin()" class="bg-rose-700 text-white px-3 py-1 rounded font-bold">حفظ الرمز الجديد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h3 class="text-lg font-extrabold text-indigo-950">📋 سجل نشاط الأساتذة (آخر 50 حركة)</h3>
+                            <button onclick="clearTeacherLogs()" class="text-xs text-rose-600 font-bold hover:underline">مسح السجل</button>
+                        </div>
+                        <div class="overflow-y-auto max-h-96">
+                            <table class="w-full text-right text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-600">
+                                        <th class="p-2.5">الحساب</th>
+                                        <th class="p-2.5">النشاط / الحالة الأمنية</th>
+                                        <th class="p-2.5">الوقت والتاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-logs-body" class="divide-y"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- نافذة مشغل الفيديو المدمج -->
+    <div id="video-player-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl border border-slate-700">
+            <div class="flex justify-between items-center px-5 py-3.5 bg-slate-950 text-white border-b border-slate-800">
+                <h3 id="video-modal-title" class="text-sm md:text-base font-extrabold text-indigo-300 truncate">🎬 مشاهدة الدرس المسجل</h3>
+                <div class="flex items-center gap-3">
+                    <a id="video-external-link" href="#" target="_blank" class="text-xs bg-indigo-600 hover:bg-indigo-500 px-3 py-1 rounded-lg font-bold">فتح في نافذة خارجية ↗</a>
+                    <button onclick="closeVideoPlayer()" class="text-slate-400 hover:text-white font-bold text-2xl leading-none">&times;</button>
+                </div>
+            </div>
+            <div class="aspect-video w-full bg-black flex items-center justify-center" id="video-iframe-container"></div>
+        </div>
+    </div>
+
+    <!-- نافذة إرشاد التثبيت اليدوي على الشاشة الرئيسية (للآيفون أو المتصفحات التي لا تدعم التثبيت التلقائي) -->
+    <div id="pwa-guide-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-emerald-600">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-lg font-extrabold text-indigo-950">📲 تثبيت المنصة على شاشة الهاتف</h3>
+                <button onclick="closePwaGuideModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+            </div>
+            <div class="space-y-3 text-xs md:text-sm text-slate-700 leading-relaxed">
+                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+                    <p class="font-bold text-emerald-950 mb-1">🤖 في هواتف أندرويد (Chrome / Samsung):</p>
+                    <p>اضغط على زر القائمة <b>(⋮)</b> في أعلى المتصفح، ثم اختر <b>"تثبيت التطبيق" (Install App)</b> أو <b>"الإضافة إلى الشاشة الرئيسية"</b>.</p>
+                </div>
+                <div class="bg-sky-50 border border-sky-200 p-3 rounded-xl">
+                    <p class="font-bold text-sky-950 mb-1">🍏 في هواتف آيفون (Safari):</p>
+                    <p>اضغط على أيقونة المشاركة <b>(↑)</b> في أسفل الشاشة، ثم اختر <b>"إضافة إلى الشاشة الرئيسية" (Add to Home Screen)</b>.</p>
+                </div>
+            </div>
+            <button onclick="closePwaGuideModal()" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-sm">حسناً، فهمت</button>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل بيانات الطالب الإجبارية -->
+    <div id="student-reg-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-indigo-600">
+            <div class="flex justify-between items-center border-b pb-2">
+                <div>
+                    <h3 class="text-lg font-extrabold text-indigo-950">👨‍🎓 يرجى تسجيل الدخول للطالب</h3>
+                    <p class="text-xs text-slate-500">يرتبط رمزك تلقائياً بهذا الجهاز فقط ولا يقبل الدخول من هاتف آخر</p>
+                </div>
+                <button id="close-reg-btn" onclick="closeStudentRegModal()" class="hidden text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+            </div>
+            <div id="reg-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed">⚠️ يرجى تسجيل الدخول: يجب تعبئة اسمك الثلاثي ورمزك (A...) للمتابعة.</div>
+            <form onsubmit="saveStudentFirstTime(event)" class="space-y-3.5 text-sm">
+                <div>
+                    <label class="block text-xs font-bold mb-1 text-slate-700">الاسم الثلاثي للطالب:</label>
+                    <input type="text" id="reg-student-name" required placeholder="مثال: أحمد محمد العلي" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1 text-slate-700">رمز الطالب (يبدأ بحرف A وبجانبه رقم):</label>
+                    <input type="text" id="reg-student-code" required placeholder="مثال: A101" dir="ltr" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-left uppercase font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <p class="text-[11px] text-slate-500 mt-1">🔒 تنبيه: بمجرد تسجيل الرمز على هذا الهاتف، سيتم قفله ولن يعمل على أي هاتف آخر.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1 text-slate-700">الفرع / الاختصاص:</label>
+                    <select id="reg-student-branch" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="علمي">الفرع العلمي 🔬</option>
+                        <option value="أدبي">الفرع الأدبي 📖</option>
+                    </select>
+                </div>
+                <button type="submit" id="reg-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 rounded-xl shadow transition">✅ تسجيل الدخول وربط هذا الجهاز</button>
+                <div class="pt-2 border-t text-center flex justify-center gap-4 text-xs">
+                    <button type="button" onclick="switchFromRegToStaff('teacher')" class="text-amber-700 font-bold hover:underline">أنا أستاذ المادة 👨‍🏫</button>
+                    <button type="button" onclick="switchFromRegToStaff('admin')" class="text-rose-700 font-bold hover:underline">أنا مدير المنصة 👑</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول (للأستاذ أو المدير) -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 id="login-modal-title" class="text-lg font-extrabold text-indigo-950">تسجيل الدخول</h3>
+                <button onclick="cancelStaffLogin()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+            </div>
+            <div id="staff-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed"></div>
+            <div id="teacher-login-fields" class="space-y-3">
+                <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-[11px] text-amber-900">🔒 حماية الحساب: يرتبط حساب الأستاذ تلقائياً بأول هاتف/حاسوب يسجل الدخول منه لمنع الاختراق.</div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">اختر اسم الأستاذ:</label>
+                    <select id="login-teacher-select" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-sm"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">الرقم السري الخاص بالأستاذ:</label>
+                    <input type="password" id="login-teacher-pin" placeholder="أدخل رقمك السري..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-sm">
+                </div>
+            </div>
+            <div id="admin-login-fields" class="hidden space-y-3">
+                <div class="bg-rose-50 border border-rose-200 p-3 rounded-lg text-xs text-rose-900">👑 هذا القسم مخصص لمدير المنصة فقط، وهو محمي ببصمة جهاز المدير الشخصي ضد أي اختراق.</div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">الرقم السري للمدير العام:</label>
+                    <input type="password" id="login-admin-pin" placeholder="أدخل كلمة مرور المدير..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-sm">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cancelStaffLogin()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold">إلغاء</button>
+                <button id="staff-login-submit-btn" onclick="confirmStaffLogin()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg text-xs font-bold shadow">دخول وتحقق من بصمة الجهاز</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إعداد تطبيق الويب التقدمي (PWA) المدمج في ملف واحد
+        let deferredPwaPrompt = null;
+        (function setupSingleFilePWA() {
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="36" fill="#1e1b4b"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="110">🎓</text></svg>`;
+            const iconUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgIcon);
+            const manifest = {
+                name: "المنصة التعليمية الافتراضية - الصف العاشر",
+                short_name: "منصة العاشر",
+                start_url: window.location.href,
+                display: "standalone",
+                background_color: "#1e1b4b",
+                theme_color: "#1e1b4b",
+                icons: [{ src: iconUrl, sizes: "192x192", type: "image/svg+xml" }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
+        })();
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPwaPrompt = e;
+            if (!localStorage.getItem('g10_pwa_dismissed')) {
+                document.getElementById('pwa-install-banner').classList.remove('hidden');
+            }
+        });
+
+        async function triggerPwaInstall() {
+            if (deferredPwaPrompt) {
+                deferredPwaPrompt.prompt();
+                const { outcome } = await deferredPwaPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('pwa-install-banner').classList.add('hidden');
+                }
+                deferredPwaPrompt = null;
+            } else {
+                document.getElementById('pwa-guide-modal').classList.remove('hidden');
+                document.getElementById('pwa-guide-modal').classList.add('flex');
+            }
+        }
+
+        function dismissPwaBanner() {
+            localStorage.setItem('g10_pwa_dismissed', '1');
+            document.getElementById('pwa-install-banner').classList.add('hidden');
+        }
+
+        function closePwaGuideModal() {
+            document.getElementById('pwa-guide-modal').classList.add('hidden');
+            document.getElementById('pwa-guide-modal').classList.remove('flex');
+        }
+
+        const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec"; 
+
+        const syrianG10Subjects = [
+            { name: "الرياضيات", icon: "📐", color: "bg-blue-50 border-blue-200 text-blue-900" },
+            { name: "الفيزياء", icon: "⚡", color: "bg-purple-50 border-purple-200 text-purple-900" },
+            { name: "الكيمياء", icon: "🧪", color: "bg-emerald-50 border-emerald-200 text-emerald-900" },
+            { name: "علم الأحياء", icon: "🧬", color: "bg-teal-50 border-teal-200 text-teal-900" },
+            { name: "اللغة العربية", icon: "📖", color: "bg-amber-50 border-amber-200 text-amber-900" },
+            { name: "اللغة الإنكليزية", icon: "🌐", color: "bg-indigo-50 border-indigo-200 text-indigo-900" },
+            { name: "اللغة الفرنسية", icon: "🗼", color: "bg-pink-50 border-pink-200 text-pink-900" },
+            { name: "المعلوماتية", icon: "💻", color: "bg-cyan-50 border-cyan-200 text-cyan-900" },
+            { name: "التاريخ", icon: "🏛️", color: "bg-orange-50 border-orange-200 text-orange-900" },
+            { name: "الجغرافيا", icon: "🌍", color: "bg-lime-50 border-lime-200 text-lime-900" },
+            { name: "الفلسفة", icon: "💡", color: "bg-fuchsia-50 border-fuchsia-200 text-fuchsia-900" },
+            { name: "التربية الوطنية", icon: "🇸🇾", color: "bg-red-50 border-red-200 text-red-900" }
+        ];
+
+        let currentSubjectFilter = "الكل";
+        let loginMode = "teacher";
+        let isStaffLoggingIn = false;
+
+        let savedStaffSession = JSON.parse(sessionStorage.getItem('g10_staff_session')) || null;
+        let currentRole = savedStaffSession ? savedStaffSession.role : "student";
+        let currentTeacherName = savedStaffSession ? savedStaffSession.name : "";
+
+        function getOrCreateDeviceId() {
+            let devId = localStorage.getItem('g10_unique_device_id');
+            if (!devId) {
+                devId = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+                localStorage.setItem('g10_unique_device_id', devId);
+            }
+            return devId;
+        }
+        const THIS_DEVICE_ID = getOrCreateDeviceId();
+
+        let currentStudentProfile = JSON.parse(localStorage.getItem('g10_student_profile')) || null;
+        let adminPin = localStorage.getItem('g10_admin_pin') || "9999";
+        let adminDeviceId = localStorage.getItem('g10_admin_device_id') || "";
+
+        let dailyMeetLinks = JSON.parse(localStorage.getItem('g10_daily_meet_v9')) || {
+            sci: "https://meet.google.com/new",
+            lit: ""
+        };
+
+        let teachers = JSON.parse(localStorage.getItem('g10_teachers_v9')) || [
+            { name: "أ. مناف جمول", subject: "الرياضيات", pin: "1111", deviceId: "" },
+            { name: "أ. سامر الحسن", subject: "الفيزياء", pin: "2222", deviceId: "" },
+            { name: "أ. ريم القاسم", subject: "الكيمياء", pin: "3333", deviceId: "" },
+            { name: "أ. علاء محمود", subject: "اللغة العربية", pin: "4444", deviceId: "" }
+        ];
+
+        let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
+            { teacher: "النظام الأمني", action: "تفعيل نظام القاعة الدراسية الموحدة طوال اليوم", time: "اليوم" }
+        ];
+
+        let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
+            {
+                subject: "الرياضيات",
+                branch: "علمي",
+                teacher: "أ. مناف جمول",
+                title: "المعادلات من الدرجة الثانية",
+                notes: "دراسة إشارة ثلاثي الحدود باستخدام المميز $\\Delta = b^2 - 4ac$",
+                date: new Date().toISOString().split('T')[0],
+                pdf: "",
+                video: ""
+            }
+        ];
+
+        let students = JSON.parse(localStorage.getItem('g10_students_v9')) || [];
+        let quizzes = JSON.parse(localStorage.getItem('g10_quizzes_v9')) || [
+            {
+                subject: "الرياضيات",
+                q: "ما هي قيمة المميز $\\Delta$ للمعادلة $x^2 - 5x + 6 = 0$؟",
+                options: ["$\\Delta = 1$", "$\\Delta = 25$", "$\\Delta = -1$", "$\\Delta = 49$"],
+                correct: 0
+            }
+        ];
+
+        function getActiveCloudUrl() {
+            const saved = localStorage.getItem('g10_admin_cloud_url');
+            return (saved && saved.trim() !== "") ? saved.trim() : DEFAULT_CLOUD_URL;
+        }
+
+        function applyRoleUI() {
+            if (currentRole === 'teacher') {
+                document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col role-teacher";
+                document.getElementById('role-badge').innerText = `وضع الأستاذ: ${currentTeacherName} 👨‍🏫`;
+                document.getElementById('role-badge').className = "bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
+                document.getElementById('prep-teacher-label').innerText = `الأستاذ المحضّر: ${currentTeacherName}`;
+                const tObj = teachers.find(t => t.name === currentTeacherName);
+                if (tObj) document.getElementById('prep-subject').value = tObj.subject;
+            } else if (currentRole === 'admin') {
+                document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col role-admin";
+                document.getElementById('role-badge').innerText = "وضع المدير العام 👑";
+                document.getElementById('role-badge').className = "bg-rose-500/20 text-rose-300 border border-rose-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
+                document.getElementById('prep-teacher-label').innerText = "إشراف المدير العام";
+            } else {
+                document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col";
+                document.getElementById('role-badge').innerText = "وضع الطالب 👨‍🎓";
+                document.getElementById('role-badge').className = "bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
+            }
+            updateHeaderButtons();
+            updateStudentBarUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('prep-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('cloud-url').value = getActiveCloudUrl();
+            updateDailyMeetInputsUI();
+            renderSubjects();
+            applyRoleUI();
+            renderLessons();
+            renderStudents();
+            renderQuizzes();
+            renderAdminDashboard();
+
+            if (!localStorage.getItem('g10_pwa_dismissed')) {
+                document.getElementById('pwa-install-banner').classList.remove('hidden');
+            }
+
+            if (currentRole === 'student' && !currentStudentProfile) {
+                openStudentRegModal(false, false);
+            }
+
+            fetchFromCloud(false, true);
+
+            setInterval(() => {
+                if (!isStaffLoggingIn) {
+                    fetchFromCloud(false, true);
+                }
+            }, 20000);
+        });
+
+        function updateDailyMeetInputsUI() {
+            document.getElementById('daily-meet-sci').value = dailyMeetLinks.sci || "";
+            document.getElementById('daily-meet-lit').value = dailyMeetLinks.lit || "";
+        }
+
+        async function saveDailyMeetLinks() {
+            if (currentRole !== 'admin' && currentRole !== 'teacher') return;
+            const sciUrl = document.getElementById('daily-meet-sci').value.trim();
+            const litUrl = document.getElementById('daily-meet-lit').value.trim();
+            if (!sciUrl) return alert("يرجى وضع رابط Google Meet الأساسي لليوم الدراسي!");
+
+            dailyMeetLinks = { sci: sciUrl, lit: litUrl };
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الإدارة",
+                action: "📹 تحديث رابط القاعة المباشرة الموحدة لليوم الدراسي",
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert("✅ تم تثبيت رابط القاعة المباشرة لليوم الدراسي!");
+        }
+
+        async function joinDailyLiveRoom(branchType) {
+            verifyActiveUserDeviceSession();
+            if (!currentStudentProfile && currentRole === 'student') return;
+
+            let targetUrl = dailyMeetLinks.sci;
+            if (branchType === 'أدبي' && dailyMeetLinks.lit && dailyMeetLinks.lit.trim() !== "") {
+                targetUrl = dailyMeetLinks.lit.trim();
+            }
+            if (!targetUrl || targetUrl.trim() === "") {
+                return alert("لم يتم تفعيل رابط القاعة المباشرة لهذا اليوم بعد!");
+            }
+
+            if (currentStudentProfile) {
+                const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
+                const idx = students.findIndex(s => s.code === currentStudentProfile.code);
+
+                if (idx > -1) {
+                    if (!students[idx].deviceId || students[idx].deviceId === "" || students[idx].deviceId !== THIS_DEVICE_ID) {
+                        verifyActiveUserDeviceSession();
+                        return;
+                    }
+                    students[idx].present = true;
+                    students[idx].time = nowTime;
+                    students[idx].note = `متواجد في قاعة الدوام (${branchType})`;
+                } else {
+                    verifyActiveUserDeviceSession();
+                    return;
+                }
+                saveAllLocal();
+                renderStudents();
+                renderAdminDashboard();
+                syncToCloud(false);
+            }
+
+            window.open(targetUrl, '_blank');
+        }
+
+        function shareDailyRoomWhatsApp() {
+            const sciLink = dailyMeetLinks.sci || "https://meet.google.com/new";
+            const today = new Date().toISOString().split('T')[0];
+            let text = `🎓 *رابط الدوام المدرسي الافتراضي الموحد لليوم (${today})*\n` +
+                       `📌 يبقى هذا الرابط مفعلاً طوال اليوم الدراسي ويتبدل الأساتذة داخل القاعة حسب برنامج الحصص:\n\n` +
+                       `🔬 *رابط قاعة Google Meet:*\n${sciLink}`;
+            if (dailyMeetLinks.lit && dailyMeetLinks.lit.trim() !== "") {
+                text += `\n\n📖 *رابط قاعة الأدبي:*\n${dailyMeetLinks.lit.trim()}`;
+            }
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function verifyActiveUserDeviceSession() {
+            if (isStaffLoggingIn) return;
+
+            if (currentRole === 'student') {
+                if (!currentStudentProfile) {
+                    openStudentRegModal(false, false);
+                    return;
+                }
+                const cloudStudent = students.find(s => s.code === currentStudentProfile.code);
+                if (!cloudStudent) {
+                    localStorage.removeItem('g10_student_profile');
+                    currentStudentProfile = null;
+                    updateStudentBarUI();
+                    openStudentRegModal(false, true, "🔄 تم إلغاء تسجيلك السابق من قِبل الإدارة، يرجى تسجيل الدخول من جديد!");
+                    return;
+                }
+                if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
+                    localStorage.removeItem('g10_student_profile');
+                    currentStudentProfile = null;
+                    updateStudentBarUI();
+                    openStudentRegModal(false, true, "🔄 تم فك ارتباط هذا الجهاز من قِبل الأستاذ/المدير، يرجى إعادة تسجيل الدخول!");
+                    return;
+                }
+                if (cloudStudent.deviceId !== THIS_DEVICE_ID) {
+                    localStorage.removeItem('g10_student_profile');
+                    currentStudentProfile = null;
+                    updateStudentBarUI();
+                    openStudentRegModal(false, true, "⛔ هذا الرمز مرتبط بهاتف آخر! يرجى تسجيل الدخول برمزك الصحيح أو مراجعة الإدارة.");
+                    return;
+                }
+            } else if (currentRole === 'teacher') {
+                const tObj = teachers.find(t => t.name === currentTeacherName);
+                if (!tObj || (tObj.deviceId && tObj.deviceId !== "" && tObj.deviceId !== THIS_DEVICE_ID)) {
+                    alert("🔄 تم فك ارتباط جهاز الأستاذ أو تعديل صلاحيته من قِبل المدير العام، يرجى إعادة تسجيل الدخول!");
+                    logoutUser();
+                }
+            } else if (currentRole === 'admin') {
+                if (adminDeviceId && adminDeviceId !== "" && adminDeviceId !== THIS_DEVICE_ID) {
+                    alert("⛔ حساب المدير مرتبط بجهاز آخر!");
+                    logoutUser();
+                }
+            }
+        }
+
+        function openStudentRegModal(allowClose = false, showSecurityWarning = false, customMsg = "") {
+            if (isStaffLoggingIn || currentRole !== 'student') return;
+            const modal = document.getElementById('student-reg-modal');
+            const closeBtn = document.getElementById('close-reg-btn');
+            const secAlert = document.getElementById('reg-security-alert');
+
+            if (allowClose && (currentStudentProfile || currentRole !== 'student')) {
+                closeBtn.classList.remove('hidden');
+            } else {
+                closeBtn.classList.add('hidden');
+            }
+
+            if (showSecurityWarning) {
+                secAlert.innerText = customMsg || "⚠️ يرجى تسجيل الدخول: لا يمكنك تصفح المنصة قبل إدخال اسمك الثلاثي ورمزك (A...).";
+                secAlert.classList.remove('hidden');
+            } else {
+                secAlert.classList.add('hidden');
+            }
+
+            if (currentStudentProfile) {
+                document.getElementById('reg-student-name').value = currentStudentProfile.name;
+                document.getElementById('reg-student-code').value = currentStudentProfile.code;
+                document.getElementById('reg-student-branch').value = currentStudentProfile.branch;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeStudentRegModal() {
+            if (currentRole === 'student' && !currentStudentProfile) {
+                alert("⚠️ يرجى تسجيل الدخول أولاً بإدخال اسمك الثلاثي ورمزك (A...)!");
+                return;
+            }
+            document.getElementById('student-reg-modal').classList.add('hidden');
+            document.getElementById('student-reg-modal').classList.remove('flex');
+        }
+
+        function switchFromRegToStaff(mode) {
+            isStaffLoggingIn = true;
+            document.getElementById('student-reg-modal').classList.add('hidden');
+            document.getElementById('student-reg-modal').classList.remove('flex');
+            openLoginModal(mode);
+        }
+
+        async function saveStudentFirstTime(event) {
+            event.preventDefault();
+            const btn = document.getElementById('reg-submit-btn');
+            const name = document.getElementById('reg-student-name').value.trim();
+            let code = document.getElementById('reg-student-code').value.trim().toUpperCase();
+            const branch = document.getElementById('reg-student-branch').value;
+
+            if (name.split(' ').filter(Boolean).length < 2) {
+                alert("⚠️ يرجى كتابة الاسم الثلاثي الكامل بشكل واضح!");
+                return;
+            }
+
+            if (!/^A\d+$/.test(code)) {
+                alert("⚠️ يرجى إدخال رمز صحيح يبدأ بحرف A وبجانبه رقم (مثال: A1 أو A105)");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ جارٍ التحقق من بصمة الجهاز عبر السحابة...";
+
+            await fetchFromCloud(false, true, true);
+
+            const existingByCode = students.findIndex(s => s.code === code);
+
+            if (existingByCode > -1) {
+                const registeredStudent = students[existingByCode];
+                if (registeredStudent.deviceId && registeredStudent.deviceId !== "" && registeredStudent.deviceId !== THIS_DEVICE_ID) {
+                    btn.disabled = false;
+                    btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                    const secAlert = document.getElementById('reg-security-alert');
+                    secAlert.innerText = `⛔ مرفوض! الرمز (${code}) مسجل مسبقاً باسم (${registeredStudent.name}) ومرتبط بهاتف آخر. لا يُسمح بالدخول من جهازين مختلفين إلا بعد فك القفل من قِبل الأستاذ أو المدير.`;
+                    secAlert.classList.remove('hidden');
+                    alert(`⛔ الرمز (${code}) مرتبط بجهاز آخر! لا يمكنك الدخول من هاتفين.`);
+                    return;
+                }
+            }
+
+            const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
+
+            if (existingByCode > -1) {
+                students[existingByCode].name = name;
+                students[existingByCode].branch = branch;
+                students[existingByCode].deviceId = THIS_DEVICE_ID;
+                students[existingByCode].present = true;
+                students[existingByCode].time = nowTime;
+                students[existingByCode].note = "أعاد تسجيل الدخول وربط الجهاز";
+            } else {
+                students.push({
+                    name: name,
+                    code: code,
+                    branch: branch,
+                    deviceId: THIS_DEVICE_ID,
+                    present: true,
+                    time: nowTime,
+                    note: "مسجل ومقفل على جهازه"
+                });
+            }
+
+            currentStudentProfile = { name, code, branch, deviceId: THIS_DEVICE_ID };
+            localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+
+            saveAllLocal();
+            updateStudentBarUI();
+            renderStudents();
+            renderAdminDashboard();
+
+            btn.disabled = false;
+            btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+            closeStudentRegModal();
+            syncToCloud(false);
+            alert(`✅ تم تسجيل دخولك يا (${name}) وربط الرمز (${code}) بهذا الجهاز حصرياً!`);
+        }
+
+        function updateStudentBarUI() {
+            const bar = document.getElementById('student-info-bar');
+            const lockBadge = document.getElementById('device-lock-badge');
+            if (currentRole === 'teacher') {
+                bar.innerHTML = `الأستاذ الحالي: <b class="text-amber-300">${currentTeacherName}</b>`;
+                lockBadge.classList.remove('hidden');
+            } else if (currentRole === 'admin') {
+                bar.innerHTML = `<b class="text-rose-300">إدارة المنصة الشاملة (المدير العام)</b>`;
+                lockBadge.classList.remove('hidden');
+            } else if (currentStudentProfile) {
+                bar.innerHTML = `الطالب: <b class="text-white">${currentStudentProfile.name}</b> | الرمز: <b class="text-amber-300 font-mono">${currentStudentProfile.code}</b> | الفرع: <b class="text-emerald-300">${currentStudentProfile.branch}</b>`;
+                lockBadge.classList.remove('hidden');
+            } else {
+                bar.innerText = "الصف العاشر (علمي / أدبي) - المنهاج السوري";
+                lockBadge.classList.add('hidden');
+            }
+        }
+
+        function updateSyncBadge(text, classes) {
+            const el = document.getElementById('sync-status');
+            el.innerText = text;
+            el.className = `text-[11px] px-2.5 py-0.5 rounded-full font-bold ${classes}`;
+        }
+
+        async function fetchFromCloud(showAlert = false, silent = false, skipSessionVerify = false) {
+            const url = getActiveCloudUrl();
+            if (!url) return;
+            if (!silent) updateSyncBadge("⏳ جارٍ المزامنة مع السحابة...", "bg-sky-500/20 text-sky-300");
+            try {
+                const res = await fetch(url + "?t=" + new Date().getTime(), { redirect: "follow" });
+                const data = await res.json();
+                if (data && data.lessons) {
+                    lessons = data.lessons;
+                    students = data.students || students;
+                    quizzes = data.quizzes || quizzes;
+                    teachers = data.teachers || teachers;
+                    teacherLogs = data.teacherLogs || teacherLogs;
+                    if (data.dailyMeetLinks) {
+                        dailyMeetLinks = data.dailyMeetLinks;
+                        updateDailyMeetInputsUI();
+                    }
+                    if (data.adminPin) {
+                        adminPin = data.adminPin;
+                        localStorage.setItem('g10_admin_pin', adminPin);
+                    }
+                    if (typeof data.adminDeviceId !== 'undefined') {
+                        adminDeviceId = data.adminDeviceId;
+                        localStorage.setItem('g10_admin_device_id', adminDeviceId);
+                    }
+                    saveAllLocal();
+                    renderLessons();
+                    renderStudents();
+                    renderQuizzes();
+                    renderAdminDashboard();
+                    updateSyncBadge("🟢 متصل ومحدّث تلقائياً", "bg-emerald-500/20 text-emerald-300");
+                    
+                    if (!skipSessionVerify && !isStaffLoggingIn) {
+                        verifyActiveUserDeviceSession();
+                    }
+
+                    if (showAlert) alert("✅ تم جلب أحدث الدروس وروابط القاعة من السحابة بنجاح!");
+                } else {
+                    await syncToCloud(false);
+                }
+            } catch (e) {
+                if (!silent) updateSyncBadge("🔴 تعذر الاتصال بالسحابة", "bg-rose-500/20 text-rose-300");
+                if (showAlert) alert("تأكد من الاتصال بالإنترنت ومن إعداد صلاحية Google Script على (Anyone).");
+            }
+        }
+
+        async function syncToCloud(showAlert = false) {
+            const url = getActiveCloudUrl();
+            if (!url) return;
+            updateSyncBadge("⬆️ جارٍ الحفظ بالسحابة...", "bg-sky-500/20 text-sky-300");
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ lessons, students, quizzes, teachers, teacherLogs, adminPin, adminDeviceId, dailyMeetLinks })
+                });
+                updateSyncBadge("🟢 متصل ومحدّث تلقائياً", "bg-emerald-500/20 text-emerald-300");
+                if (showAlert) alert("✅ تم رفع كافة التعديلات إلى السحابة بنجاح!");
+            } catch (e) {
+                updateSyncBadge("⚠️ حُفظ على الجهاز فقط", "bg-amber-500/20 text-amber-300");
+            }
+        }
+
+        function saveAllLocal() {
+            localStorage.setItem('g10_lessons_v9', JSON.stringify(lessons));
+            localStorage.setItem('g10_students_v9', JSON.stringify(students));
+            localStorage.setItem('g10_quizzes_v9', JSON.stringify(quizzes));
+            localStorage.setItem('g10_teachers_v9', JSON.stringify(teachers));
+            localStorage.setItem('g10_logs_v9', JSON.stringify(teacherLogs));
+            localStorage.setItem('g10_daily_meet_v9', JSON.stringify(dailyMeetLinks));
+            localStorage.setItem('g10_admin_device_id', adminDeviceId);
+        }
+
+        function saveCloudUrl() {
+            if (currentRole !== 'admin') {
+                alert("⛔ غير مصرح! فقط المدير العام يمكنه تعديل إعدادات السحابة.");
+                return;
+            }
+            const url = document.getElementById('cloud-url').value.trim();
+            if (!url) {
+                alert("⚠️ لا يمكن ترك رابط السحابة فارغاً!");
+                document.getElementById('cloud-url').value = DEFAULT_CLOUD_URL;
+                return;
+            }
+            localStorage.setItem('g10_admin_cloud_url', url);
+            fetchFromCloud(true);
+            alert("✅ تم حفظ وتحديث رابط السحابة بنجاح!");
+        }
+
+        function resetCloudUrlToDefault() {
+            if (currentRole !== 'admin') return;
+            localStorage.removeItem('g10_admin_cloud_url');
+            document.getElementById('cloud-url').value = DEFAULT_CLOUD_URL;
+            fetchFromCloud(true);
+        }
+
+        function openLoginModal(mode) {
+            isStaffLoggingIn = true;
+            loginMode = mode;
+            const modal = document.getElementById('login-modal');
+            const tFields = document.getElementById('teacher-login-fields');
+            const aFields = document.getElementById('admin-login-fields');
+            const title = document.getElementById('login-modal-title');
+            const staffAlert = document.getElementById('staff-security-alert');
+            staffAlert.classList.add('hidden');
+
+            document.getElementById('student-reg-modal').classList.add('hidden');
+            document.getElementById('student-reg-modal').classList.remove('flex');
+
+            if (mode === 'teacher') {
+                title.innerText = "👨‍🏫 دخول الأستاذ (محمي ببصمة الجهاز)";
+                tFields.classList.remove('hidden');
+                aFields.classList.add('hidden');
+                const select = document.getElementById('login-teacher-select');
+                select.innerHTML = '';
+                teachers.forEach((t, i) => {
+                    select.innerHTML += `<option value="${i}">${t.name} (${t.subject})</option>`;
+                });
+                document.getElementById('login-teacher-pin').value = '';
+            } else {
+                title.innerText = "👑 دخول المدير العام (محمي ببصمة الجهاز)";
+                tFields.classList.add('hidden');
+                aFields.classList.remove('hidden');
+                document.getElementById('login-admin-pin').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLoginModalSuccess() {
+            isStaffLoggingIn = false;
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+            document.getElementById('student-reg-modal').classList.add('hidden');
+            document.getElementById('student-reg-modal').classList.remove('flex');
+        }
+
+        function cancelStaffLogin() {
+            isStaffLoggingIn = false;
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+
+            if (currentRole === 'student' && !currentStudentProfile) {
+                openStudentRegModal(false, true, "⚠️ تنبيه: تم إلغاء دخول الأستاذ/المدير. يرجى تسجيل الدخول كطالب أولاً!");
+            }
+        }
+
+        async function confirmStaffLogin() {
+            isStaffLoggingIn = true;
+            const btn = document.getElementById('staff-login-submit-btn');
+            const staffAlert = document.getElementById('staff-security-alert');
+            staffAlert.classList.add('hidden');
+
+            btn.disabled = true;
+            btn.innerText = "⏳ جارٍ التحقق من بصمة الجهاز...";
+
+            await fetchFromCloud(false, true, true);
+
+            const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
+
+            if (loginMode === 'teacher') {
+                const idx = document.getElementById('login-teacher-select').value;
+                const pin = document.getElementById('login-teacher-pin').value.trim();
+                const teacher = teachers[idx];
+
+                if (teacher && teacher.pin === pin) {
+                    if (teacher.deviceId && teacher.deviceId !== "" && teacher.deviceId !== THIS_DEVICE_ID) {
+                        teacherLogs.unshift({
+                            teacher: teacher.name,
+                            action: `⛔ محاولة دخول مرفوضة من جهاز غريب (حماية الاختراق)`,
+                            time: nowStr
+                        });
+                        if (teacherLogs.length > 50) teacherLogs.pop();
+                        saveAllLocal();
+                        renderAdminDashboard();
+                        syncToCloud(false);
+
+                        btn.disabled = false;
+                        btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                        staffAlert.innerText = `⛔ تم رفض الدخول! حساب (${teacher.name}) مقفل ومرتبط بهاتف/جهاز آخر. لا يمكن الدخول من جهاز جديد إلا بعد أن يقوم المدير العام بفك قفل الجهاز.`;
+                        staffAlert.classList.remove('hidden');
+                        return;
+                    }
+
+                    const isFirstBind = !teacher.deviceId || teacher.deviceId === "";
+                    teachers[idx].deviceId = THIS_DEVICE_ID;
+
+                    currentRole = "teacher";
+                    currentTeacherName = teacher.name;
+                    sessionStorage.setItem('g10_staff_session', JSON.stringify({ role: 'teacher', name: teacher.name }));
+                    
+                    teacherLogs.unshift({
+                        teacher: teacher.name,
+                        action: isFirstBind ? `تسجيل دخول وربط بصمة جهازه لأول مرة (${teacher.subject})` : `تسجيل دخول آمن من جهازه المعتمد (${teacher.subject})`,
+                        time: nowStr
+                    });
+                    if (teacherLogs.length > 50) teacherLogs.pop();
+
+                    saveAllLocal();
+                    applyRoleUI();
+                    renderAdminDashboard();
+                    renderLessons();
+                    renderQuizzes();
+
+                    btn.disabled = false;
+                    btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                    closeLoginModalSuccess();
+                    switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
+                    syncToCloud(false);
+                } else {
+                    btn.disabled = false;
+                    btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                    alert("❌ الرقم السري غير صحيح لهذا الأستاذ!");
+                }
+            } else {
+                const pin = document.getElementById('login-admin-pin').value.trim();
+                if (pin === adminPin) {
+                    if (adminDeviceId && adminDeviceId !== "" && adminDeviceId !== THIS_DEVICE_ID) {
+                        teacherLogs.unshift({
+                            teacher: "المدير العام",
+                            action: `🚨 محاولة اختراق مرفوضة لحساب المدير من جهاز غريب!`,
+                            time: nowStr
+                        });
+                        if (teacherLogs.length > 50) teacherLogs.pop();
+                        saveAllLocal();
+                        renderAdminDashboard();
+                        syncToCloud(false);
+
+                        btn.disabled = false;
+                        btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                        staffAlert.innerText = `⛔ حماية القصوى: حساب المدير العام مرتبط ومقفل على جهاز المدير الشخصي فقط! لا يُسمح بالدخول من هذا الجهاز.`;
+                        staffAlert.classList.remove('hidden');
+                        return;
+                    }
+
+                    const isFirstAdminBind = !adminDeviceId || adminDeviceId === "";
+                    adminDeviceId = THIS_DEVICE_ID;
+
+                    currentRole = "admin";
+                    currentTeacherName = "المدير العام";
+                    sessionStorage.setItem('g10_staff_session', JSON.stringify({ role: 'admin', name: 'المدير العام' }));
+
+                    if (isFirstAdminBind) {
+                        teacherLogs.unshift({
+                            teacher: "المدير العام",
+                            action: "🔒 تم قفل حساب المدير العام وربطه ببصمة هذا الجهاز حصرياً",
+                            time: nowStr
+                        });
+                        if (teacherLogs.length > 50) teacherLogs.pop();
+                    }
+
+                    saveAllLocal();
+                    applyRoleUI();
+                    closeLoginModalSuccess();
+                    renderLessons();
+                    renderQuizzes();
+                    renderAdminDashboard();
+
+                    btn.disabled = false;
+                    btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                    switchTab('admin-tab', document.getElementById('nav-btn-admin'));
+                    syncToCloud(false);
+                } else {
+                    btn.disabled = false;
+                    btn.innerText = "دخول وتحقق من بصمة الجهاز";
+                    alert("❌ كلمة مرور المدير العام غير صحيحة!");
+                }
+            }
+        }
+
+        function logoutUser() {
+            sessionStorage.removeItem('g10_staff_session');
+            currentRole = "student";
+            currentTeacherName = "";
+            applyRoleUI();
+            switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
+            renderLessons();
+            renderQuizzes();
+
+            verifyActiveUserDeviceSession();
+        }
+
+        function updateHeaderButtons() {
+            const tBtn = document.getElementById('teacher-login-btn');
+            const aBtn = document.getElementById('admin-login-btn');
+            const outBtn = document.getElementById('logout-btn');
+            const quizNote = document.getElementById('student-quiz-note');
+
+            if (currentRole === 'student') {
+                tBtn.classList.remove('hidden');
+                aBtn.classList.remove('hidden');
+                outBtn.classList.add('hidden');
+                outBtn.classList.remove('inline-flex');
+                quizNote.style.display = 'block';
+            } else {
+                tBtn.classList.add('hidden');
+                aBtn.classList.add('hidden');
+                outBtn.classList.remove('hidden');
+                outBtn.classList.add('inline-flex');
+                quizNote.style.display = 'none';
+            }
+        }
+
+        function switchTab(tabId, btnElement) {
+            if (tabId === 'admin-tab' && currentRole !== 'admin') {
+                alert("⛔ هذا القسم مخصص للمدير العام فقط!");
+                return;
+            }
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('text-indigo-200');
+            });
+            if (btnElement) {
+                btnElement.classList.add('bg-indigo-600', 'text-white');
+                btnElement.classList.remove('text-indigo-200');
+            }
+        }
+
+        function renderSubjects() {
+            const grid = document.getElementById('subjects-grid');
+            const prepSelect = document.getElementById('prep-subject');
+            const quizSelect = document.getElementById('quiz-sub');
+            const newTSub = document.getElementById('new-t-subject');
+            grid.innerHTML = ''; prepSelect.innerHTML = ''; quizSelect.innerHTML = ''; newTSub.innerHTML = '';
+
+            syrianG10Subjects.forEach(sub => {
+                grid.innerHTML += `
+                    <button onclick="filterLessons('${sub.name}')" class="p-3 rounded-xl border ${sub.color} shadow-sm flex items-center gap-2.5 hover:scale-[1.02] transition text-right">
+                        <span class="text-2xl">${sub.icon}</span>
+                        <div class="truncate">
+                            <h4 class="font-bold text-xs md:text-sm truncate">${sub.name}</h4>
+                            <span class="text-[11px] opacity-75">أرشيف الدروس</span>
+                        </div>
+                    </button>
+                `;
+                const opt = `<option value="${sub.name}">${sub.name}</option>`;
+                prepSelect.innerHTML += opt; quizSelect.innerHTML += opt; newTSub.innerHTML += opt;
+            });
+        }
+
+        function filterLessons(sub) {
+            currentSubjectFilter = sub;
+            document.getElementById('current-filter-badge').innerText = sub;
+            renderLessons();
+        }
+
+        function insertMath(latex) {
+            const area = document.getElementById('prep-notes');
+            area.value += " " + latex + " ";
+            area.focus();
+        }
+
+        function renderLessons() {
+            const tbody = document.getElementById('lessons-table-body');
+            tbody.innerHTML = '';
+            const filtered = currentSubjectFilter === "الكل" ? lessons : lessons.filter(l => l.subject === currentSubjectFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">لا توجد دروس محضّرة حالياً.</td></tr>`;
+                return;
+            }
+
+            const isStaff = (currentRole === 'admin' || currentRole === 'teacher');
+
+            filtered.forEach((lesson) => {
+                const realIdx = lessons.indexOf(lesson);
+                const branchBadge = lesson.branch === "أدبي" 
+                    ? `<span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold">أدبي</span>`
+                    : (lesson.branch === "علمي وأدبي" ? `<span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded font-bold">علمي وأدبي</span>` : `<span class="bg-sky-100 text-sky-800 text-xs px-2 py-0.5 rounded font-bold">علمي</span>`);
+                
+                let pdfCellHtml = `<span class="text-xs text-slate-400">لا يوجد</span>`;
+                if (lesson.pdf && lesson.pdf.trim() !== "") {
+                    pdfCellHtml = `
+                        <div class="flex items-center justify-center gap-1">
+                            <a href="${lesson.pdf.trim()}" target="_blank" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap">📄 فتح الملخص</a>
+                            ${isStaff ? `<button onclick="attachLessonPdf(${realIdx})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-1.5 py-1 rounded text-xs" title="تعديل رابط الملخص">✏️</button>` : ''}
+                        </div>
+                    `;
+                } else if (isStaff) {
+                    pdfCellHtml = `<button onclick="attachLessonPdf(${realIdx})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition">📄 + رفع ملخص Drive</button>`;
+                }
+
+                let videoCellHtml = `<span class="text-xs text-slate-400">يُرفع بعد الحصة</span>`;
+                if (lesson.video && lesson.video.trim() !== "") {
+                    videoCellHtml = `
+                        <div class="flex items-center justify-center gap-1">
+                            <button onclick="openVideoPlayer('${lesson.video.trim()}', '${lesson.subject} - ${lesson.title}')" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm whitespace-nowrap transition">▶️ مشاهدة التسجيل</button>
+                            ${isStaff ? `<button onclick="attachLessonRecording(${realIdx})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-1.5 py-1 rounded text-xs font-bold" title="تعديل رابط التسجيل">✏️</button>` : ''}
+                        </div>
+                    `;
+                } else if (isStaff) {
+                    videoCellHtml = `<button onclick="attachLessonRecording(${realIdx})" class="bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition">🎬 + رفع رابط التسجيل (Drive)</button>`;
+                }
+
+                const delBtn = isStaff ? `<button onclick="deleteLesson(${realIdx})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2 py-1 rounded-lg text-xs font-bold" title="حذف الدرس">🗑️</button>` : '';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-extrabold text-indigo-950">${lesson.subject}</td>
+                        <td class="p-3 whitespace-nowrap">${branchBadge}</td>
+                        <td class="p-3 text-xs font-bold text-amber-800">${lesson.teacher || 'الإدارة'}</td>
+                        <td class="p-3 font-bold">${lesson.title}</td>
+                        <td class="p-3 text-slate-700">${lesson.notes}</td>
+                        <td class="p-3 text-slate-500 text-xs whitespace-nowrap">${lesson.date}</td>
+                        <td class="p-3 text-center whitespace-nowrap">${pdfCellHtml}</td>
+                        <td class="p-3 text-center whitespace-nowrap">${videoCellHtml}</td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <button onclick="shareWhatsApp(${realIdx})" class="bg-green-100 hover:bg-green-200 text-green-800 px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap">📲 واتساب</button>
+                                ${delBtn}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+        }
+
+        async function attachLessonRecording(index) {
+            const currentUrl = lessons[index].video || "";
+            const newUrl = prompt("🎬 الصق رابط تسجيل الدرس من Google Drive أو YouTube بعد انتهاء الحصة:", currentUrl);
+            if (newUrl === null) return;
+
+            lessons[index].video = newUrl.trim();
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الأستاذ",
+                action: `رفع رابط تسجيل الدرس (${lessons[index].subject}: ${lessons[index].title})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderLessons();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            if (newUrl.trim() !== "") alert("✅ تم حفظ رابط التسجيل ومزامنته!");
+        }
+
+        async function attachLessonPdf(index) {
+            const currentUrl = lessons[index].pdf || "";
+            const newUrl = prompt("📄 الصق رابط ملف الملخص أو ورقة العمل من Google Drive:", currentUrl);
+            if (newUrl === null) return;
+
+            lessons[index].pdf = newUrl.trim();
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الأستاذ",
+                action: `رفع ملف ملخص Drive لدرس (${lessons[index].subject}: ${lessons[index].title})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderLessons();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            if (newUrl.trim() !== "") alert("✅ تم حفظ رابط الملخص ومزامنته!");
+        }
+
+        function openVideoPlayer(videoUrl, title) {
+            const modal = document.getElementById('video-player-modal');
+            const container = document.getElementById('video-iframe-container');
+            document.getElementById('video-modal-title').innerText = "🎬 " + title;
+            document.getElementById('video-external-link').href = videoUrl;
+
+            let embedUrl = "";
+            const ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+            const driveMatch = videoUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+
+            if (ytMatch && ytMatch[1]) {
+                embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
+            } else if (driveMatch && driveMatch[1]) {
+                embedUrl = `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+            }
+
+            if (embedUrl) {
+                container.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full border-0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                window.open(videoUrl, '_blank');
+            }
+        }
+
+        function closeVideoPlayer() {
+            const modal = document.getElementById('video-player-modal');
+            document.getElementById('video-iframe-container').innerHTML = '';
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function saveLesson(event) {
+            event.preventDefault();
+            const sub = document.getElementById('prep-subject').value;
+            const branch = document.getElementById('prep-branch').value;
+            const title = document.getElementById('prep-title').value;
+            const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
+
+            lessons.unshift({
+                subject: sub,
+                branch: branch,
+                teacher: currentTeacherName || "أستاذ المادة",
+                date: document.getElementById('prep-date').value,
+                title: title,
+                notes: document.getElementById('prep-notes').value,
+                pdf: "",
+                video: ""
+            });
+
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "المدير",
+                action: `تحضير درس (${sub} - ${branch}: ${title})`,
+                time: nowStr
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderLessons();
+            renderAdminDashboard();
+            document.getElementById('prep-form').reset();
+            document.getElementById('prep-date').value = new Date().toISOString().split('T')[0];
+            await syncToCloud(false);
+
+            alert('✅ تم حفظ تحضير الدرس!');
+            switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
+        }
+
+        async function deleteLesson(index) {
+            if (!confirm("هل تريد بالتأكيد حذف هذا الدرس؟")) return;
+            lessons.splice(index, 1);
+            saveAllLocal();
+            renderLessons();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        function shareWhatsApp(index) {
+            const l = lessons[index];
+            const dailyMeet = (l.branch === 'أدبي' && dailyMeetLinks.lit) ? dailyMeetLinks.lit : dailyMeetLinks.sci;
+            let text = `🎓 *ملخص وتفاصيل درس - الصف العاشر (${l.branch || 'علمي'})*\n` +
+                       `📚 *المادة:* ${l.subject}\n` +
+                       `👨‍🏫 *الأستاذ:* ${l.teacher || 'الإدارة'}\n` +
+                       `📌 *عنوان الدرس:* ${l.title}\n` +
+                       `📝 *الشرح والملاحظات:* ${l.notes}\n` +
+                       `📅 *التاريخ:* ${l.date}`;
+            if (l.video) text += `\n\n🎬 *رابط مشاهدة تسجيل الدرس:*\n${l.video}`;
+            if (l.pdf) text += `\n\n📄 *رابط الملخص:*\n${l.pdf}`;
+            if (!l.video && !l.pdf && dailyMeet) text += `\n\n📹 *رابط قاعة الدوام المباشرة:*\n${dailyMeet}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function renderAdminDashboard() {
+            document.getElementById('stat-teachers').innerText = teachers.length;
+            document.getElementById('stat-lessons').innerText = lessons.length;
+            document.getElementById('stat-students').innerText = `${students.length} (${students.filter(s => s.present).length} حاضر)`;
+            document.getElementById('stat-logs').innerText = teacherLogs.length;
+
+            const adminDevStatus = document.getElementById('admin-device-status');
+            if (adminDevStatus) {
+                adminDevStatus.innerText = adminDeviceId 
+                    ? `🔒 مقفل على جهاز المدير المعتمد (${adminDeviceId.substring(0, 10)}...)`
+                    : `⏳ غير مقفل حالياً (سيُقفل تلقائياً عند أول دخول للمدير)`;
+            }
+
+            const tBody = document.getElementById('teachers-list-body');
+            tBody.innerHTML = '';
+            teachers.forEach((t, i) => {
+                const count = lessons.filter(l => l.teacher === t.name).length;
+                const tDeviceHtml = t.deviceId
+                    ? `<div class="flex items-center justify-center gap-1">
+                           <span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded font-bold" title="بصمة الجهاز: ${t.deviceId}">🔒 مقفل</span>
+                           <button onclick="resetTeacherDeviceLock(${i})" class="bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] px-1.5 py-0.5 rounded font-bold">🔓 فك</button>
+                       </div>`
+                    : `<span class="bg-slate-100 text-slate-400 text-[10px] px-1.5 py-0.5 rounded">بانتظار الدخول</span>`;
+
+                tBody.innerHTML += `
+                    <tr>
+                        <td class="p-2 font-bold">${t.name}</td>
+                        <td class="p-2 text-indigo-800 font-semibold">${t.subject}</td>
+                        <td class="p-2"><code class="bg-amber-100 px-1.5 py-0.5 rounded font-bold">${t.pin}</code></td>
+                        <td class="p-2 text-center whitespace-nowrap">${tDeviceHtml}</td>
+                        <td class="p-2 text-center font-bold">${count}</td>
+                        <td class="p-2 text-center"><button onclick="removeTeacher(${i})" class="text-rose-500 font-bold">✖</button></td>
+                    </tr>
+                `;
+            });
+
+            const lBody = document.getElementById('teacher-logs-body');
+            lBody.innerHTML = '';
+            teacherLogs.forEach(log => {
+                const isAlert = log.action && (log.action.includes('⛔') || log.action.includes('🚨'));
+                lBody.innerHTML += `
+                    <tr class="${isAlert ? 'bg-rose-50 text-rose-900 font-bold' : ''}">
+                        <td class="p-2.5 font-bold text-indigo-950">${log.teacher}</td>
+                        <td class="p-2.5 ${isAlert ? 'text-rose-700' : 'text-slate-700'}">${log.action}</td>
+                        <td class="p-2.5 text-slate-400">${log.time}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function resetTeacherDeviceLock(idx) {
+            const t = teachers[idx];
+            if (!confirm(`هل تريد فك ارتباط الجهاز للأستاذ (${t.name})؟`)) return;
+            teachers[idx].deviceId = "";
+            teacherLogs.unshift({
+                teacher: "المدير العام",
+                action: `🔓 فك قفل الجهاز للأستاذ (${t.name})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم فك قفل الجهاز للأستاذ (${t.name})!`);
+        }
+
+        async function resetAdminDeviceLock() {
+            if (!confirm("هل تريد فك ارتباط حساب المدير العام عن هذا الجهاز؟")) return;
+            adminDeviceId = "";
+            localStorage.removeItem('g10_admin_device_id');
+            teacherLogs.unshift({
+                teacher: "المدير العام",
+                action: "🔓 تم فك قفل جهاز المدير العام استعداداً لنقله لجهاز جديد",
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert("✅ تم فك ارتباط جهاز المدير بنجاح!");
+        }
+
+        async function addTeacherAccount(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-t-name').value.trim();
+            const sub = document.getElementById('new-t-subject').value;
+            const pin = document.getElementById('new-t-pin').value.trim();
+            teachers.push({ name, subject: sub, pin, deviceId: "" });
+            saveAllLocal();
+            renderAdminDashboard();
+            e.target.reset();
+            await syncToCloud(false);
+            alert(`✅ تم إضافة حساب الأستاذ (${name})!`);
+        }
+
+        async function removeTeacher(idx) {
+            if (!confirm("حذف حساب هذا الأستاذ؟")) return;
+            teachers.splice(idx, 1);
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function clearTeacherLogs() {
+            if (!confirm("مسح سجل نشاط الأساتذة؟")) return;
+            teacherLogs = [];
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function updateAdminPin() {
+            const val = document.getElementById('new-admin-pin').value.trim();
+            if (!val) return alert("يرجى إدخال الرمز الجديد أولاً");
+            adminPin = val;
+            localStorage.setItem('g10_admin_pin', val);
+            document.getElementById('new-admin-pin').value = '';
+            await syncToCloud(false);
+            alert("✅ تم تحديث رمز المدير العام ومزامنته بنجاح!");
+        }
+
+        function renderStudents() {
+            const tbody = document.getElementById('students-table-body');
+            tbody.innerHTML = '';
+            let presentCount = 0;
+            students.forEach((s, i) => {
+                if (s.present) presentCount++;
+                const bBadge = s.branch === "أدبي"
+                    ? `<span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold">أدبي</span>`
+                    : `<span class="bg-sky-100 text-sky-800 text-xs px-2 py-0.5 rounded font-bold">علمي</span>`;
+
+                const deviceStatusHtml = s.deviceId 
+                    ? `<div class="flex items-center justify-center gap-1">
+                           <span class="bg-emerald-100 text-emerald-800 text-[11px] px-2 py-0.5 rounded font-bold">🔒 مقفل على جهازه</span>
+                           <button onclick="resetStudentDeviceLock(${i})" class="bg-amber-100 hover:bg-amber-200 text-amber-900 text-[11px] px-2 py-0.5 rounded font-bold transition">🔓 فك القفل</button>
+                       </div>`
+                    : `<span class="bg-slate-100 text-slate-500 text-[11px] px-2 py-0.5 rounded">⏳ مطالب بتسجيل الدخول</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3 text-slate-400 font-bold">${i + 1}</td>
+                        <td class="p-3 font-mono font-extrabold text-indigo-700">${s.code || 'A00'}</td>
+                        <td class="p-3 font-bold">${s.name}</td>
+                        <td class="p-3">${bBadge}</td>
+                        <td class="p-3 text-center whitespace-nowrap">${deviceStatusHtml}</td>
+                        <td class="p-3 text-center"><input type="checkbox" ${s.present ? 'checked' : ''} onchange="toggleAttendance(${i})" class="w-5 h-5 accent-emerald-600"></td>
+                        <td class="p-3 text-center text-xs font-bold text-indigo-700">${s.time || '-'}</td>
+                        <td class="p-3"><input type="text" value="${s.note || ''}" onchange="updateNote(${i}, this.value)" class="border rounded px-2 py-1 text-xs w-full"></td>
+                        <td class="p-3 text-center"><button onclick="removeStudent(${i})" class="text-rose-500 font-bold">✖</button></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('present-count').innerText = presentCount;
+            document.getElementById('absent-count').innerText = students.length - presentCount;
+        }
+
+        async function resetStudentDeviceLock(index) {
+            const st = students[index];
+            if (!confirm(`هل تريد فك ارتباط الجهاز للطالب (${st.name} - ${st.code})؟`)) return;
+            students[index].deviceId = "";
+            students[index].present = false;
+            students[index].note = "تم فك قفل الجهاز (مطالب بتسجيل الدخول)";
+
+            if (currentStudentProfile && currentStudentProfile.code === st.code) {
+                localStorage.removeItem('g10_student_profile');
+                currentStudentProfile = null;
+                updateStudentBarUI();
+            }
+
+            saveAllLocal();
+            renderStudents();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم فك ارتباط الجهاز للطالب (${st.name})!`);
+        }
+
+        async function toggleAttendance(i) {
+            students[i].present = !students[i].present;
+            students[i].time = students[i].present ? new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' }) : '-';
+            saveAllLocal();
+            renderStudents();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function updateNote(i, val) {
+            students[i].note = val;
+            saveAllLocal();
+            await syncToCloud(false);
+        }
+
+        async function addStudentManual() {
+            const nameInput = document.getElementById('new-student-name');
+            const codeInput = document.getElementById('new-student-code');
+            const branchInput = document.getElementById('new-student-branch');
+            const name = nameInput.value.trim();
+            let code = codeInput.value.trim().toUpperCase();
+            if (!name || !code) return alert("يرجى إدخال الاسم الثلاثي والرمز!");
+            if (!/^A\d+$/.test(code)) return alert("يجب أن يبدأ الرمز بحرف A متبوعاً برقم (مثال: A105)");
+            if (students.some(s => s.code === code)) return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
+
+            students.push({
+                name: name,
+                code: code,
+                branch: branchInput.value,
+                deviceId: "",
+                present: false,
+                time: "-",
+                note: "أُضيف يدوياً (مطالب بتسجيل الدخول)"
+            });
+            nameInput.value = '';
+            codeInput.value = '';
+            saveAllLocal();
+            renderStudents();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function removeStudent(i) {
+            if (!confirm("هل تريد حذف هذا الطالب من السجل؟")) return;
+            const removed = students.splice(i, 1)[0];
+            if (removed && currentStudentProfile && currentStudentProfile.code === removed.code) {
+                localStorage.removeItem('g10_student_profile');
+                currentStudentProfile = null;
+                updateStudentBarUI();
+            }
+            saveAllLocal();
+            renderStudents();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        function exportAttendanceCSV() {
+            const date = new Date().toISOString().split('T')[0];
+            let csv = "\uFEFFالرقم,رمز الطالب,الاسم الثلاثي,الفرع,حالة الجهاز,التاريخ,الحالة,وقت الدخول,ملاحظات\n";
+            students.forEach((s, i) => csv += `${i+1},"${s.code || ''}","${s.name}","${s.branch || 'علمي'}","${s.deviceId ? 'مرتبط بجهاز' : 'مطالب بتسجيل الدخول'}","${date}","${s.present?'حاضر':'غائب'}","${s.time}","${s.note}"\n`);
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+            link.download = `سجل_حضور_العاشر_${date}.csv`;
+            link.click();
+        }
+
+        function renderQuizzes() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+
+            if (quizzes.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400">لا توجد أسئلة سبر مضافة حالياً.</div>`;
+                return;
+            }
+
+            const canDeleteQuiz = (currentRole === 'teacher' || currentRole === 'admin');
+
+            quizzes.forEach((q, qIdx) => {
+                let opts = '';
+                q.options.forEach((o, oIdx) => {
+                    opts += `<label id="q${qIdx}-opt${oIdx}-label" class="flex items-center gap-2 p-2.5 rounded-lg border bg-white hover:bg-indigo-50 cursor-pointer text-sm transition">
+                        <input type="radio" name="quiz-q-${qIdx}" value="${oIdx}" class="accent-indigo-600"> <span>${o}</span>
+                    </label>`;
+                });
+
+                const deleteQuizBtn = canDeleteQuiz 
+                    ? `<button onclick="deleteQuizQuestion(${qIdx})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition">🗑️ حذف السؤال</button>`
+                    : '';
+
+                container.innerHTML += `
+                    <div class="p-4 rounded-xl bg-slate-50 border space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded-full">${q.subject}</span>
+                            ${deleteQuizBtn}
+                        </div>
+                        <h4 class="font-bold text-slate-800">${qIdx + 1}. ${q.q}</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${opts}</div>
+                    </div>`;
+            });
+            if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+        }
+
+        async function addQuizQuestion(e) {
+            e.preventDefault();
+            const sub = document.getElementById('quiz-sub').value;
+            quizzes.push({
+                subject: sub,
+                q: document.getElementById('quiz-q').value,
+                options: [
+                    document.getElementById('quiz-opt0').value,
+                    document.getElementById('quiz-opt1').value,
+                    document.getElementById('quiz-opt2').value,
+                    document.getElementById('quiz-opt3').value
+                ],
+                correct: parseInt(document.getElementById('quiz-correct').value)
+            });
+
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الأستاذ",
+                action: `إضافة سؤال سبر (${sub})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            e.target.reset();
+            renderQuizzes();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert('✅ تم إضافة السؤال ومزامنته مع الطلاب!');
+        }
+
+        async function deleteQuizQuestion(qIdx) {
+            if (!confirm("هل تريد حذف هذا السؤال من سبر المعلومات؟")) return;
+            const removed = quizzes.splice(qIdx, 1)[0];
+
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الأستاذ",
+                action: `حذف سؤال سبر (${removed ? removed.subject : ''})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderQuizzes();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            quizzes.forEach((q, qIdx) => {
+                const sel = document.querySelector(`input[name="quiz-q-${qIdx}"]:checked`);
+                q.options.forEach((_, oIdx) => {
+                    const lbl = document.getElementById(`q${qIdx}-opt${oIdx}-label`);
+                    if (lbl) {
+                        lbl.classList.remove('bg-emerald-100', 'border-emerald-500', 'bg-rose-100', 'border-rose-500');
+                        if (oIdx === q.correct) lbl.classList.add('bg-emerald-100', 'border-emerald-500', 'font-bold');
+                    }
+                });
+                if (sel) {
+                    const ans = parseInt(sel.value);
+                    if (ans === q.correct) score++;
+                    else {
+                        const wrongLbl = document.getElementById(`q${qIdx}-opt${ans}-label`);
+                        if (wrongLbl) wrongLbl.classList.add('bg-rose-100', 'border-rose-500');
+                    }
+                }
+            });
+            const badge = document.getElementById('quiz-score-badge');
+            badge.classList.remove('hidden');
+            badge.innerText = `النتيجة: ${score} / ${quizzes.length}`;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-score-badge').classList.add('hidden');
+            renderQuizzes();
+        }
+    </script>
+</body>
+</html>
