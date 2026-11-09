@@ -12,7 +12,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="منصة العاشر">
     
-    <!-- روابط الأيقونات التي سيتم حقنها بصورة PNG حقيقية تلقائياً -->
     <link id="app-favicon" rel="icon" type="image/png">
     <link id="apple-touch-icon" rel="apple-touch-icon">
     <link id="pwa-manifest" rel="manifest">
@@ -31,9 +30,20 @@
         body { font-family: 'Cairo', sans-serif; }
         .tab-content { display: none !important; }
         .tab-content.active { display: block !important; }
-        .staff-only, .admin-only, .staff-block, .admin-only-box { display: none !important; }
-        body.role-teacher .staff-only, body.role-admin .staff-only { display: inline-flex !important; }
-        body.role-teacher .staff-block, body.role-admin .staff-block { display: block !important; }
+        
+        /* التحكم بالصلاحيات: طالب / لابتوب بث / أستاذ / مدير */
+        .staff-only, .admin-only, .staff-block, .admin-only-box, .broadcaster-block { display: none !important; }
+        
+        body.role-teacher .staff-only,
+        body.role-admin .staff-only { display: inline-flex !important; }
+        
+        body.role-teacher .staff-block,
+        body.role-admin .staff-block { display: block !important; }
+        
+        body.role-broadcaster .broadcaster-block,
+        body.role-teacher .broadcaster-block,
+        body.role-admin .broadcaster-block { display: block !important; }
+        
         body.role-admin .admin-only { display: inline-flex !important; }
         body.role-admin .admin-only-box { display: block !important; }
     </style>
@@ -98,11 +108,11 @@
 
         <nav class="bg-indigo-900/80 border-t border-indigo-800 backdrop-blur">
             <div class="max-w-7xl mx-auto px-4 flex gap-2 overflow-x-auto py-2">
-                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">📚 القاعة المباشرة وأرشيف الدروس</button>
+                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">📚 القاعة المباشرة والمواد والـ Drive</button>
                 <button id="nav-btn-quiz" onclick="switchTab('quiz-tab', this)" class="nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">🧠 سبر المعلومات</button>
                 <button id="nav-btn-prep" onclick="switchTab('prep-tab', this)" class="staff-only nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">📝 تحضير درس جديد</button>
                 <button id="nav-btn-att" onclick="switchTab('attendance-tab', this)" class="staff-only nav-btn text-indigo-200 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">✅ سجل الحضور وقفل الأجهزة</button>
-                <button id="nav-btn-admin" onclick="switchTab('admin-tab', this)" class="admin-only nav-btn text-amber-300 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">👑 لوحة المدير وحماية الحسابات</button>
+                <button id="nav-btn-admin" onclick="switchTab('admin-tab', this)" class="admin-only nav-btn text-amber-300 hover:bg-indigo-800 px-4 py-2 rounded-lg text-xs md:text-sm font-bold whitespace-nowrap transition">👑 لوحة المدير والمواد والحسابات</button>
             </div>
         </nav>
     </header>
@@ -110,8 +120,10 @@
     <!-- المحتوى الرئيسي -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
-        <!-- 1. قسم القاعة المباشرة والمواد والدروس -->
+        <!-- 1. قسم القاعة المباشرة والمواد ومجلد الـ Drive العام -->
         <section id="subjects-tab" class="tab-content active space-y-6">
+            
+            <!-- بانر القاعة الدراسية الموحدة لليوم الدراسي -->
             <div class="bg-gradient-to-l from-indigo-950 via-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-indigo-700/50">
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div class="space-y-1">
@@ -129,9 +141,10 @@
                     </div>
                 </div>
 
-                <div class="staff-block mt-4 pt-4 border-t border-indigo-800/80">
+                <!-- يظهر للأساتذة والمدير ولابتوبات البث (H1, H2, H3) -->
+                <div class="broadcaster-block mt-4 pt-4 border-t border-indigo-800/80">
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                        <span class="text-xs font-extrabold text-amber-300">⚙️ إعداد روابط القاعة المباشرة لليوم الدراسي (للأساتذة والمدير):</span>
+                        <span class="text-xs font-extrabold text-amber-300">⚙️ إعداد روابط القاعة المباشرة لليوم الدراسي:</span>
                         <a href="https://meet.google.com/new" target="_blank" class="text-xs bg-indigo-800 hover:bg-indigo-700 text-indigo-200 px-3 py-1 rounded-lg font-bold">+ توليد غرفة Google Meet جديدة ↗</a>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
@@ -148,20 +161,64 @@
                 </div>
             </div>
 
+            <!-- خانة مجلد Google Drive العام للمواد والكتب والوظائف (متاح للجميع) -->
+            <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-sky-50 rounded-2xl p-5 shadow-sm border-2 border-amber-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-amber-500 text-white p-3 rounded-2xl text-2xl shadow">📂</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-base md:text-lg font-extrabold text-slate-900">مكتبة المنهاج الشاملة والوظائف (Google Drive العام)</h3>
+                                <span class="bg-amber-200 text-amber-900 text-[11px] px-2.5 py-0.5 rounded-full font-extrabold">متاح لجميع الطلاب</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5">اضغط هنا للوصول السريع إلى كافة الكتب المدرسية، الملخصات، أوراق العمل، ورفع/تحميل الوظائف المطلوبة</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <button onclick="openGeneralDriveFolder()" class="flex-1 md:flex-initial bg-indigo-700 hover:bg-indigo-600 text-white px-5 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow flex items-center justify-center gap-2 transition">
+                            <span>☁️</span> فتح مجلد المواد والوظائف (Drive) ↗
+                        </button>
+                        <button onclick="openHomeworkDriveFolder()" id="homework-drive-btn" class="hidden flex-1 md:flex-initial bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow items-center justify-center gap-2 transition">
+                            <span>📝</span> مجلد تسليم الوظائف ↗
+                        </button>
+                    </div>
+                </div>
+
+                <!-- تحكم الأستاذ والمدير برابط مجلد الـ Drive العام ومجلد الوظائف -->
+                <div class="staff-block mt-4 pt-3 border-t border-amber-200/80">
+                    <span class="block text-xs font-extrabold text-indigo-950 mb-2">⚙️ تحديث روابط مجلدات Google Drive العامة (للأساتذة والمدير):</span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                        <input type="url" id="general-drive-input" dir="ltr" placeholder="رابط مجلد المواد والملخصات العام (Google Drive)..." class="border border-amber-300 rounded-lg p-2 bg-white text-left font-mono">
+                        <input type="url" id="homework-drive-input" dir="ltr" placeholder="رابط مجلد الوظائف وأوراق العمل (اختياري)..." class="border border-amber-300 rounded-lg p-2 bg-white text-left font-mono">
+                        <button onclick="saveGeneralDriveLinks()" class="bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg shadow transition">
+                            💾 حفظ وتعميم روابط الـ Drive للطلاب
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- فلترة المواد -->
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <h2 class="text-xl font-extrabold text-slate-800">مواد الصف العاشر وأرشيف الدروس (Drive)</h2>
-                    <p class="text-xs md:text-sm text-slate-500">يُحضّر الأستاذ الدرس، وبعد انتهاء الحصة يرفع رابط التسجيل وملخص الـ Drive هنا ليراجعه الطلاب</p>
+                    <h2 class="text-xl font-extrabold text-slate-800">مواد المنهاج وأرشيف الدروس (Drive)</h2>
+                    <p class="text-xs md:text-sm text-slate-500">اختر المادة لعرض دروسها أو افتح مجلد الـ Drive الخاص بها لتحميل الملخصات والوظائف</p>
                 </div>
-                <button onclick="filterLessons('الكل')" class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm">عرض كل المواد</button>
+                <div class="flex items-center gap-2">
+                    <button onclick="switchTab('admin-tab', document.getElementById('nav-btn-admin'))" class="admin-only bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-extrabold shadow-sm">
+                        ➕ إضافة / حذف مواد المنهاج
+                    </button>
+                    <button onclick="filterLessons('الكل')" class="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm">عرض كل المواد</button>
+                </div>
             </div>
 
             <div id="subjects-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
 
+            <!-- جدول الدروس -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
                 <div class="flex flex-wrap justify-between items-center gap-2 mb-4 border-b pb-3">
                     <h3 class="text-base md:text-lg font-extrabold text-indigo-950 flex items-center gap-2">
-                        <span>📌</span> جدول الدروس والتسجيلات المرفوعة (Google Drive / YouTube)
+                        <span>📌</span> جدول الدروس والوظائف والتسجيلات المرفوعة (Google Drive)
                         <span id="current-filter-badge" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-0.5 rounded-full">الكل</span>
                     </h3>
                 </div>
@@ -173,9 +230,9 @@
                                 <th class="p-3">الفرع</th>
                                 <th class="p-3">أستاذ المادة</th>
                                 <th class="p-3">عنوان الدرس</th>
-                                <th class="p-3">الشرح والملاحظات</th>
+                                <th class="p-3">الشرح والوظيفة</th>
                                 <th class="p-3">التاريخ</th>
-                                <th class="p-3 text-center">ملف الملخص (Drive)</th>
+                                <th class="p-3 text-center">ملخص / وظيفة (Drive)</th>
                                 <th class="p-3 text-center">تسجيل الحصة (Drive / فيديو)</th>
                                 <th class="p-3 rounded-l-lg text-center">مشاركة / إدارة</th>
                             </tr>
@@ -235,7 +292,7 @@
                 <div class="flex justify-between items-center mb-4 border-b pb-3">
                     <div>
                         <h2 class="text-xl font-extrabold text-indigo-950">📝 تحضير درس جديد</h2>
-                        <p class="text-xs text-slate-500">حضّر عنوان الدرس وملاحظاته الآن، وبعد انتهاء الحصة يمكنك رفع رابط الـ Drive من جدول الدروس مباشرة</p>
+                        <p class="text-xs text-slate-500">حضّر عنوان الدرس والوظيفة الآن، أو أرفق رابط ملف الملخص/الوظيفة من Drive مباشرة</p>
                     </div>
                     <span id="prep-teacher-label" class="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1.5 rounded-lg"></span>
                 </div>
@@ -264,7 +321,7 @@
                     </div>
                     <div>
                         <div class="flex flex-wrap justify-between items-center gap-2 mb-1">
-                            <label class="block text-sm font-bold">الشرح والملاحظات والواجبات:</label>
+                            <label class="block text-sm font-bold">الشرح والملاحظات والوظيفة المطلوبة:</label>
                             <div class="flex flex-wrap gap-1 text-xs">
                                 <button type="button" onclick="insertMath('$\\sqrt{x}$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">√ جذر</button>
                                 <button type="button" onclick="insertMath('$\\frac{a}{b}$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">a/b كسر</button>
@@ -272,7 +329,17 @@
                                 <button type="button" onclick="insertMath('$\\Delta = b^2 - 4ac$')" class="bg-indigo-50 text-indigo-800 px-2 py-1 rounded border font-bold">Δ المميز</button>
                             </div>
                         </div>
-                        <textarea id="prep-notes" rows="4" required placeholder="اكتب ملخص الدرس أو النقاط الأساسية..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50"></textarea>
+                        <textarea id="prep-notes" rows="4" required placeholder="اكتب ملخص الدرس أو الوظيفة المطلوبة..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold mb-1 text-slate-600">📄 رابط الملخص أو الوظيفة على Drive (اختياري):</label>
+                            <input type="url" id="prep-pdf" dir="ltr" placeholder="https://drive.google.com/..." class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 text-left text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1 text-slate-600">🎬 رابط تسجيل الحصة على Drive (اختياري):</label>
+                            <input type="url" id="prep-video" dir="ltr" placeholder="https://drive.google.com/..." class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 text-left text-xs font-mono">
+                        </div>
                     </div>
                     <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 rounded-xl transition shadow">💾 حفظ تحضير الدرس في الجدول</button>
                 </form>
@@ -326,28 +393,114 @@
             </div>
         </section>
 
-        <!-- 5. لوحة تحكم المدير العام -->
+        <!-- 5. لوحة تحكم المدير العام (إدارة المواد + لابتوبات البث H + الأساتذة + السحابة) -->
         <section id="admin-tab" class="tab-content space-y-6">
             <div class="admin-only-box space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs text-slate-500 font-bold">إجمالي الأساتذة المسجلين</span>
+                <!-- إحصائيات سريعة -->
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">المواد الدراسية</span>
+                        <h3 id="stat-subjects" class="text-2xl font-extrabold text-purple-700 mt-1">0</h3>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">الأساتذة المسجلون</span>
                         <h3 id="stat-teachers" class="text-2xl font-extrabold text-indigo-900 mt-1">0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs text-slate-500 font-bold">إجمالي الدروس المحضّرة</span>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">لابتوبات البث (H)</span>
+                        <h3 id="stat-hosts" class="text-2xl font-extrabold text-cyan-700 mt-1">3</h3>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">الدروس المحضّرة</span>
                         <h3 id="stat-lessons" class="text-2xl font-extrabold text-emerald-700 mt-1">0</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs text-slate-500 font-bold">الطلاب المسجلون (الحاضرون)</span>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 font-bold">الطلاب (الحاضرون)</span>
                         <h3 id="stat-students" class="text-2xl font-extrabold text-sky-700 mt-1">0</h3>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs text-slate-500 font-bold">حركات الرقابة والأمان</span>
-                        <h3 id="stat-logs" class="text-2xl font-extrabold text-amber-600 mt-1">0</h3>
                     </div>
                 </div>
 
+                <!-- إدارة مواد المنهاج ومجلدات الـ Drive الخاصة بكل مادة -->
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-purple-200 p-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-indigo-950">📚 إدارة مواد المنهاج ومجلدات الـ Drive (صلاحية المدير العام)</h3>
+                            <p class="text-xs text-slate-500">يمكنك إضافة مادة جديدة للمنهاج، تحديد رابط مجلد Google Drive الخاص بملخصاتها ووظائفها، أو حذف أي مادة</p>
+                        </div>
+                        <span class="bg-purple-100 text-purple-900 text-xs px-3 py-1 rounded-full font-bold">تحديث فوري للمنهاج</span>
+                    </div>
+
+                    <form onsubmit="addSubjectByAdmin(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs bg-purple-50/60 p-3.5 rounded-xl border border-purple-200">
+                        <input type="text" id="new-sub-name" required placeholder="اسم المادة الجديدة (مثال: التربية الدينية)" class="border border-slate-300 rounded-lg p-2.5 bg-white font-bold">
+                        <select id="new-sub-icon" class="border border-slate-300 rounded-lg p-2.5 bg-white font-bold">
+                            <option value="📘">📘 كتاب أزرق</option>
+                            <option value="📐">📐 رياضيات / هندسة</option>
+                            <option value="⚡">⚡ فيزياء / كهرباء</option>
+                            <option value="🧪">🧪 كيمياء / مخبر</option>
+                            <option value="🧬">🧬 علوم / أحياء</option>
+                            <option value="📖">📖 لغة عربية / أدب</option>
+                            <option value="🌐">🌐 لغات أجنبية</option>
+                            <option value="💻">💻 معلوماتية / برمجة</option>
+                            <option value="🏛️">🏛️ تاريخ / حضارة</option>
+                            <option value="🌍">🌍 جغرافيا / علوم أرض</option>
+                            <option value="💡">💡 فلسفة / منطق</option>
+                            <option value="🎨">🎨 فنون / نشاط</option>
+                        </select>
+                        <input type="url" id="new-sub-drive" dir="ltr" placeholder="رابط مجلد Drive للمادة (اختياري)..." class="border border-slate-300 rounded-lg p-2.5 bg-white text-left font-mono">
+                        <button type="submit" class="bg-purple-700 hover:bg-purple-600 text-white font-extrabold py-2.5 px-4 rounded-lg shadow transition">
+                            ➕ إضافة المادة للمنهاج
+                        </button>
+                    </form>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600">
+                                    <th class="p-2.5">#</th>
+                                    <th class="p-2.5">الأيقونة والمادة</th>
+                                    <th class="p-2.5">رابط مجلد الـ Drive الخاص بالمادة والوظائف</th>
+                                    <th class="p-2.5 text-center">عدد الدروس</th>
+                                    <th class="p-2.5 text-center">إدارة / حذف المادة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-subjects-tbody" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- إدارة حسابات لابتوبات البث الثلاثة (H1, H2, H3) مع صلاحية تغيير كلمة السر والاسم -->
+                <div class="bg-white rounded-2xl shadow-sm border-2 border-cyan-200 p-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-cyan-950">💻 حسابات لابتوبات البث المباشر المخفية (رموز H المستقلة)</h3>
+                            <p class="text-xs text-slate-500">يتم الدخول إليها بكتابة الرمز (مثل H1) في خانة رمز الطالب فتفتح خانة كلمة السر تلقائياً</p>
+                        </div>
+                        <form onsubmit="addBroadcastLaptop(event)" class="flex flex-wrap gap-1.5 text-xs">
+                            <input type="text" id="new-host-code" required placeholder="الرمز (مثال: H4)" dir="ltr" class="border rounded-lg px-2.5 py-1.5 w-28 text-left uppercase font-mono bg-slate-50">
+                            <input type="text" id="new-host-name" required placeholder="اسم جهاز البث..." class="border rounded-lg px-2.5 py-1.5 bg-slate-50">
+                            <input type="text" id="new-host-pin" required placeholder="كلمة السر" class="border rounded-lg px-2.5 py-1.5 w-24 bg-slate-50">
+                            <button type="submit" class="bg-cyan-700 hover:bg-cyan-600 text-white px-3 py-1.5 rounded-lg font-bold">+ إضافة لابتوب</button>
+                        </form>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-cyan-50 text-cyan-950">
+                                    <th class="p-2.5">رمز اللابتوب</th>
+                                    <th class="p-2.5">اسم لابتوب البث / القاعة</th>
+                                    <th class="p-2.5">كلمة السر (وتعديلها)</th>
+                                    <th class="p-2.5 text-center">حماية بصمة اللابتوب</th>
+                                    <th class="p-2.5 text-center">آخر تواجد</th>
+                                    <th class="p-2.5 text-center">حذف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hosts-list-body" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- إعدادات الربط السحابي -->
                 <div class="bg-white rounded-2xl shadow-sm border-2 border-indigo-200 p-6 space-y-4">
                     <div class="flex items-center justify-between border-b pb-2">
                         <h3 class="text-lg font-extrabold text-indigo-950">☁️ إعدادات الربط السحابي (حصرية للمدير العام فقط)</h3>
@@ -361,6 +514,7 @@
                     </div>
                 </div>
 
+                <!-- إدارة الأساتذة وسجل النشاط -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
                         <h3 class="text-lg font-extrabold text-indigo-950 border-b pb-2">👨‍🏫 إدارة الأساتذة وحماية أجهزتهم (موبايل واحد لكل أستاذ)</h3>
@@ -378,7 +532,7 @@
                                     <tr class="bg-slate-100 text-slate-600">
                                         <th class="p-2">اسم الأستاذ</th>
                                         <th class="p-2">المادة</th>
-                                        <th class="p-2">الرمز</th>
+                                        <th class="p-2">الرمز السري</th>
                                         <th class="p-2 text-center">حماية الجهاز</th>
                                         <th class="p-2 text-center">دروسه</th>
                                         <th class="p-2 text-center">حذف</th>
@@ -407,7 +561,7 @@
 
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
                         <div class="flex justify-between items-center border-b pb-2">
-                            <h3 class="text-lg font-extrabold text-indigo-950">📋 سجل نشاط الأساتذة (آخر 50 حركة)</h3>
+                            <h3 class="text-lg font-extrabold text-indigo-950">📋 سجل نشاط الأساتذة ولابتوبات البث (آخر 50 حركة)</h3>
                             <button onclick="clearTeacherLogs()" class="text-xs text-rose-600 font-bold hover:underline">مسح السجل</button>
                         </div>
                         <div class="overflow-y-auto max-h-96">
@@ -466,7 +620,7 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل بيانات الطالب الإجبارية -->
+    <!-- نافذة تسجيل بيانات الطالب الإجبارية (مع الميزة المخفية لرموز H) -->
     <div id="student-reg-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-indigo-600">
             <div class="flex justify-between items-center border-b pb-2">
@@ -477,25 +631,39 @@
                 <button id="close-reg-btn" onclick="closeStudentRegModal()" class="hidden text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
             <div id="reg-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed">⚠️ يرجى تسجيل الدخول: يجب تعبئة اسمك الثلاثي ورمزك (A...) للمتابعة.</div>
+            
             <form onsubmit="saveStudentFirstTime(event)" class="space-y-3.5 text-sm">
-                <div>
+                <!-- حقل الاسم الثلاثي (يختفي تلقائياً إذا بدأ الرمز بحرف H) -->
+                <div id="reg-name-wrapper">
                     <label class="block text-xs font-bold mb-1 text-slate-700">الاسم الثلاثي للطالب:</label>
                     <input type="text" id="reg-student-name" required placeholder="مثال: أحمد محمد العلي" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
+
+                <!-- حقل الرمز (يكتشف تلقائياً إذا كتب المستخدم H فيظهر كلمة المرور المخفية) -->
                 <div>
                     <label class="block text-xs font-bold mb-1 text-slate-700">رمز الطالب (يبدأ بحرف A وبجانبه رقم):</label>
-                    <input type="text" id="reg-student-code" required placeholder="مثال: A101" dir="ltr" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-left uppercase font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="reg-student-code" required placeholder="مثال: A101" dir="ltr" oninput="checkSecretHostCode(this.value)" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-left uppercase font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <p class="text-[11px] text-slate-500 mt-1">🔒 تنبيه: بمجرد تسجيل الرمز على هذا الهاتف، سيتم قفله ولن يعمل على أي هاتف آخر.</p>
                 </div>
-                <div>
+
+                <!-- حقل الفرع (يختفي تلقائياً إذا بدأ الرمز بحرف H) -->
+                <div id="reg-branch-wrapper">
                     <label class="block text-xs font-bold mb-1 text-slate-700">الفرع / الاختصاص:</label>
                     <select id="reg-student-branch" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option value="علمي">الفرع العلمي 🔬</option>
                         <option value="أدبي">الفرع الأدبي 📖</option>
                     </select>
                 </div>
+
+                <!-- الحقل المخفي لكلمة المرور (لا يظهر أبداً إلا عند كتابة H في خانة الرمز) -->
+                <div id="secret-host-pin-wrapper" class="hidden bg-cyan-50 p-3 rounded-xl border border-cyan-300 space-y-1.5">
+                    <label class="block text-xs font-extrabold text-cyan-950">🔑 كلمة المرور الخاصة بهذا الرمز:</label>
+                    <input type="password" id="reg-secret-host-pin" placeholder="أدخل كلمة المرور..." class="w-full border border-cyan-400 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 text-sm">
+                </div>
+
                 <button type="submit" id="reg-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 rounded-xl shadow transition">✅ تسجيل الدخول وربط هذا الجهاز</button>
-                <div class="pt-2 border-t text-center flex justify-center gap-4 text-xs">
+                
+                <div class="pt-2.5 border-t text-center flex justify-center gap-4 text-xs">
                     <button type="button" onclick="switchFromRegToStaff('teacher')" class="text-amber-700 font-bold hover:underline">أنا أستاذ المادة 👨‍🏫</button>
                     <button type="button" onclick="switchFromRegToStaff('admin')" class="text-rose-700 font-bold hover:underline">أنا مدير المنصة 👑</button>
                 </div>
@@ -503,7 +671,7 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول (للأستاذ أو المدير) -->
+    <!-- نافذة تسجيل الدخول (للأستاذ أو المدير فقط) -->
     <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
@@ -511,6 +679,7 @@
                 <button onclick="cancelStaffLogin()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
             <div id="staff-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed"></div>
+            
             <div id="teacher-login-fields" class="space-y-3">
                 <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-[11px] text-amber-900">🔒 حماية الحساب: يرتبط حساب الأستاذ تلقائياً بأول هاتف/حاسوب يسجل الدخول منه لمنع الاختراق.</div>
                 <div>
@@ -522,6 +691,7 @@
                     <input type="password" id="login-teacher-pin" placeholder="أدخل رقمك السري..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-sm">
                 </div>
             </div>
+
             <div id="admin-login-fields" class="hidden space-y-3">
                 <div class="bg-rose-50 border border-rose-200 p-3 rounded-lg text-xs text-rose-900">👑 هذا القسم مخصص لمدير المنصة فقط، وهو محمي ببصمة جهاز المدير الشخصي ضد أي اختراق.</div>
                 <div>
@@ -529,6 +699,7 @@
                     <input type="password" id="login-admin-pin" placeholder="أدخل كلمة مرور المدير..." class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-sm">
                 </div>
             </div>
+
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="cancelStaffLogin()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold">إلغاء</button>
                 <button id="staff-login-submit-btn" onclick="confirmStaffLogin()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg text-xs font-bold shadow">دخول وتحقق من بصمة الجهاز</button>
@@ -539,7 +710,6 @@
     <script>
         // =========================================================================
         // 1. توليد صورة أيقونة حقيقية (PNG) للشاشة الرئيسية للهاتف (أندرويد + آيفون)
-        // يمكنك أيضاً وضع رابط صورة خارجية بين علامتي التنصيص في CUSTOM_LOGO_URL إذا رغبت
         // =========================================================================
         const CUSTOM_LOGO_URL = ""; 
         let deferredPwaPrompt = null;
@@ -550,14 +720,12 @@
             canvas.height = size;
             const ctx = canvas.getContext('2d');
 
-            // خلفية متدرجة كحلية وبنفسجية ملكية
             const grad = ctx.createLinearGradient(0, 0, size, size);
             grad.addColorStop(0, '#1e1b4b');
             grad.addColorStop(0.5, '#312e81');
             grad.addColorStop(1, '#4338ca');
             ctx.fillStyle = grad;
 
-            // حواف دائرية أنيقة للأيقونة
             const r = size * 0.22;
             ctx.beginPath();
             ctx.moveTo(r, 0);
@@ -572,18 +740,15 @@
             ctx.closePath();
             ctx.fill();
 
-            // إطار ذهبي داخلي خفيف
             ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
             ctx.lineWidth = size * 0.03;
             ctx.stroke();
 
-            // رسم رمز قبعة التخرج في الوسط العلوي
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.font = `${Math.floor(size * 0.44)}px sans-serif`;
             ctx.fillText('🎓', size / 2, size * 0.40);
 
-            // كتابة "منصة العاشر" باللون الذهبي والأبيض أسفل القبعة
             ctx.fillStyle = '#fbbf24';
             ctx.font = `bold ${Math.floor(size * 0.16)}px Cairo, sans-serif`;
             ctx.fillText('منصة العاشر', size / 2, size * 0.77);
@@ -595,14 +760,12 @@
             const icon192 = CUSTOM_LOGO_URL || generateRealPngIcon(192);
             const icon512 = CUSTOM_LOGO_URL || generateRealPngIcon(512);
 
-            // تعيين الأيقونة للآيفون والمتصفح والواجهة
             document.getElementById('app-favicon').href = icon192;
             document.getElementById('apple-touch-icon').href = icon192;
             document.getElementById('header-app-logo').src = icon192;
             document.getElementById('banner-app-icon').src = icon192;
             document.getElementById('modal-app-icon').src = icon192;
 
-            // إنشاء ملف Manifest بصور PNG قياسية يقبلها أندرويد و Chrome فوراً
             const startUrl = window.location.href.split('#')[0];
             const manifest = {
                 name: "المنصة التعليمية الافتراضية - الصف العاشر",
@@ -657,20 +820,43 @@
 
         const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec"; 
 
-        const syrianG10Subjects = [
-            { name: "الرياضيات", icon: "📐", color: "bg-blue-50 border-blue-200 text-blue-900" },
-            { name: "الفيزياء", icon: "⚡", color: "bg-purple-50 border-purple-200 text-purple-900" },
-            { name: "الكيمياء", icon: "🧪", color: "bg-emerald-50 border-emerald-200 text-emerald-900" },
-            { name: "علم الأحياء", icon: "🧬", color: "bg-teal-50 border-teal-200 text-teal-900" },
-            { name: "اللغة العربية", icon: "📖", color: "bg-amber-50 border-amber-200 text-amber-900" },
-            { name: "اللغة الإنكليزية", icon: "🌐", color: "bg-indigo-50 border-indigo-200 text-indigo-900" },
-            { name: "اللغة الفرنسية", icon: "🗼", color: "bg-pink-50 border-pink-200 text-pink-900" },
-            { name: "المعلوماتية", icon: "💻", color: "bg-cyan-50 border-cyan-200 text-cyan-900" },
-            { name: "التاريخ", icon: "🏛️", color: "bg-orange-50 border-orange-200 text-orange-900" },
-            { name: "الجغرافيا", icon: "🌍", color: "bg-lime-50 border-lime-200 text-lime-900" },
-            { name: "الفلسفة", icon: "💡", color: "bg-fuchsia-50 border-fuchsia-200 text-fuchsia-900" },
-            { name: "التربية الوطنية", icon: "🇸🇾", color: "bg-red-50 border-red-200 text-red-900" }
+        const subjectColorPalettes = [
+            "bg-blue-50 border-blue-200 text-blue-900",
+            "bg-purple-50 border-purple-200 text-purple-900",
+            "bg-emerald-50 border-emerald-200 text-emerald-900",
+            "bg-teal-50 border-teal-200 text-teal-900",
+            "bg-amber-50 border-amber-200 text-amber-900",
+            "bg-indigo-50 border-indigo-200 text-indigo-900",
+            "bg-pink-50 border-pink-200 text-pink-900",
+            "bg-cyan-50 border-cyan-200 text-cyan-900",
+            "bg-orange-50 border-orange-200 text-orange-900",
+            "bg-lime-50 border-lime-200 text-lime-900"
         ];
+
+        const defaultSyrianSubjects = [
+            { name: "الرياضيات", icon: "📐", color: "bg-blue-50 border-blue-200 text-blue-900", driveUrl: "" },
+            { name: "الفيزياء", icon: "⚡", color: "bg-purple-50 border-purple-200 text-purple-900", driveUrl: "" },
+            { name: "الكيمياء", icon: "🧪", color: "bg-emerald-50 border-emerald-200 text-emerald-900", driveUrl: "" },
+            { name: "علم الأحياء", icon: "🧬", color: "bg-teal-50 border-teal-200 text-teal-900", driveUrl: "" },
+            { name: "اللغة العربية", icon: "📖", color: "bg-amber-50 border-amber-200 text-amber-900", driveUrl: "" },
+            { name: "اللغة الإنكليزية", icon: "🌐", color: "bg-indigo-50 border-indigo-200 text-indigo-900", driveUrl: "" },
+            { name: "اللغة الفرنسية", icon: "🗼", color: "bg-pink-50 border-pink-200 text-pink-900", driveUrl: "" },
+            { name: "المعلوماتية", icon: "💻", color: "bg-cyan-50 border-cyan-200 text-cyan-900", driveUrl: "" },
+            { name: "التاريخ", icon: "🏛️", color: "bg-orange-50 border-orange-200 text-orange-900", driveUrl: "" },
+            { name: "الجغرافيا", icon: "🌍", color: "bg-lime-50 border-lime-200 text-lime-900", driveUrl: "" },
+            { name: "الفلسفة", icon: "💡", color: "bg-fuchsia-50 border-fuchsia-200 text-fuchsia-900", driveUrl: "" },
+            { name: "التربية الوطنية", icon: "🇸🇾", color: "bg-red-50 border-red-200 text-red-900", driveUrl: "" }
+        ];
+
+        let syrianG10Subjects = JSON.parse(localStorage.getItem('g10_subjects_v10')) || defaultSyrianSubjects;
+
+        // الحسابات الثلاثة المستقلة الخاصة بلابتوبات البث (H1, H2, H3)
+        const defaultBroadcastHosts = [
+            { code: "H1", name: "لابتوب البث الرئيسي - قاعة 1", pin: "1010", deviceId: "", lastSeen: "-" },
+            { code: "H2", name: "لابتوب البث الثاني - قاعة 2", pin: "2020", deviceId: "", lastSeen: "-" },
+            { code: "H3", name: "لابتوب البث الثالث - قاعة 3", pin: "3030", deviceId: "", lastSeen: "-" }
+        ];
+        let broadcastHosts = JSON.parse(localStorage.getItem('g10_hosts_v10')) || defaultBroadcastHosts;
 
         let currentSubjectFilter = "الكل";
         let loginMode = "teacher";
@@ -679,6 +865,7 @@
         let savedStaffSession = JSON.parse(sessionStorage.getItem('g10_staff_session')) || null;
         let currentRole = savedStaffSession ? savedStaffSession.role : "student";
         let currentTeacherName = savedStaffSession ? savedStaffSession.name : "";
+        let currentHostCode = savedStaffSession ? (savedStaffSession.hostCode || "") : "";
 
         function getOrCreateDeviceId() {
             let devId = localStorage.getItem('g10_unique_device_id');
@@ -696,7 +883,9 @@
 
         let dailyMeetLinks = JSON.parse(localStorage.getItem('g10_daily_meet_v9')) || {
             sci: "https://meet.google.com/new",
-            lit: ""
+            lit: "",
+            generalDrive: "",
+            homeworkDrive: ""
         };
 
         let teachers = JSON.parse(localStorage.getItem('g10_teachers_v9')) || [
@@ -707,7 +896,7 @@
         ];
 
         let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
-            { teacher: "النظام الأمني", action: "تفعيل نظام القاعة الدراسية الموحدة طوال اليوم", time: "اليوم" }
+            { teacher: "النظام الأمني", action: "تفعيل نظام القاعة الدراسية ومكتبة الـ Drive", time: "اليوم" }
         ];
 
         let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
@@ -746,6 +935,10 @@
                 document.getElementById('prep-teacher-label').innerText = `الأستاذ المحضّر: ${currentTeacherName}`;
                 const tObj = teachers.find(t => t.name === currentTeacherName);
                 if (tObj) document.getElementById('prep-subject').value = tObj.subject;
+            } else if (currentRole === 'broadcaster') {
+                document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col role-broadcaster";
+                document.getElementById('role-badge').innerText = `💻 ${currentTeacherName} (${currentHostCode})`;
+                document.getElementById('role-badge').className = "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
             } else if (currentRole === 'admin') {
                 document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col role-admin";
                 document.getElementById('role-badge').innerText = "وضع المدير العام 👑";
@@ -788,20 +981,104 @@
             }, 20000);
         });
 
+        // =========================================================================
+        // الميزة المخفية: مراقبة حقل الرمز؛ إذا بدأ بحرف H يفتح حقل كلمة السر فوراً
+        // =========================================================================
+        function checkSecretHostCode(val) {
+            const clean = val.trim().toUpperCase();
+            const pinWrapper = document.getElementById('secret-host-pin-wrapper');
+            const pinInput = document.getElementById('reg-secret-host-pin');
+            const nameWrapper = document.getElementById('reg-name-wrapper');
+            const nameInput = document.getElementById('reg-student-name');
+            const branchWrapper = document.getElementById('reg-branch-wrapper');
+
+            if (clean.startsWith('H')) {
+                pinWrapper.classList.remove('hidden');
+                pinInput.required = true;
+                nameWrapper.classList.add('hidden');
+                nameInput.required = false;
+                branchWrapper.classList.add('hidden');
+            } else {
+                pinWrapper.classList.add('hidden');
+                pinInput.required = false;
+                pinInput.value = '';
+                nameWrapper.classList.remove('hidden');
+                nameInput.required = true;
+                branchWrapper.classList.remove('hidden');
+            }
+        }
+
         function updateDailyMeetInputsUI() {
             document.getElementById('daily-meet-sci').value = dailyMeetLinks.sci || "";
             document.getElementById('daily-meet-lit').value = dailyMeetLinks.lit || "";
+            document.getElementById('general-drive-input').value = dailyMeetLinks.generalDrive || "";
+            document.getElementById('homework-drive-input').value = dailyMeetLinks.homeworkDrive || "";
+
+            const hwBtn = document.getElementById('homework-drive-btn');
+            if (dailyMeetLinks.homeworkDrive && dailyMeetLinks.homeworkDrive.trim() !== "") {
+                hwBtn.classList.remove('hidden');
+                hwBtn.classList.add('flex');
+            } else {
+                hwBtn.classList.add('hidden');
+                hwBtn.classList.remove('flex');
+            }
+        }
+
+        function openGeneralDriveFolder() {
+            const url = dailyMeetLinks.generalDrive;
+            if (!url || url.trim() === "") {
+                if (currentRole === 'admin' || currentRole === 'teacher') {
+                    const inputUrl = prompt("📂 الصق رابط مجلد Google Drive العام للمنهاج والوظائف ليتم تفعيله لجميع الطلاب:");
+                    if (inputUrl && inputUrl.trim() !== "") {
+                        dailyMeetLinks.generalDrive = inputUrl.trim();
+                        updateDailyMeetInputsUI();
+                        saveAllLocal();
+                        syncToCloud(false);
+                        window.open(dailyMeetLinks.generalDrive, '_blank');
+                    }
+                } else {
+                    alert("📂 سيقوم الأستاذ أو الإدارة برفع رابط مجلد الـ Drive العام قريباً!");
+                }
+                return;
+            }
+            window.open(url.trim(), '_blank');
+        }
+
+        function openHomeworkDriveFolder() {
+            if (dailyMeetLinks.homeworkDrive && dailyMeetLinks.homeworkDrive.trim() !== "") {
+                window.open(dailyMeetLinks.homeworkDrive.trim(), '_blank');
+            }
+        }
+
+        async function saveGeneralDriveLinks() {
+            if (currentRole !== 'admin' && currentRole !== 'teacher') return;
+            dailyMeetLinks.generalDrive = document.getElementById('general-drive-input').value.trim();
+            dailyMeetLinks.homeworkDrive = document.getElementById('homework-drive-input').value.trim();
+
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الإدارة",
+                action: "📂 تحديث رابط مجلد الـ Drive العام للمواد والوظائف",
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            updateDailyMeetInputsUI();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert("✅ تم حفظ وتعميم روابط مجلد الـ Drive العام للمواد والوظائف لجميع الطلاب!");
         }
 
         async function saveDailyMeetLinks() {
-            if (currentRole !== 'admin' && currentRole !== 'teacher') return;
+            if (currentRole !== 'admin' && currentRole !== 'teacher' && currentRole !== 'broadcaster') return;
             const sciUrl = document.getElementById('daily-meet-sci').value.trim();
             const litUrl = document.getElementById('daily-meet-lit').value.trim();
             if (!sciUrl) return alert("يرجى وضع رابط Google Meet الأساسي لليوم الدراسي!");
 
-            dailyMeetLinks = { sci: sciUrl, lit: litUrl };
+            dailyMeetLinks.sci = sciUrl;
+            dailyMeetLinks.lit = litUrl;
             teacherLogs.unshift({
-                teacher: currentTeacherName || "الإدارة",
+                teacher: currentTeacherName || "لابتوب البث",
                 action: "📹 تحديث رابط القاعة المباشرة الموحدة لليوم الدراسي",
                 time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
             });
@@ -825,7 +1102,7 @@
                 return alert("لم يتم تفعيل رابط القاعة المباشرة لهذا اليوم بعد!");
             }
 
-            if (currentStudentProfile) {
+            if (currentRole === 'student' && currentStudentProfile) {
                 const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
                 const idx = students.findIndex(s => s.code === currentStudentProfile.code);
 
@@ -858,6 +1135,9 @@
                        `🔬 *رابط قاعة Google Meet:*\n${sciLink}`;
             if (dailyMeetLinks.lit && dailyMeetLinks.lit.trim() !== "") {
                 text += `\n\n📖 *رابط قاعة الأدبي:*\n${dailyMeetLinks.lit.trim()}`;
+            }
+            if (dailyMeetLinks.generalDrive && dailyMeetLinks.generalDrive.trim() !== "") {
+                text += `\n\n📂 *مجلد المواد والوظائف (Drive):*\n${dailyMeetLinks.generalDrive.trim()}`;
             }
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
@@ -898,6 +1178,12 @@
                     alert("🔄 تم فك ارتباط جهاز الأستاذ أو تعديل صلاحيته من قِبل المدير العام، يرجى إعادة تسجيل الدخول!");
                     logoutUser();
                 }
+            } else if (currentRole === 'broadcaster') {
+                const hObj = broadcastHosts.find(h => h.code === currentHostCode);
+                if (!hObj || (hObj.deviceId && hObj.deviceId !== "" && hObj.deviceId !== THIS_DEVICE_ID)) {
+                    alert("🔄 تم فك ارتباط لابتوب البث من قِبل المدير العام، يرجى إعادة تسجيل الدخول!");
+                    logoutUser();
+                }
             } else if (currentRole === 'admin') {
                 if (adminDeviceId && adminDeviceId !== "" && adminDeviceId !== THIS_DEVICE_ID) {
                     alert("⛔ حساب المدير مرتبط بجهاز آخر!");
@@ -929,6 +1215,9 @@
                 document.getElementById('reg-student-name').value = currentStudentProfile.name;
                 document.getElementById('reg-student-code').value = currentStudentProfile.code;
                 document.getElementById('reg-student-branch').value = currentStudentProfile.branch;
+                checkSecretHostCode(currentStudentProfile.code);
+            } else {
+                checkSecretHostCode(document.getElementById('reg-student-code').value);
             }
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -950,11 +1239,91 @@
             openLoginModal(mode);
         }
 
+        // معالجة الدخول من نافذة الطالب (سواء كان طالباً عادياً A أو لابتوب بث مخفي H)
         async function saveStudentFirstTime(event) {
             event.preventDefault();
             const btn = document.getElementById('reg-submit-btn');
-            const name = document.getElementById('reg-student-name').value.trim();
             let code = document.getElementById('reg-student-code').value.trim().toUpperCase();
+
+            // 1. إذا كان الرمز يبدأ بحرف H -> معالجة دخول لابتوب البث المخفي
+            if (code.startsWith('H')) {
+                if (!/^H\d+$/.test(code)) {
+                    return alert("⚠️ صيغة الرمز غير صحيحة!");
+                }
+                const secretPin = document.getElementById('reg-secret-host-pin').value.trim();
+                if (!secretPin) {
+                    return alert("⚠️ يرجى إدخال كلمة المرور الخاصة بهذا الرمز!");
+                }
+
+                isStaffLoggingIn = true;
+                btn.disabled = true;
+                btn.innerText = "⏳ جارٍ التحقق من الرمز وكلمة المرور...";
+
+                await fetchFromCloud(false, true, true);
+
+                const hIdx = broadcastHosts.findIndex(h => h.code.toUpperCase() === code);
+                if (hIdx === -1 || broadcastHosts[hIdx].pin !== secretPin) {
+                    isStaffLoggingIn = false;
+                    btn.disabled = false;
+                    btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                    return alert("❌ الرمز أو كلمة المرور غير صحيحة!");
+                }
+
+                const hostObj = broadcastHosts[hIdx];
+                const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
+
+                if (hostObj.deviceId && hostObj.deviceId !== "" && hostObj.deviceId !== THIS_DEVICE_ID) {
+                    teacherLogs.unshift({
+                        teacher: `${hostObj.code} (${hostObj.name})`,
+                        action: `⛔ محاولة دخول مرفوضة لحساب البث من جهاز آخر`,
+                        time: nowStr
+                    });
+                    if (teacherLogs.length > 50) teacherLogs.pop();
+                    saveAllLocal();
+                    renderAdminDashboard();
+                    syncToCloud(false);
+
+                    isStaffLoggingIn = false;
+                    btn.disabled = false;
+                    btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                    const secAlert = document.getElementById('reg-security-alert');
+                    secAlert.innerText = `⛔ هذا الحساب (${hostObj.code}) مرتبط بلابتوب آخر! يجب فك القفل من لوحة المدير أولاً.`;
+                    secAlert.classList.remove('hidden');
+                    return;
+                }
+
+                broadcastHosts[hIdx].deviceId = THIS_DEVICE_ID;
+                broadcastHosts[hIdx].lastSeen = nowStr;
+
+                currentRole = "broadcaster";
+                currentTeacherName = hostObj.name;
+                currentHostCode = hostObj.code;
+                sessionStorage.setItem('g10_staff_session', JSON.stringify({ role: 'broadcaster', name: hostObj.name, hostCode: hostObj.code }));
+
+                teacherLogs.unshift({
+                    teacher: `💻 ${hostObj.code}`,
+                    action: `تسجيل دخول لابتوب البث المباشر (${hostObj.name})`,
+                    time: nowStr
+                });
+                if (teacherLogs.length > 50) teacherLogs.pop();
+
+                saveAllLocal();
+                applyRoleUI();
+                renderAdminDashboard();
+                renderLessons();
+
+                isStaffLoggingIn = false;
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                document.getElementById('reg-secret-host-pin').value = '';
+                document.getElementById('student-reg-modal').classList.add('hidden');
+                document.getElementById('student-reg-modal').classList.remove('flex');
+                syncToCloud(false);
+                return;
+            }
+
+            // 2. إذا كان طالباً عادياً (يبدأ بحرف A)
+            const name = document.getElementById('reg-student-name').value.trim();
             const branch = document.getElementById('reg-student-branch').value;
 
             if (name.split(' ').filter(Boolean).length < 2) {
@@ -963,7 +1332,7 @@
             }
 
             if (!/^A\d+$/.test(code)) {
-                alert("⚠️ يرجى إدخال رمز صحيح يبدأ بحرف A وبجانبه رقم (مثال: A1 أو A105)");
+                alert("⚠️ يرجى إدخال رمز طالب صحيح يبدأ بحرف A وبجانبه رقم (مثال: A101)");
                 return;
             }
 
@@ -1029,6 +1398,9 @@
             if (currentRole === 'teacher') {
                 bar.innerHTML = `الأستاذ الحالي: <b class="text-amber-300">${currentTeacherName}</b>`;
                 lockBadge.classList.remove('hidden');
+            } else if (currentRole === 'broadcaster') {
+                bar.innerHTML = `جهاز البث النشط: <b class="text-cyan-300">${currentTeacherName} (${currentHostCode})</b>`;
+                lockBadge.classList.remove('hidden');
             } else if (currentRole === 'admin') {
                 bar.innerHTML = `<b class="text-rose-300">إدارة المنصة الشاملة (المدير العام)</b>`;
                 lockBadge.classList.remove('hidden');
@@ -1060,6 +1432,12 @@
                     quizzes = data.quizzes || quizzes;
                     teachers = data.teachers || teachers;
                     teacherLogs = data.teacherLogs || teacherLogs;
+                    if (data.subjects && Array.isArray(data.subjects) && data.subjects.length > 0) {
+                        syrianG10Subjects = data.subjects;
+                    }
+                    if (data.broadcastHosts && Array.isArray(data.broadcastHosts) && data.broadcastHosts.length > 0) {
+                        broadcastHosts = data.broadcastHosts;
+                    }
                     if (data.dailyMeetLinks) {
                         dailyMeetLinks = data.dailyMeetLinks;
                         updateDailyMeetInputsUI();
@@ -1073,6 +1451,7 @@
                         localStorage.setItem('g10_admin_device_id', adminDeviceId);
                     }
                     saveAllLocal();
+                    renderSubjects();
                     renderLessons();
                     renderStudents();
                     renderQuizzes();
@@ -1083,7 +1462,7 @@
                         verifyActiveUserDeviceSession();
                     }
 
-                    if (showAlert) alert("✅ تم جلب أحدث الدروس وروابط القاعة من السحابة بنجاح!");
+                    if (showAlert) alert("✅ تم جلب أحدث المواد والدروس وروابط الـ Drive من السحابة بنجاح!");
                 } else {
                     await syncToCloud(false);
                 }
@@ -1101,7 +1480,18 @@
                 await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ lessons, students, quizzes, teachers, teacherLogs, adminPin, adminDeviceId, dailyMeetLinks })
+                    body: JSON.stringify({
+                        lessons,
+                        students,
+                        quizzes,
+                        teachers,
+                        teacherLogs,
+                        adminPin,
+                        adminDeviceId,
+                        dailyMeetLinks,
+                        subjects: syrianG10Subjects,
+                        broadcastHosts
+                    })
                 });
                 updateSyncBadge("🟢 متصل ومحدّث تلقائياً", "bg-emerald-500/20 text-emerald-300");
                 if (showAlert) alert("✅ تم رفع كافة التعديلات إلى السحابة بنجاح!");
@@ -1111,6 +1501,8 @@
         }
 
         function saveAllLocal() {
+            localStorage.setItem('g10_subjects_v10', JSON.stringify(syrianG10Subjects));
+            localStorage.setItem('g10_hosts_v10', JSON.stringify(broadcastHosts));
             localStorage.setItem('g10_lessons_v9', JSON.stringify(lessons));
             localStorage.setItem('g10_students_v9', JSON.stringify(students));
             localStorage.setItem('g10_quizzes_v9', JSON.stringify(quizzes));
@@ -1156,10 +1548,12 @@
             document.getElementById('student-reg-modal').classList.add('hidden');
             document.getElementById('student-reg-modal').classList.remove('flex');
 
+            tFields.classList.add('hidden');
+            aFields.classList.add('hidden');
+
             if (mode === 'teacher') {
                 title.innerText = "👨‍🏫 دخول الأستاذ (محمي ببصمة الجهاز)";
                 tFields.classList.remove('hidden');
-                aFields.classList.add('hidden');
                 const select = document.getElementById('login-teacher-select');
                 select.innerHTML = '';
                 teachers.forEach((t, i) => {
@@ -1168,7 +1562,6 @@
                 document.getElementById('login-teacher-pin').value = '';
             } else {
                 title.innerText = "👑 دخول المدير العام (محمي ببصمة الجهاز)";
-                tFields.classList.add('hidden');
                 aFields.classList.remove('hidden');
                 document.getElementById('login-admin-pin').value = '';
             }
@@ -1191,7 +1584,7 @@
             document.getElementById('login-modal').classList.remove('flex');
 
             if (currentRole === 'student' && !currentStudentProfile) {
-                openStudentRegModal(false, true, "⚠️ تنبيه: تم إلغاء دخول الأستاذ/المدير. يرجى تسجيل الدخول كطالب أولاً!");
+                openStudentRegModal(false, true, "⚠️ تنبيه: تم إلغاء الدخول. يرجى تسجيل الدخول كطالب أولاً!");
             }
         }
 
@@ -1322,6 +1715,7 @@
             sessionStorage.removeItem('g10_staff_session');
             currentRole = "student";
             currentTeacherName = "";
+            currentHostCode = "";
             applyRoleUI();
             switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
             renderLessons();
@@ -1375,19 +1769,173 @@
             const newTSub = document.getElementById('new-t-subject');
             grid.innerHTML = ''; prepSelect.innerHTML = ''; quizSelect.innerHTML = ''; newTSub.innerHTML = '';
 
-            syrianG10Subjects.forEach(sub => {
+            syrianG10Subjects.forEach((sub, idx) => {
+                const driveBtnHtml = (sub.driveUrl && sub.driveUrl.trim() !== "")
+                    ? `<a href="${sub.driveUrl.trim()}" target="_blank" onclick="event.stopPropagation()" class="mt-1.5 inline-flex items-center gap-1 text-[10px] bg-white/90 hover:bg-white text-indigo-900 px-2 py-0.5 rounded shadow-sm font-extrabold border border-indigo-200">📁 Drive المادة ↗</a>`
+                    : `<span class="text-[11px] opacity-75 block">أرشيف الدروس</span>`;
+
                 grid.innerHTML += `
-                    <button onclick="filterLessons('${sub.name}')" class="p-3 rounded-xl border ${sub.color} shadow-sm flex items-center gap-2.5 hover:scale-[1.02] transition text-right">
-                        <span class="text-2xl">${sub.icon}</span>
-                        <div class="truncate">
+                    <div onclick="filterLessons('${sub.name}')" class="cursor-pointer p-3 rounded-xl border ${sub.color || subjectColorPalettes[idx % subjectColorPalettes.length]} shadow-sm flex items-center gap-2.5 hover:scale-[1.02] transition text-right">
+                        <span class="text-2xl">${sub.icon || '📘'}</span>
+                        <div class="truncate flex-1">
                             <h4 class="font-bold text-xs md:text-sm truncate">${sub.name}</h4>
-                            <span class="text-[11px] opacity-75">أرشيف الدروس</span>
+                            ${driveBtnHtml}
                         </div>
-                    </button>
+                    </div>
                 `;
                 const opt = `<option value="${sub.name}">${sub.name}</option>`;
                 prepSelect.innerHTML += opt; quizSelect.innerHTML += opt; newTSub.innerHTML += opt;
             });
+        }
+
+        async function addSubjectByAdmin(e) {
+            e.preventDefault();
+            if (currentRole !== 'admin') return;
+            const name = document.getElementById('new-sub-name').value.trim();
+            const icon = document.getElementById('new-sub-icon').value;
+            const driveUrl = document.getElementById('new-sub-drive').value.trim();
+
+            if (!name) return;
+            if (syrianG10Subjects.some(s => s.name === name)) {
+                return alert("⚠️ هذه المادة موجودة مسبقاً في المنهاج!");
+            }
+
+            const color = subjectColorPalettes[syrianG10Subjects.length % subjectColorPalettes.length];
+            syrianG10Subjects.push({ name, icon, color, driveUrl });
+
+            teacherLogs.unshift({
+                teacher: "المدير العام",
+                action: `📚 إضافة مادة جديدة للمنهاج (${name})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            e.target.reset();
+            saveAllLocal();
+            renderSubjects();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم إضافة مادة (${name}) إلى المنهاج ومزامنتها بنجاح!`);
+        }
+
+        async function editSubjectDriveUrl(idx) {
+            if (currentRole !== 'admin') return;
+            const sub = syrianG10Subjects[idx];
+            const newUrl = prompt(`📁 الصق رابط مجلد Google Drive الخاص بمادة (${sub.name}) ووظائفها:`, sub.driveUrl || "");
+            if (newUrl === null) return;
+
+            syrianG10Subjects[idx].driveUrl = newUrl.trim();
+            saveAllLocal();
+            renderSubjects();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم تحديث رابط الـ Drive لمادة (${sub.name})!`);
+        }
+
+        async function removeSubjectByAdmin(idx) {
+            if (currentRole !== 'admin') return;
+            const sub = syrianG10Subjects[idx];
+            if (!confirm(`هل أنت متأكد من حذف مادة (${sub.name}) من المنهاج؟`)) return;
+
+            syrianG10Subjects.splice(idx, 1);
+            teacherLogs.unshift({
+                teacher: "المدير العام",
+                action: `🗑️ حذف مادة (${sub.name}) من المنهاج`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderSubjects();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function addBroadcastLaptop(e) {
+            e.preventDefault();
+            if (currentRole !== 'admin') return;
+            const code = document.getElementById('new-host-code').value.trim().toUpperCase();
+            const name = document.getElementById('new-host-name').value.trim();
+            const pin = document.getElementById('new-host-pin').value.trim();
+
+            if (!/^H\d+$/.test(code)) {
+                return alert("⚠️ يجب أن يبدأ رمز لابتوب البث بحرف H متبوعاً برقم (مثال: H4)!");
+            }
+            if (broadcastHosts.some(h => h.code === code)) {
+                return alert("⚠️ هذا الرمز مسجل مسبقاً للابتوب بث آخر!");
+            }
+
+            broadcastHosts.push({ code, name, pin, deviceId: "", lastSeen: "-" });
+            e.target.reset();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم إضافة حساب لابتوب البث (${code} - ${name}) بنجاح!`);
+        }
+
+        // صلاحية المدير لتغيير كلمة السر أو اسم لابتوبات البث (H1, H2, H3)
+        async function changeHostPin(idx) {
+            if (currentRole !== 'admin') return;
+            const h = broadcastHosts[idx];
+            const newPin = prompt(`🔑 أدخل كلمة السر الجديدة للابتوب البث (${h.code} - ${h.name}):`, h.pin);
+            if (newPin === null || newPin.trim() === "") return;
+
+            broadcastHosts[idx].pin = newPin.trim();
+            teacherLogs.unshift({
+                teacher: "المدير العام",
+                action: `🔑 تغيير كلمة السر للابتوب البث (${h.code})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم تغيير كلمة السر للابتوب البث (${h.code}) إلى: ${newPin.trim()}`);
+        }
+
+        async function changeHostName(idx) {
+            if (currentRole !== 'admin') return;
+            const h = broadcastHosts[idx];
+            const newName = prompt(`✏️ أدخل الاسم الجديد للابتوب البث (${h.code}):`, h.name);
+            if (newName === null || newName.trim() === "") return;
+
+            broadcastHosts[idx].name = newName.trim();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        async function resetHostDeviceLock(idx) {
+            const h = broadcastHosts[idx];
+            if (!confirm(`هل تريد فك ارتباط الجهاز للابتوب البث (${h.code} - ${h.name})؟`)) return;
+            broadcastHosts[idx].deviceId = "";
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم فك قفل لابتوب البث (${h.code})!`);
+        }
+
+        async function removeHostAccount(idx) {
+            if (!confirm("هل تريد حذف حساب لابتوب البث هذا؟")) return;
+            broadcastHosts.splice(idx, 1);
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+        }
+
+        // صلاحية المدير لتغيير الرقم السري لأي أستاذ مباشرة
+        async function changeTeacherPin(idx) {
+            if (currentRole !== 'admin') return;
+            const t = teachers[idx];
+            const newPin = prompt(`🔑 أدخل الرمز السري الجديد للأستاذ (${t.name}):`, t.pin);
+            if (newPin === null || newPin.trim() === "") return;
+
+            teachers[idx].pin = newPin.trim();
+            saveAllLocal();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم تحديث الرمز السري للأستاذ (${t.name})!`);
         }
 
         function filterLessons(sub) {
@@ -1408,7 +1956,7 @@
             const filtered = currentSubjectFilter === "الكل" ? lessons : lessons.filter(l => l.subject === currentSubjectFilter);
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">لا توجد دروس محضّرة حالياً.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">لا توجد دروس محضّرة حالياً في هذا القسم.</td></tr>`;
                 return;
             }
 
@@ -1424,12 +1972,12 @@
                 if (lesson.pdf && lesson.pdf.trim() !== "") {
                     pdfCellHtml = `
                         <div class="flex items-center justify-center gap-1">
-                            <a href="${lesson.pdf.trim()}" target="_blank" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap">📄 فتح الملخص</a>
-                            ${isStaff ? `<button onclick="attachLessonPdf(${realIdx})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-1.5 py-1 rounded text-xs" title="تعديل رابط الملخص">✏️</button>` : ''}
+                            <a href="${lesson.pdf.trim()}" target="_blank" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap">📄 فتح الملخص / الوظيفة</a>
+                            ${isStaff ? `<button onclick="attachLessonPdf(${realIdx})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-1.5 py-1 rounded text-xs" title="تعديل الرابط">✏️</button>` : ''}
                         </div>
                     `;
                 } else if (isStaff) {
-                    pdfCellHtml = `<button onclick="attachLessonPdf(${realIdx})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition">📄 + رفع ملخص Drive</button>`;
+                    pdfCellHtml = `<button onclick="attachLessonPdf(${realIdx})" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition">📄 + رفع ملخص/وظيفة Drive</button>`;
                 }
 
                 let videoCellHtml = `<span class="text-xs text-slate-400">يُرفع بعد الحصة</span>`;
@@ -1490,13 +2038,13 @@
 
         async function attachLessonPdf(index) {
             const currentUrl = lessons[index].pdf || "";
-            const newUrl = prompt("📄 الصق رابط ملف الملخص أو ورقة العمل من Google Drive:", currentUrl);
+            const newUrl = prompt("📄 الصق رابط ملف الملخص أو الوظيفة من Google Drive:", currentUrl);
             if (newUrl === null) return;
 
             lessons[index].pdf = newUrl.trim();
             teacherLogs.unshift({
                 teacher: currentTeacherName || "الأستاذ",
-                action: `رفع ملف ملخص Drive لدرس (${lessons[index].subject}: ${lessons[index].title})`,
+                action: `رفع ملف ملخص/وظيفة Drive لدرس (${lessons[index].subject}: ${lessons[index].title})`,
                 time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
             });
             if (teacherLogs.length > 50) teacherLogs.pop();
@@ -1505,7 +2053,7 @@
             renderLessons();
             renderAdminDashboard();
             await syncToCloud(false);
-            if (newUrl.trim() !== "") alert("✅ تم حفظ رابط الملخص ومزامنته!");
+            if (newUrl.trim() !== "") alert("✅ تم حفظ رابط الملخص/الوظيفة ومزامنته!");
         }
 
         function openVideoPlayer(videoUrl, title) {
@@ -1545,6 +2093,8 @@
             const sub = document.getElementById('prep-subject').value;
             const branch = document.getElementById('prep-branch').value;
             const title = document.getElementById('prep-title').value;
+            const pdfUrl = document.getElementById('prep-pdf').value.trim();
+            const videoUrl = document.getElementById('prep-video').value.trim();
             const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
 
             lessons.unshift({
@@ -1554,8 +2104,8 @@
                 date: document.getElementById('prep-date').value,
                 title: title,
                 notes: document.getElementById('prep-notes').value,
-                pdf: "",
-                video: ""
+                pdf: pdfUrl,
+                video: videoUrl
             });
 
             teacherLogs.unshift({
@@ -1592,19 +2142,20 @@
                        `📚 *المادة:* ${l.subject}\n` +
                        `👨‍🏫 *الأستاذ:* ${l.teacher || 'الإدارة'}\n` +
                        `📌 *عنوان الدرس:* ${l.title}\n` +
-                       `📝 *الشرح والملاحظات:* ${l.notes}\n` +
+                       `📝 *الشرح والوظيفة:* ${l.notes}\n` +
                        `📅 *التاريخ:* ${l.date}`;
             if (l.video) text += `\n\n🎬 *رابط مشاهدة تسجيل الدرس:*\n${l.video}`;
-            if (l.pdf) text += `\n\n📄 *رابط الملخص:*\n${l.pdf}`;
+            if (l.pdf) text += `\n\n📄 *رابط الملخص / الوظيفة (Drive):*\n${l.pdf}`;
             if (!l.video && !l.pdf && dailyMeet) text += `\n\n📹 *رابط قاعة الدوام المباشرة:*\n${dailyMeet}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function renderAdminDashboard() {
+            document.getElementById('stat-subjects').innerText = syrianG10Subjects.length;
             document.getElementById('stat-teachers').innerText = teachers.length;
+            document.getElementById('stat-hosts').innerText = broadcastHosts.length;
             document.getElementById('stat-lessons').innerText = lessons.length;
             document.getElementById('stat-students').innerText = `${students.length} (${students.filter(s => s.present).length} حاضر)`;
-            document.getElementById('stat-logs').innerText = teacherLogs.length;
 
             const adminDevStatus = document.getElementById('admin-device-status');
             if (adminDevStatus) {
@@ -1613,6 +2164,67 @@
                     : `⏳ غير مقفل حالياً (سيُقفل تلقائياً عند أول دخول للمدير)`;
             }
 
+            // جدول إدارة المواد في لوحة المدير
+            const subTbody = document.getElementById('admin-subjects-tbody');
+            if (subTbody) {
+                subTbody.innerHTML = '';
+                syrianG10Subjects.forEach((sub, i) => {
+                    const lCount = lessons.filter(l => l.subject === sub.name).length;
+                    const driveStatus = (sub.driveUrl && sub.driveUrl.trim() !== "")
+                        ? `<a href="${sub.driveUrl.trim()}" target="_blank" class="text-emerald-700 font-bold hover:underline">📂 فتح مجلد المادة ↗</a>`
+                        : `<span class="text-slate-400">غير محدد</span>`;
+
+                    subTbody.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-2.5 text-slate-400 font-bold">${i + 1}</td>
+                            <td class="p-2.5 font-extrabold text-indigo-950">${sub.icon || '📘'} ${sub.name}</td>
+                            <td class="p-2.5">
+                                <div class="flex items-center gap-2">
+                                    ${driveStatus}
+                                    <button onclick="editSubjectDriveUrl(${i})" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-2 py-0.5 rounded text-[11px] font-bold">✏️ رابط Drive</button>
+                                </div>
+                            </td>
+                            <td class="p-2.5 text-center font-bold">${lCount}</td>
+                            <td class="p-2.5 text-center">
+                                <button onclick="removeSubjectByAdmin(${i})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded font-bold">🗑️ حذف المادة</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // جدول إدارة لابتوبات البث (H1, H2, H3) مع أزرار تغيير كلمة السر والاسم
+            const hBody = document.getElementById('hosts-list-body');
+            if (hBody) {
+                hBody.innerHTML = '';
+                broadcastHosts.forEach((h, i) => {
+                    const hDeviceHtml = h.deviceId
+                        ? `<div class="flex items-center justify-center gap-1">
+                               <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-bold" title="بصمة اللابتوب: ${h.deviceId}">🔒 مرتبط بلابتوب</span>
+                               <button onclick="resetHostDeviceLock(${i})" class="bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] px-2 py-0.5 rounded font-bold">🔓 فك القفل</button>
+                           </div>`
+                        : `<span class="bg-slate-100 text-slate-400 text-[10px] px-2 py-0.5 rounded">بانتظار الدخول</span>`;
+
+                    hBody.innerHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-2.5 font-mono font-extrabold text-cyan-800">${h.code}</td>
+                            <td class="p-2.5 font-bold">
+                                ${h.name}
+                                <button onclick="changeHostName(${i})" class="text-slate-400 hover:text-indigo-700 mr-1" title="تعديل اسم اللابتوب">✏️</button>
+                            </td>
+                            <td class="p-2.5 whitespace-nowrap">
+                                <code class="bg-cyan-100 px-2 py-0.5 rounded font-bold">${h.pin}</code>
+                                <button onclick="changeHostPin(${i})" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-[10px] px-2 py-0.5 rounded font-bold mr-1">🔑 تغيير السر</button>
+                            </td>
+                            <td class="p-2.5 text-center whitespace-nowrap">${hDeviceHtml}</td>
+                            <td class="p-2.5 text-center text-slate-500">${h.lastSeen || '-'}</td>
+                            <td class="p-2.5 text-center"><button onclick="removeHostAccount(${i})" class="text-rose-500 font-bold">✖</button></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // جدول الأساتذة مع زر تغيير الرمز السري
             const tBody = document.getElementById('teachers-list-body');
             tBody.innerHTML = '';
             teachers.forEach((t, i) => {
@@ -1628,7 +2240,10 @@
                     <tr>
                         <td class="p-2 font-bold">${t.name}</td>
                         <td class="p-2 text-indigo-800 font-semibold">${t.subject}</td>
-                        <td class="p-2"><code class="bg-amber-100 px-1.5 py-0.5 rounded font-bold">${t.pin}</code></td>
+                        <td class="p-2 whitespace-nowrap">
+                            <code class="bg-amber-100 px-1.5 py-0.5 rounded font-bold">${t.pin}</code>
+                            <button onclick="changeTeacherPin(${i})" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] px-1.5 py-0.5 rounded font-bold mr-1" title="تغيير الرمز السري">🔑</button>
+                        </td>
                         <td class="p-2 text-center whitespace-nowrap">${tDeviceHtml}</td>
                         <td class="p-2 text-center font-bold">${count}</td>
                         <td class="p-2 text-center"><button onclick="removeTeacher(${i})" class="text-rose-500 font-bold">✖</button></td>
@@ -1798,7 +2413,7 @@
             const name = nameInput.value.trim();
             let code = codeInput.value.trim().toUpperCase();
             if (!name || !code) return alert("يرجى إدخال الاسم الثلاثي والرمز!");
-            if (!/^A\d+$/.test(code)) return alert("يجب أن يبدأ الرمز بحرف A متبوعاً برقم (مثال: A105)");
+            if (!/^A\d+$/.test(code)) return alert("يجب أن يبدأ رمز الطالب بحرف A متبوعاً برقم (مثال: A105)");
             if (students.some(s => s.code === code)) return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
 
             students.push({
