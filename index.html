@@ -504,7 +504,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border-2 border-indigo-200 p-6 space-y-4">
                     <div class="flex items-center justify-between border-b pb-2">
                         <h3 class="text-lg font-extrabold text-indigo-950">☁️ إعدادات الربط السحابي (حصرية للمدير العام فقط)</h3>
-                        <span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-0.5 rounded-full font-bold">🔒 محمية برمجياً</span>
+                        <span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-0.5 rounded-full font-bold">🔒 محمية ضد المسح العشوائي</span>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <input type="url" id="cloud-url" dir="ltr" class="flex-grow border border-indigo-300 rounded-lg p-2.5 bg-slate-50 text-left text-xs font-mono">
@@ -709,6 +709,18 @@
 
     <script>
         // =========================================================================
+        // دالة توحيد الأرقام الهندية والأحرف الكبيرة والصغيرة في كلمات السر والرموز
+        // =========================================================================
+        function normalizeSecretText(str) {
+            if (!str) return "";
+            return String(str)
+                .trim()
+                .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+                .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+                .toUpperCase();
+        }
+
+        // =========================================================================
         // 1. توليد صورة أيقونة حقيقية (PNG) للشاشة الرئيسية للهاتف (أندرويد + آيفون)
         // =========================================================================
         const CUSTOM_LOGO_URL = ""; 
@@ -820,6 +832,9 @@
 
         const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec"; 
 
+        // قفل الأمان لمنع مسح السحابة قبل اكتمال الجلب الأولي
+        let isCloudDataLoadedSafely = false;
+
         const subjectColorPalettes = [
             "bg-blue-50 border-blue-200 text-blue-900",
             "bg-purple-50 border-purple-200 text-purple-900",
@@ -896,7 +911,7 @@
         ];
 
         let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
-            { teacher: "النظام الأمني", action: "تفعيل نظام القاعة الدراسية ومكتبة الـ Drive", time: "اليوم" }
+            { teacher: "النظام الأمني", action: "تفعيل نظام الحماية المزدوج للبيانات السحابية", time: "اليوم" }
         ];
 
         let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
@@ -985,7 +1000,7 @@
         // الميزة المخفية: مراقبة حقل الرمز؛ إذا بدأ بحرف H يفتح حقل كلمة السر فوراً
         // =========================================================================
         function checkSecretHostCode(val) {
-            const clean = val.trim().toUpperCase();
+            const clean = normalizeSecretText(val);
             const pinWrapper = document.getElementById('secret-host-pin-wrapper');
             const pinInput = document.getElementById('reg-secret-host-pin');
             const nameWrapper = document.getElementById('reg-name-wrapper');
@@ -1104,7 +1119,7 @@
 
             if (currentRole === 'student' && currentStudentProfile) {
                 const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
-                const idx = students.findIndex(s => s.code === currentStudentProfile.code);
+                const idx = students.findIndex(s => normalizeSecretText(s.code) === normalizeSecretText(currentStudentProfile.code));
 
                 if (idx > -1) {
                     if (!students[idx].deviceId || students[idx].deviceId === "" || students[idx].deviceId !== THIS_DEVICE_ID) {
@@ -1150,7 +1165,7 @@
                     openStudentRegModal(false, false);
                     return;
                 }
-                const cloudStudent = students.find(s => s.code === currentStudentProfile.code);
+                const cloudStudent = students.find(s => normalizeSecretText(s.code) === normalizeSecretText(currentStudentProfile.code));
                 if (!cloudStudent) {
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
@@ -1179,7 +1194,7 @@
                     logoutUser();
                 }
             } else if (currentRole === 'broadcaster') {
-                const hObj = broadcastHosts.find(h => h.code === currentHostCode);
+                const hObj = broadcastHosts.find(h => normalizeSecretText(h.code) === normalizeSecretText(currentHostCode));
                 if (!hObj || (hObj.deviceId && hObj.deviceId !== "" && hObj.deviceId !== THIS_DEVICE_ID)) {
                     alert("🔄 تم فك ارتباط لابتوب البث من قِبل المدير العام، يرجى إعادة تسجيل الدخول!");
                     logoutUser();
@@ -1243,14 +1258,14 @@
         async function saveStudentFirstTime(event) {
             event.preventDefault();
             const btn = document.getElementById('reg-submit-btn');
-            let code = document.getElementById('reg-student-code').value.trim().toUpperCase();
+            let code = normalizeSecretText(document.getElementById('reg-student-code').value);
 
             // 1. إذا كان الرمز يبدأ بحرف H -> معالجة دخول لابتوب البث المخفي
             if (code.startsWith('H')) {
                 if (!/^H\d+$/.test(code)) {
                     return alert("⚠️ صيغة الرمز غير صحيحة!");
                 }
-                const secretPin = document.getElementById('reg-secret-host-pin').value.trim();
+                const secretPin = normalizeSecretText(document.getElementById('reg-secret-host-pin').value);
                 if (!secretPin) {
                     return alert("⚠️ يرجى إدخال كلمة المرور الخاصة بهذا الرمز!");
                 }
@@ -1261,8 +1276,8 @@
 
                 await fetchFromCloud(false, true, true);
 
-                const hIdx = broadcastHosts.findIndex(h => h.code.toUpperCase() === code);
-                if (hIdx === -1 || broadcastHosts[hIdx].pin !== secretPin) {
+                const hIdx = broadcastHosts.findIndex(h => normalizeSecretText(h.code) === code);
+                if (hIdx === -1 || normalizeSecretText(broadcastHosts[hIdx].pin) !== secretPin) {
                     isStaffLoggingIn = false;
                     btn.disabled = false;
                     btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
@@ -1341,7 +1356,7 @@
 
             await fetchFromCloud(false, true, true);
 
-            const existingByCode = students.findIndex(s => s.code === code);
+            const existingByCode = students.findIndex(s => normalizeSecretText(s.code) === code);
 
             if (existingByCode > -1) {
                 const registeredStudent = students[existingByCode];
@@ -1419,6 +1434,9 @@
             el.className = `text-[11px] px-2.5 py-0.5 rounded-full font-bold ${classes}`;
         }
 
+        // =========================================================================
+        // دوال المزامنة المؤمّنة ضد مسح بيانات الطلاب والأساتذة
+        // =========================================================================
         async function fetchFromCloud(showAlert = false, silent = false, skipSessionVerify = false) {
             const url = getActiveCloudUrl();
             if (!url) return;
@@ -1426,12 +1444,20 @@
             try {
                 const res = await fetch(url + "?t=" + new Date().getTime(), { redirect: "follow" });
                 const data = await res.json();
-                if (data && data.lessons) {
-                    lessons = data.lessons;
-                    students = data.students || students;
-                    quizzes = data.quizzes || quizzes;
-                    teachers = data.teachers || teachers;
+                
+                if (data && Array.isArray(data.lessons)) {
+                    // حماية قائمة الطلاب من الاستبدال بقائمة فارغة بالخطأ
+                    if (Array.isArray(data.students) && (data.students.length > 0 || students.length === 0)) {
+                        students = data.students;
+                    }
+                    // حماية قائمة الأساتذة
+                    if (Array.isArray(data.teachers) && data.teachers.length > 0) {
+                        teachers = data.teachers;
+                    }
+                    lessons = data.lessons.length > 0 ? data.lessons : lessons;
+                    quizzes = (Array.isArray(data.quizzes) && data.quizzes.length > 0) ? data.quizzes : quizzes;
                     teacherLogs = data.teacherLogs || teacherLogs;
+                    
                     if (data.subjects && Array.isArray(data.subjects) && data.subjects.length > 0) {
                         syrianG10Subjects = data.subjects;
                     }
@@ -1450,21 +1476,26 @@
                         adminDeviceId = data.adminDeviceId;
                         localStorage.setItem('g10_admin_device_id', adminDeviceId);
                     }
+
+                    // تفعيل قفل الأمان بعد التأكد من نجاح الجلب
+                    isCloudDataLoadedSafely = true;
+
                     saveAllLocal();
                     renderSubjects();
                     renderLessons();
                     renderStudents();
                     renderQuizzes();
                     renderAdminDashboard();
-                    updateSyncBadge("🟢 متصل ومحدّث تلقائياً", "bg-emerald-500/20 text-emerald-300");
+                    updateSyncBadge("🟢 متصل ومؤمّن تلقائياً", "bg-emerald-500/20 text-emerald-300");
                     
                     if (!skipSessionVerify && !isStaffLoggingIn) {
                         verifyActiveUserDeviceSession();
                     }
 
-                    if (showAlert) alert("✅ تم جلب أحدث المواد والدروس وروابط الـ Drive من السحابة بنجاح!");
+                    if (showAlert) alert("✅ تم جلب أحدث المواد والدروس وحسابات الطلاب والأساتذة من السحابة بنجاح!");
                 } else {
-                    await syncToCloud(false);
+                    // عدم استدعاء syncToCloud تلقائياً هنا لمنع مسح السحابة من متصفح جديد فارغ
+                    updateSyncBadge("⚠️ السحابة قيد التهيئة", "bg-amber-500/20 text-amber-300");
                 }
             } catch (e) {
                 if (!silent) updateSyncBadge("🔴 تعذر الاتصال بالسحابة", "bg-rose-500/20 text-rose-300");
@@ -1475,6 +1506,13 @@
         async function syncToCloud(showAlert = false) {
             const url = getActiveCloudUrl();
             if (!url) return;
+
+            // منع أي متصفح جديد لم يحمّل البيانات بعد من مسح السحابة بالخطأ
+            if (!isCloudDataLoadedSafely && !showAlert) {
+                console.warn("تم منع الرفع التلقائي لحماية السحابة لأن البيانات الأصلية لم تُجلب بعد.");
+                return;
+            }
+
             updateSyncBadge("⬆️ جارٍ الحفظ بالسحابة...", "bg-sky-500/20 text-sky-300");
             try {
                 await fetch(url, {
@@ -1493,8 +1531,9 @@
                         broadcastHosts
                     })
                 });
-                updateSyncBadge("🟢 متصل ومحدّث تلقائياً", "bg-emerald-500/20 text-emerald-300");
-                if (showAlert) alert("✅ تم رفع كافة التعديلات إلى السحابة بنجاح!");
+                isCloudDataLoadedSafely = true;
+                updateSyncBadge("🟢 متصل ومؤمّن تلقائياً", "bg-emerald-500/20 text-emerald-300");
+                if (showAlert) alert("✅ تم رفع وحفظ كافة التعديلات في السحابة بنجاح!");
             } catch (e) {
                 updateSyncBadge("⚠️ حُفظ على الجهاز فقط", "bg-amber-500/20 text-amber-300");
             }
@@ -1603,10 +1642,11 @@
 
             if (loginMode === 'teacher') {
                 const idx = document.getElementById('login-teacher-select').value;
-                const pin = document.getElementById('login-teacher-pin').value.trim();
+                const pin = normalizeSecretText(document.getElementById('login-teacher-pin').value);
                 const teacher = teachers[idx];
 
-                if (teacher && teacher.pin === pin) {
+                // مقارنة ذكية تتجاهل حالة الأحرف والأرقام الهندية
+                if (teacher && normalizeSecretText(teacher.pin) === pin) {
                     if (teacher.deviceId && teacher.deviceId !== "" && teacher.deviceId !== THIS_DEVICE_ID) {
                         teacherLogs.unshift({
                             teacher: teacher.name,
@@ -1656,8 +1696,8 @@
                     alert("❌ الرقم السري غير صحيح لهذا الأستاذ!");
                 }
             } else {
-                const pin = document.getElementById('login-admin-pin').value.trim();
-                if (pin === adminPin) {
+                const pin = normalizeSecretText(document.getElementById('login-admin-pin').value);
+                if (pin === normalizeSecretText(adminPin)) {
                     if (adminDeviceId && adminDeviceId !== "" && adminDeviceId !== THIS_DEVICE_ID) {
                         teacherLogs.unshift({
                             teacher: "المدير العام",
@@ -1854,14 +1894,14 @@
         async function addBroadcastLaptop(e) {
             e.preventDefault();
             if (currentRole !== 'admin') return;
-            const code = document.getElementById('new-host-code').value.trim().toUpperCase();
+            const code = normalizeSecretText(document.getElementById('new-host-code').value);
             const name = document.getElementById('new-host-name').value.trim();
             const pin = document.getElementById('new-host-pin').value.trim();
 
             if (!/^H\d+$/.test(code)) {
                 return alert("⚠️ يجب أن يبدأ رمز لابتوب البث بحرف H متبوعاً برقم (مثال: H4)!");
             }
-            if (broadcastHosts.some(h => h.code === code)) {
+            if (broadcastHosts.some(h => normalizeSecretText(h.code) === code)) {
                 return alert("⚠️ هذا الرمز مسجل مسبقاً للابتوب بث آخر!");
             }
 
@@ -1873,7 +1913,6 @@
             alert(`✅ تم إضافة حساب لابتوب البث (${code} - ${name}) بنجاح!`);
         }
 
-        // صلاحية المدير لتغيير كلمة السر أو اسم لابتوبات البث (H1, H2, H3)
         async function changeHostPin(idx) {
             if (currentRole !== 'admin') return;
             const h = broadcastHosts[idx];
@@ -1924,7 +1963,6 @@
             await syncToCloud(false);
         }
 
-        // صلاحية المدير لتغيير الرقم السري لأي أستاذ مباشرة
         async function changeTeacherPin(idx) {
             if (currentRole !== 'admin') return;
             const t = teachers[idx];
@@ -2193,7 +2231,7 @@
                 });
             }
 
-            // جدول إدارة لابتوبات البث (H1, H2, H3) مع أزرار تغيير كلمة السر والاسم
+            // جدول إدارة لابتوبات البث (H1, H2, H3)
             const hBody = document.getElementById('hosts-list-body');
             if (hBody) {
                 hBody.innerHTML = '';
@@ -2224,7 +2262,7 @@
                 });
             }
 
-            // جدول الأساتذة مع زر تغيير الرمز السري
+            // جدول الأساتذة
             const tBody = document.getElementById('teachers-list-body');
             tBody.innerHTML = '';
             teachers.forEach((t, i) => {
@@ -2378,7 +2416,7 @@
             students[index].present = false;
             students[index].note = "تم فك قفل الجهاز (مطالب بتسجيل الدخول)";
 
-            if (currentStudentProfile && currentStudentProfile.code === st.code) {
+            if (currentStudentProfile && normalizeSecretText(currentStudentProfile.code) === normalizeSecretText(st.code)) {
                 localStorage.removeItem('g10_student_profile');
                 currentStudentProfile = null;
                 updateStudentBarUI();
@@ -2411,10 +2449,10 @@
             const codeInput = document.getElementById('new-student-code');
             const branchInput = document.getElementById('new-student-branch');
             const name = nameInput.value.trim();
-            let code = codeInput.value.trim().toUpperCase();
+            let code = normalizeSecretText(codeInput.value);
             if (!name || !code) return alert("يرجى إدخال الاسم الثلاثي والرمز!");
             if (!/^A\d+$/.test(code)) return alert("يجب أن يبدأ رمز الطالب بحرف A متبوعاً برقم (مثال: A105)");
-            if (students.some(s => s.code === code)) return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
+            if (students.some(s => normalizeSecretText(s.code) === code)) return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
 
             students.push({
                 name: name,
@@ -2436,7 +2474,7 @@
         async function removeStudent(i) {
             if (!confirm("هل تريد حذف هذا الطالب من السجل؟")) return;
             const removed = students.splice(i, 1)[0];
-            if (removed && currentStudentProfile && currentStudentProfile.code === removed.code) {
+            if (removed && currentStudentProfile && normalizeSecretText(currentStudentProfile.code) === normalizeSecretText(removed.code)) {
                 localStorage.removeItem('g10_student_profile');
                 currentStudentProfile = null;
                 updateStudentBarUI();
