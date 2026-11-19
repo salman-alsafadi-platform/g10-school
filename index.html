@@ -161,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- خانة مجلد Google Drive العام للمواد والكتب والوظائف (متاح للجميع) -->
+            <!-- خانة مجلد Google Drive العام للمواد والكتب والوظائف -->
             <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-sky-50 rounded-2xl p-5 shadow-sm border-2 border-amber-200">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex items-start gap-3">
@@ -362,7 +362,7 @@
                 <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b pb-4">
                     <div>
                         <h2 class="text-xl font-extrabold text-indigo-950">✅ سجل الحضور وإدارة بصمة أجهزة الطلاب</h2>
-                        <p class="text-xs text-slate-500">عند الضغط على (🔓 فك القفل)، سيُطلب من الطالب إعادة تسجيل الدخول فوراً عند فتح المنصة</p>
+                        <p class="text-xs text-slate-500">إضافة الطلاب محصورة بالمدير العام فقط، وعند الضغط على (🔓 فك القفل) يُطلب من الطالب إعادة تسجيل الدخول</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 text-sm">
                         <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg font-bold">الحضور: <span id="present-count">0</span></div>
@@ -370,8 +370,9 @@
                         <button onclick="exportAttendanceCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg font-bold text-xs shadow">📊 تصدير Excel</button>
                     </div>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-                    <label class="block text-xs font-extrabold text-slate-700 mb-2">➕ إضافة طالب معتمد للسجل (يُعتمد اسمه الرسمي ويُقفل على أول جهاز يدخل منه):</label>
+                <!-- إضافة الطلاب محصورة بالمدير العام فقط -->
+                <div class="admin-only-box bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <label class="block text-xs font-extrabold text-slate-700 mb-2">👑 إضافة طالب معتمد للسجل (صلاحية المدير العام فقط - يُقفل على أول جهاز يدخل منه):</label>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
                         <input type="text" id="new-student-name" placeholder="الاسم الثلاثي الرسمي..." class="border border-slate-300 rounded-lg p-2 bg-white">
                         <input type="text" id="new-student-code" placeholder="الرمز (مثال: A105)" dir="ltr" class="border border-slate-300 rounded-lg p-2 bg-white text-left uppercase font-mono">
@@ -403,7 +404,7 @@
             </div>
         </section>
 
-        <!-- 5. لوحة تحكم المدير العام (إدارة المواد + لابتوبات البث H + الأساتذة + السحابة) -->
+        <!-- 5. لوحة تحكم المدير العام -->
         <section id="admin-tab" class="tab-content space-y-6">
             <div class="admin-only-box space-y-6">
                 <!-- إحصائيات سريعة -->
@@ -430,7 +431,7 @@
                     </div>
                 </div>
 
-                <!-- إدارة مواد المنهاج ومجلدات الـ Drive الخاصة بكل مادة -->
+                <!-- إدارة مواد المنهاج ومجلدات الـ Drive -->
                 <div class="bg-white rounded-2xl shadow-sm border-2 border-purple-200 p-6 space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
                         <div>
@@ -479,7 +480,7 @@
                     </div>
                 </div>
 
-                <!-- إدارة حسابات لابتوبات البث الثلاثة (H1, H2, H3) مع صلاحية تغيير كلمة السر والاسم -->
+                <!-- إدارة حسابات لابتوبات البث (H1, H2, H3) -->
                 <div class="bg-white rounded-2xl shadow-sm border-2 border-cyan-200 p-6 space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-2">
                         <div>
@@ -631,27 +632,26 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل بيانات الطالب الإجبارية (محصورة بالمدخلين من المدير مع تثبيت الاسم الرسمي) -->
+    <!-- نافذة دخول الطالب (محصورة بالرموز المضافة من المدير فقط - بدون إمكانية إنشاء حساب) -->
     <div id="student-reg-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-indigo-600">
             <div class="flex justify-between items-center border-b pb-2">
                 <div>
                     <h3 class="text-lg font-extrabold text-indigo-950">👨‍🎓 تسجيل دخول الطالب المعتمد</h3>
-                    <p class="text-xs text-slate-500">الدخول مقتصر على الرموز المضافة من قِبل الإدارة ويرتبط ببصمة هذا الجهاز فقط</p>
+                    <p class="text-xs text-slate-500">الدخول مقتصر على الرموز المضافة من قِبل المدير ويرتبط ببصمة هذا الجهاز فقط</p>
                 </div>
                 <button id="close-reg-btn" onclick="closeStudentRegModal()" class="hidden text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
             <div id="reg-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed">⚠️ يرجى إدخال رمز الطالب المعتمد من الإدارة (A...) للمتابعة.</div>
             
             <form onsubmit="saveStudentFirstTime(event)" class="space-y-3.5 text-sm">
-                <!-- حقل الرمز (يكتشف تلقائياً إذا كتب المستخدم H فيظهر كلمة المرور المخفية، أو يطابق رمز الطالب المعتمد) -->
                 <div>
                     <label class="block text-xs font-bold mb-1 text-slate-700">رمز الطالب المسلّم من الإدارة (يبدأ بحرف A):</label>
                     <input type="text" id="reg-student-code" required placeholder="مثال: A101" dir="ltr" oninput="checkSecretHostCode(this.value)" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-left uppercase font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <p class="text-[11px] text-slate-500 mt-1">🔒 يُعتمد الاسم والفرع المثبتان من الإدارة تلقائياً ويُقفل الرمز على هذا الجهاز.</p>
                 </div>
 
-                <!-- عرض الاسم والفرع الرسميين المعتمدين من المدير بشكل للقراءة فقط -->
+                <!-- عرض الاسم والفرع الرسميين المعتمدين من المدير للقراءة فقط -->
                 <div id="reg-official-info-wrapper" class="bg-indigo-50/80 border border-indigo-200 rounded-xl p-3 space-y-2 text-xs">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-slate-600">الاسم الرسمي المعتمد:</span>
@@ -663,7 +663,7 @@
                     </div>
                 </div>
 
-                <!-- الحقل المخفي لكلمة المرور (لا يظهر أبداً إلا عند كتابة H في خانة الرمز) -->
+                <!-- الحقل المخفي لكلمة المرور (يظهر فقط عند كتابة H) -->
                 <div id="secret-host-pin-wrapper" class="hidden bg-cyan-50 p-3 rounded-xl border border-cyan-300 space-y-1.5">
                     <label class="block text-xs font-extrabold text-cyan-950">🔑 كلمة المرور الخاصة بهذا الرمز:</label>
                     <input type="password" id="reg-secret-host-pin" placeholder="أدخل كلمة المرور..." class="w-full border border-cyan-400 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 text-sm">
@@ -925,7 +925,7 @@
         ];
 
         let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
-            { teacher: "النظام الأمني", action: "تفعيل قصر دخول الطلاب على القائمة المعتمدة وتثبيت الاسم الرسمي", time: "اليوم" }
+            { teacher: "النظام الأمني", action: "تفعيل قصر دخول الطلاب على القائمة المعتمدة وقفل مواد الأساتذة", time: "اليوم" }
         ];
 
         let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
@@ -1058,18 +1058,22 @@
             updateDraftBadgeUI(null);
         }
 
+        // =========================================================================
+        // قفل المادة الصارم لكل أستاذ (خيار واحد فقط) + حالة الآنسة آلاء سلمان موال
+        // =========================================================================
         function enforceTeacherSubjectLock() {
             const prepSubSelect = document.getElementById('prep-subject');
             const lockText = document.getElementById('prep-lock-status-text');
             if (!prepSubSelect) return;
 
             if (currentRole === 'teacher') {
-                const tObj = teachers.find(t => normalizeArabicName(t.name) === normalizeArabicName(currentTeacherName));
+                const normCurrent = normalizeArabicName(currentTeacherName);
+                const tObj = teachers.find(t => normalizeArabicName(t.name) === normCurrent)
+                    || teachers.find(t => normCurrent && normalizeArabicName(t.name).includes(normCurrent));
                 const isAlaa = isAlaaSpecialTeacher(currentTeacherName);
 
                 if (isAlaa) {
                     ensureReligionSubjectExists();
-                    renderSubjects();
                     const allowedSubs = ["اللغة العربية", "التربية الدينية"];
                     const prevVal = prepSubSelect.value;
                     prepSubSelect.innerHTML = '';
@@ -1083,20 +1087,24 @@
                         lockText.innerHTML = `✨ حالة خاصة للآنسة آلاء سلمان موال: متاح لك <span class="text-amber-800 underline">اللغة العربية</span> و<span class="text-emerald-800 underline">التربية الدينية</span> فقط مع تأكيد النشر.`;
                     }
                 } else {
-                    renderSubjects();
-                    const assignedSubject = (tObj && tObj.subject) ? tObj.subject : (syrianG10Subjects[0] ? syrianG10Subjects[0].name : "الرياضيات");
-                    if (!Array.from(prepSubSelect.options).some(o => o.value === assignedSubject)) {
-                        prepSubSelect.innerHTML = `<option value="${assignedSubject}">${assignedSubject}</option>` + prepSubSelect.innerHTML;
-                    }
+                    const assignedSubject = (tObj && tObj.subject) ? tObj.subject : "الرياضيات";
+                    prepSubSelect.innerHTML = `<option value="${assignedSubject}">${assignedSubject}</option>`;
                     prepSubSelect.value = assignedSubject;
                     prepSubSelect.disabled = true;
-                    prepSubSelect.className = "w-full border-2 border-indigo-300 rounded-lg p-2.5 bg-indigo-50/80 font-extrabold text-indigo-950 cursor-not-allowed";
+                    prepSubSelect.className = "w-full border-2 border-indigo-300 rounded-lg p-2.5 bg-indigo-50/80 font-extrabold text-indigo-950 cursor-not-allowed pointer-events-none";
                     if (lockText) {
                         lockText.innerHTML = `🔒 المادة مقفلة تلقائياً على تخصصك: <span class="bg-indigo-900 text-white px-2.5 py-0.5 rounded-md">${assignedSubject}</span> لمنع الخطأ أو النسيان.`;
                     }
                 }
             } else if (currentRole === 'admin') {
-                renderSubjects();
+                const prevVal = prepSubSelect.value;
+                prepSubSelect.innerHTML = '';
+                syrianG10Subjects.forEach(sub => {
+                    prepSubSelect.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+                });
+                if (prevVal && Array.from(prepSubSelect.options).some(o => o.value === prevVal)) {
+                    prepSubSelect.value = prevVal;
+                }
                 prepSubSelect.disabled = false;
                 prepSubSelect.className = "w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 font-bold";
                 if (lockText) {
@@ -1358,7 +1366,7 @@
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
                     updateStudentBarUI();
-                    openStudentRegModal(false, true, "🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة أو إعادة التسجيل!");
+                    openStudentRegModal(false, true, "🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة!");
                     return;
                 }
                 if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
@@ -1375,7 +1383,6 @@
                     openStudentRegModal(false, true, "⛔ هذا الرمز مرتبط بهاتف آخر! يرجى تسجيل الدخول برمزك الصحيح أو مراجعة الإدارة.");
                     return;
                 }
-                // مزامنة الاسم والفرع الرسميين المعتمدين من المدير باستمرار
                 currentStudentProfile = {
                     name: cloudStudent.name,
                     code: normalizeSecretText(cloudStudent.code),
@@ -1530,7 +1537,7 @@
                 return;
             }
 
-            // 2. قصر دخول الطلاب على القائمة المعتمدة من المدير وتثبيت الاسم الرسمي
+            // 2. قصر دخول الطلاب على القائمة المعتمدة من المدير فقط (يستحيل إضافة حساب من هنا)
             if (!/^A\d+$/.test(code)) {
                 alert("⚠️ يرجى إدخال رمز طالب صحيح يبدأ بحرف A وبجانبه رقم (مثال: A101)");
                 return;
@@ -1544,11 +1551,11 @@
 
             const existingByCode = students.findIndex(s => normalizeSecretText(s.code) === code);
 
-            // رفض أي رمز غير مضاف من قِبل المدير
+            // رفض صارم لأي رمز غير مضاف من قِبل المدير
             if (existingByCode === -1) {
                 btn.disabled = false;
                 btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
-                secAlert.innerText = `⛔ مرفوض! الرمز (${code}) غير موجود ضمن الطلاب المضافين من قِبل المدير. لا يمكن إضافة طلاب جدد من صفحة الدخول.`;
+                secAlert.innerText = `⛔ مرفوض! الرمز (${code}) غير موجود ضمن الطلاب المضافين من قِبل المدير. لا يمكن إنشاء حساب جديد من صفحة الدخول.`;
                 secAlert.classList.remove('hidden');
                 alert(`⛔ الرمز (${code}) غير معتمد من الإدارة.`);
                 return;
@@ -1566,13 +1573,11 @@
                 return;
             }
 
-            // اعتماد الاسم والفرع المثبتين من قِبل المدير دون السماح بتغييرهما
+            // اعتماد الاسم والفرع المثبتين من قِبل المدير فقط
             const officialName = registeredStudent.name;
             const officialBranch = registeredStudent.branch || "علمي";
             const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
 
-            students[existingByCode].name = officialName;
-            students[existingByCode].branch = officialBranch;
             students[existingByCode].deviceId = THIS_DEVICE_ID;
             students[existingByCode].present = true;
             students[existingByCode].time = nowTime;
@@ -1667,7 +1672,6 @@
 
                     saveAllLocal();
                     renderSubjects();
-                    enforceTeacherSubjectLock();
                     renderLessons();
                     renderStudents();
                     renderQuizzes();
@@ -1991,12 +1995,12 @@
 
         function renderSubjects() {
             const grid = document.getElementById('subjects-grid');
-            const prepSelect = document.getElementById('prep-subject');
             const quizSelect = document.getElementById('quiz-sub');
             const newTSub = document.getElementById('new-t-subject');
-            const prevPrepVal = prepSelect ? prepSelect.value : "";
 
-            grid.innerHTML = ''; prepSelect.innerHTML = ''; quizSelect.innerHTML = ''; newTSub.innerHTML = '';
+            grid.innerHTML = '';
+            quizSelect.innerHTML = '';
+            newTSub.innerHTML = '';
 
             syrianG10Subjects.forEach((sub, idx) => {
                 const driveBtnHtml = (sub.driveUrl && sub.driveUrl.trim() !== "")
@@ -2013,12 +2017,12 @@
                     </div>
                 `;
                 const opt = `<option value="${sub.name}">${sub.name}</option>`;
-                prepSelect.innerHTML += opt; quizSelect.innerHTML += opt; newTSub.innerHTML += opt;
+                quizSelect.innerHTML += opt;
+                newTSub.innerHTML += opt;
             });
 
-            if (prevPrepVal && Array.from(prepSelect.options).some(o => o.value === prevPrepVal)) {
-                prepSelect.value = prevPrepVal;
-            }
+            // تطبيق قفل مادة الأستاذ دائماً بعد تحديث قائمة المواد
+            enforceTeacherSubjectLock();
         }
 
         async function addSubjectByAdmin(e) {
@@ -2629,6 +2633,7 @@
             const tbody = document.getElementById('students-table-body');
             tbody.innerHTML = '';
             let presentCount = 0;
+            const isAdmin = (currentRole === 'admin');
             students.forEach((s, i) => {
                 if (s.present) presentCount++;
                 const bBadge = s.branch === "أدبي"
@@ -2652,7 +2657,7 @@
                         <td class="p-3 text-center"><input type="checkbox" ${s.present ? 'checked' : ''} onchange="toggleAttendance(${i})" class="w-5 h-5 accent-emerald-600"></td>
                         <td class="p-3 text-center text-xs font-bold text-indigo-700">${s.time || '-'}</td>
                         <td class="p-3"><input type="text" value="${s.note || ''}" onchange="updateNote(${i}, this.value)" class="border rounded px-2 py-1 text-xs w-full"></td>
-                        <td class="p-3 text-center"><button onclick="removeStudent(${i})" class="text-rose-500 font-bold">✖</button></td>
+                        <td class="p-3 text-center">${isAdmin ? `<button onclick="removeStudent(${i})" class="text-rose-500 font-bold">✖</button>` : `<span class="text-slate-300">-</span>`}</td>
                     </tr>
                 `;
             });
@@ -2696,6 +2701,9 @@
         }
 
         async function addStudentManual() {
+            if (currentRole !== 'admin') {
+                return alert("⛔ إضافة الطلاب محصورة بالمدير العام فقط!");
+            }
             const nameInput = document.getElementById('new-student-name');
             const codeInput = document.getElementById('new-student-code');
             const branchInput = document.getElementById('new-student-branch');
@@ -2723,6 +2731,7 @@
         }
 
         async function removeStudent(i) {
+            if (currentRole !== 'admin') return alert("⛔ حذف الطلاب محصور بالمدير العام فقط!");
             if (!confirm("هل تريد حذف هذا الطالب من السجل؟")) return;
             const removed = students.splice(i, 1)[0];
             if (removed && currentStudentProfile && normalizeSecretText(currentStudentProfile.code) === normalizeSecretText(removed.code)) {
