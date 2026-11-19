@@ -289,14 +289,24 @@
         <!-- 3. قسم تحضير الأساتذة -->
         <section id="prep-tab" class="tab-content">
             <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 border-b pb-3">
                     <div>
                         <h2 class="text-xl font-extrabold text-indigo-950">📝 تحضير درس جديد</h2>
-                        <p class="text-xs text-slate-500">حضّر عنوان الدرس والوظيفة الآن، أو أرفق رابط ملف الملخص/الوظيفة من Drive مباشرة</p>
+                        <p class="text-xs text-slate-500">يتم حفظ المسودة تلقائياً إذا تأخرت في إكمال البيانات أو انتقلت لصفحة أخرى</p>
                     </div>
                     <span id="prep-teacher-label" class="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1.5 rounded-lg"></span>
                 </div>
-                <form id="prep-form" onsubmit="saveLesson(event)" class="space-y-4">
+
+                <!-- شريط توضيح المادة المثبتة وحالة المسودة -->
+                <div id="prep-subject-lock-banner" class="mb-4 p-3 rounded-xl bg-indigo-50 border border-indigo-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div id="prep-lock-status-text" class="font-bold text-indigo-950">📌 المادة مرتبطة بحسابك تلقائياً</div>
+                    <div class="flex items-center gap-2">
+                        <span id="prep-draft-badge" class="hidden bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-extrabold">💾 تم حفظ المسودة تلقائياً</span>
+                        <button type="button" onclick="clearLessonDraft(true)" id="clear-draft-btn" class="hidden text-rose-600 hover:underline font-bold">مسح المسودة</button>
+                    </div>
+                </div>
+
+                <form id="prep-form" onsubmit="saveLesson(event)" oninput="saveLessonDraft()" onchange="saveLessonDraft()" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-bold mb-1">المادة الدراسية:</label>
@@ -361,9 +371,9 @@
                     </div>
                 </div>
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-                    <label class="block text-xs font-extrabold text-slate-700 mb-2">➕ إضافة طالب يدوياً للسجل (سيُقفل على أول موبايل يدخل منه):</label>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-2">➕ إضافة طالب معتمد للسجل (يُعتمد اسمه الرسمي ويُقفل على أول جهاز يدخل منه):</label>
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
-                        <input type="text" id="new-student-name" placeholder="الاسم الثلاثي..." class="border border-slate-300 rounded-lg p-2 bg-white">
+                        <input type="text" id="new-student-name" placeholder="الاسم الثلاثي الرسمي..." class="border border-slate-300 rounded-lg p-2 bg-white">
                         <input type="text" id="new-student-code" placeholder="الرمز (مثال: A105)" dir="ltr" class="border border-slate-300 rounded-lg p-2 bg-white text-left uppercase font-mono">
                         <select id="new-student-branch" class="border border-slate-300 rounded-lg p-2 bg-white">
                             <option value="علمي">علمي</option>
@@ -378,7 +388,7 @@
                             <tr class="bg-slate-100 text-slate-600 text-xs">
                                 <th class="p-3">#</th>
                                 <th class="p-3">رمز الطالب</th>
-                                <th class="p-3">الاسم الثلاثي</th>
+                                <th class="p-3">الاسم الثلاثي المعتمد</th>
                                 <th class="p-3">الفرع</th>
                                 <th class="p-3 text-center">حماية الجهاز</th>
                                 <th class="p-3 text-center">الحالة</th>
@@ -434,6 +444,7 @@
                         <input type="text" id="new-sub-name" required placeholder="اسم المادة الجديدة (مثال: التربية الدينية)" class="border border-slate-300 rounded-lg p-2.5 bg-white font-bold">
                         <select id="new-sub-icon" class="border border-slate-300 rounded-lg p-2.5 bg-white font-bold">
                             <option value="📘">📘 كتاب أزرق</option>
+                            <option value="🕌">🕌 تربية دينية</option>
                             <option value="📐">📐 رياضيات / هندسة</option>
                             <option value="⚡">⚡ فيزياء / كهرباء</option>
                             <option value="🧪">🧪 كيمياء / مخبر</option>
@@ -620,39 +631,36 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل بيانات الطالب الإجبارية (مع الميزة المخفية لرموز H) -->
+    <!-- نافذة تسجيل بيانات الطالب الإجبارية (محصورة بالمدخلين من المدير مع تثبيت الاسم الرسمي) -->
     <div id="student-reg-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border-t-4 border-indigo-600">
             <div class="flex justify-between items-center border-b pb-2">
                 <div>
-                    <h3 class="text-lg font-extrabold text-indigo-950">👨‍🎓 يرجى تسجيل الدخول للطالب</h3>
-                    <p class="text-xs text-slate-500">يرتبط رمزك تلقائياً بهذا الجهاز فقط ولا يقبل الدخول من هاتف آخر</p>
+                    <h3 class="text-lg font-extrabold text-indigo-950">👨‍🎓 تسجيل دخول الطالب المعتمد</h3>
+                    <p class="text-xs text-slate-500">الدخول مقتصر على الرموز المضافة من قِبل الإدارة ويرتبط ببصمة هذا الجهاز فقط</p>
                 </div>
                 <button id="close-reg-btn" onclick="closeStudentRegModal()" class="hidden text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
-            <div id="reg-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed">⚠️ يرجى تسجيل الدخول: يجب تعبئة اسمك الثلاثي ورمزك (A...) للمتابعة.</div>
+            <div id="reg-security-alert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 p-3 rounded-xl text-xs font-bold leading-relaxed">⚠️ يرجى إدخال رمز الطالب المعتمد من الإدارة (A...) للمتابعة.</div>
             
             <form onsubmit="saveStudentFirstTime(event)" class="space-y-3.5 text-sm">
-                <!-- حقل الاسم الثلاثي (يختفي تلقائياً إذا بدأ الرمز بحرف H) -->
-                <div id="reg-name-wrapper">
-                    <label class="block text-xs font-bold mb-1 text-slate-700">الاسم الثلاثي للطالب:</label>
-                    <input type="text" id="reg-student-name" required placeholder="مثال: أحمد محمد العلي" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-
-                <!-- حقل الرمز (يكتشف تلقائياً إذا كتب المستخدم H فيظهر كلمة المرور المخفية) -->
+                <!-- حقل الرمز (يكتشف تلقائياً إذا كتب المستخدم H فيظهر كلمة المرور المخفية، أو يطابق رمز الطالب المعتمد) -->
                 <div>
-                    <label class="block text-xs font-bold mb-1 text-slate-700">رمز الطالب (يبدأ بحرف A وبجانبه رقم):</label>
+                    <label class="block text-xs font-bold mb-1 text-slate-700">رمز الطالب المسلّم من الإدارة (يبدأ بحرف A):</label>
                     <input type="text" id="reg-student-code" required placeholder="مثال: A101" dir="ltr" oninput="checkSecretHostCode(this.value)" class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 text-left uppercase font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <p class="text-[11px] text-slate-500 mt-1">🔒 تنبيه: بمجرد تسجيل الرمز على هذا الهاتف، سيتم قفله ولن يعمل على أي هاتف آخر.</p>
+                    <p class="text-[11px] text-slate-500 mt-1">🔒 يُعتمد الاسم والفرع المثبتان من الإدارة تلقائياً ويُقفل الرمز على هذا الجهاز.</p>
                 </div>
 
-                <!-- حقل الفرع (يختفي تلقائياً إذا بدأ الرمز بحرف H) -->
-                <div id="reg-branch-wrapper">
-                    <label class="block text-xs font-bold mb-1 text-slate-700">الفرع / الاختصاص:</label>
-                    <select id="reg-student-branch" required class="w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="علمي">الفرع العلمي 🔬</option>
-                        <option value="أدبي">الفرع الأدبي 📖</option>
-                    </select>
+                <!-- عرض الاسم والفرع الرسميين المعتمدين من المدير بشكل للقراءة فقط -->
+                <div id="reg-official-info-wrapper" class="bg-indigo-50/80 border border-indigo-200 rounded-xl p-3 space-y-2 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-600">الاسم الرسمي المعتمد:</span>
+                        <span id="reg-official-name-preview" class="font-extrabold text-indigo-950">يُعرض تلقائياً عند مطابقة الرمز</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-600">الفرع المعتمد:</span>
+                        <span id="reg-official-branch-preview" class="font-extrabold text-emerald-800">-</span>
+                    </div>
                 </div>
 
                 <!-- الحقل المخفي لكلمة المرور (لا يظهر أبداً إلا عند كتابة H في خانة الرمز) -->
@@ -708,9 +716,6 @@
     </div>
 
     <script>
-        // =========================================================================
-        // دالة توحيد الأرقام الهندية والأحرف الكبيرة والصغيرة في كلمات السر والرموز
-        // =========================================================================
         function normalizeSecretText(str) {
             if (!str) return "";
             return String(str)
@@ -718,6 +723,16 @@
                 .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
                 .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
                 .toUpperCase();
+        }
+
+        function normalizeArabicName(str) {
+            if (!str) return "";
+            return String(str).trim().replace(/\s+/g, ' ').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه');
+        }
+
+        function isAlaaSpecialTeacher(name) {
+            const norm = normalizeArabicName(name);
+            return norm.includes('الاء') && (norm.includes('موال') || norm.includes('سلمان'));
         }
 
         // =========================================================================
@@ -832,7 +847,6 @@
 
         const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec"; 
 
-        // قفل الأمان لمنع مسح السحابة قبل اكتمال الجلب الأولي
         let isCloudDataLoadedSafely = false;
 
         const subjectColorPalettes = [
@@ -854,6 +868,7 @@
             { name: "الكيمياء", icon: "🧪", color: "bg-emerald-50 border-emerald-200 text-emerald-900", driveUrl: "" },
             { name: "علم الأحياء", icon: "🧬", color: "bg-teal-50 border-teal-200 text-teal-900", driveUrl: "" },
             { name: "اللغة العربية", icon: "📖", color: "bg-amber-50 border-amber-200 text-amber-900", driveUrl: "" },
+            { name: "التربية الدينية", icon: "🕌", color: "bg-emerald-50 border-emerald-200 text-emerald-900", driveUrl: "" },
             { name: "اللغة الإنكليزية", icon: "🌐", color: "bg-indigo-50 border-indigo-200 text-indigo-900", driveUrl: "" },
             { name: "اللغة الفرنسية", icon: "🗼", color: "bg-pink-50 border-pink-200 text-pink-900", driveUrl: "" },
             { name: "المعلوماتية", icon: "💻", color: "bg-cyan-50 border-cyan-200 text-cyan-900", driveUrl: "" },
@@ -865,7 +880,6 @@
 
         let syrianG10Subjects = JSON.parse(localStorage.getItem('g10_subjects_v10')) || defaultSyrianSubjects;
 
-        // الحسابات الثلاثة المستقلة الخاصة بلابتوبات البث (H1, H2, H3)
         const defaultBroadcastHosts = [
             { code: "H1", name: "لابتوب البث الرئيسي - قاعة 1", pin: "1010", deviceId: "", lastSeen: "-" },
             { code: "H2", name: "لابتوب البث الثاني - قاعة 2", pin: "2020", deviceId: "", lastSeen: "-" },
@@ -907,11 +921,11 @@
             { name: "أ. مناف جمول", subject: "الرياضيات", pin: "1111", deviceId: "" },
             { name: "أ. سامر الحسن", subject: "الفيزياء", pin: "2222", deviceId: "" },
             { name: "أ. ريم القاسم", subject: "الكيمياء", pin: "3333", deviceId: "" },
-            { name: "أ. علاء محمود", subject: "اللغة العربية", pin: "4444", deviceId: "" }
+            { name: "الآنسة آلاء سلمان موال", subject: "اللغة العربية", pin: "4444", deviceId: "" }
         ];
 
         let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
-            { teacher: "النظام الأمني", action: "تفعيل نظام الحماية المزدوج للبيانات السحابية", time: "اليوم" }
+            { teacher: "النظام الأمني", action: "تفعيل قصر دخول الطلاب على القائمة المعتمدة وتثبيت الاسم الرسمي", time: "اليوم" }
         ];
 
         let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
@@ -937,6 +951,163 @@
             }
         ];
 
+        function ensureReligionSubjectExists() {
+            if (!syrianG10Subjects.some(s => s.name === "التربية الدينية")) {
+                syrianG10Subjects.push({
+                    name: "التربية الدينية",
+                    icon: "🕌",
+                    color: "bg-emerald-50 border-emerald-200 text-emerald-900",
+                    driveUrl: ""
+                });
+            }
+        }
+
+        function getDraftStorageKey() {
+            const ownerKey = currentRole === 'teacher'
+                ? `teacher_${normalizeArabicName(currentTeacherName)}`
+                : (currentRole === 'admin' ? 'admin_global' : 'guest');
+            return `g10_lesson_draft_v1_${ownerKey}`;
+        }
+
+        function saveLessonDraft() {
+            if (currentRole !== 'teacher' && currentRole !== 'admin') return;
+            const draft = {
+                subject: document.getElementById('prep-subject').value,
+                branch: document.getElementById('prep-branch').value,
+                date: document.getElementById('prep-date').value,
+                title: document.getElementById('prep-title').value,
+                notes: document.getElementById('prep-notes').value,
+                pdf: document.getElementById('prep-pdf').value,
+                video: document.getElementById('prep-video').value,
+                updatedAt: new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' })
+            };
+            localStorage.setItem(getDraftStorageKey(), JSON.stringify(draft));
+            updateDraftBadgeUI(draft);
+        }
+
+        function restoreLessonDraftIfAny() {
+            const badge = document.getElementById('prep-draft-badge');
+            const clearBtn = document.getElementById('clear-draft-btn');
+            if (currentRole !== 'teacher' && currentRole !== 'admin') {
+                badge.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            const raw = localStorage.getItem(getDraftStorageKey());
+            if (!raw) {
+                badge.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const draft = JSON.parse(raw);
+                const hasContent = (draft.title && draft.title.trim() !== "") ||
+                                   (draft.notes && draft.notes.trim() !== "") ||
+                                   (draft.pdf && draft.pdf.trim() !== "") ||
+                                   (draft.video && draft.video.trim() !== "");
+
+                if (!hasContent) {
+                    badge.classList.add('hidden');
+                    clearBtn.classList.add('hidden');
+                    return;
+                }
+
+                if (draft.branch) document.getElementById('prep-branch').value = draft.branch;
+                if (draft.date) document.getElementById('prep-date').value = draft.date;
+                if (draft.title) document.getElementById('prep-title').value = draft.title;
+                if (draft.notes) document.getElementById('prep-notes').value = draft.notes;
+                if (draft.pdf) document.getElementById('prep-pdf').value = draft.pdf;
+                if (draft.video) document.getElementById('prep-video').value = draft.video;
+
+                const subSelect = document.getElementById('prep-subject');
+                if (draft.subject && Array.from(subSelect.options).some(o => o.value === draft.subject)) {
+                    subSelect.value = draft.subject;
+                }
+                updateDraftBadgeUI(draft);
+            } catch (e) {
+                badge.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function updateDraftBadgeUI(draft) {
+            const badge = document.getElementById('prep-draft-badge');
+            const clearBtn = document.getElementById('clear-draft-btn');
+            const hasContent = draft && ((draft.title && draft.title.trim() !== "") || (draft.notes && draft.notes.trim() !== "") || (draft.pdf && draft.pdf.trim() !== "") || (draft.video && draft.video.trim() !== ""));
+            if (hasContent) {
+                badge.innerText = `💾 مسودة محفوظة (${draft.updatedAt || 'الآن'})`;
+                badge.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function clearLessonDraft(askConfirm = false) {
+            if (askConfirm && !confirm("هل تريد مسح المسودة المحفوظة حالياً؟")) return;
+            localStorage.removeItem(getDraftStorageKey());
+            document.getElementById('prep-title').value = '';
+            document.getElementById('prep-notes').value = '';
+            document.getElementById('prep-pdf').value = '';
+            document.getElementById('prep-video').value = '';
+            document.getElementById('prep-date').value = new Date().toISOString().split('T')[0];
+            enforceTeacherSubjectLock();
+            updateDraftBadgeUI(null);
+        }
+
+        function enforceTeacherSubjectLock() {
+            const prepSubSelect = document.getElementById('prep-subject');
+            const lockText = document.getElementById('prep-lock-status-text');
+            if (!prepSubSelect) return;
+
+            if (currentRole === 'teacher') {
+                const tObj = teachers.find(t => normalizeArabicName(t.name) === normalizeArabicName(currentTeacherName));
+                const isAlaa = isAlaaSpecialTeacher(currentTeacherName);
+
+                if (isAlaa) {
+                    ensureReligionSubjectExists();
+                    renderSubjects();
+                    const allowedSubs = ["اللغة العربية", "التربية الدينية"];
+                    const prevVal = prepSubSelect.value;
+                    prepSubSelect.innerHTML = '';
+                    allowedSubs.forEach(sName => {
+                        prepSubSelect.innerHTML += `<option value="${sName}">${sName}</option>`;
+                    });
+                    prepSubSelect.value = allowedSubs.includes(prevVal) ? prevVal : (tObj && allowedSubs.includes(tObj.subject) ? tObj.subject : "اللغة العربية");
+                    prepSubSelect.disabled = false;
+                    prepSubSelect.className = "w-full border-2 border-amber-400 rounded-lg p-2.5 bg-amber-50 font-extrabold text-indigo-950";
+                    if (lockText) {
+                        lockText.innerHTML = `✨ حالة خاصة للآنسة آلاء سلمان موال: متاح لك <span class="text-amber-800 underline">اللغة العربية</span> و<span class="text-emerald-800 underline">التربية الدينية</span> فقط مع تأكيد النشر.`;
+                    }
+                } else {
+                    renderSubjects();
+                    const assignedSubject = (tObj && tObj.subject) ? tObj.subject : (syrianG10Subjects[0] ? syrianG10Subjects[0].name : "الرياضيات");
+                    if (!Array.from(prepSubSelect.options).some(o => o.value === assignedSubject)) {
+                        prepSubSelect.innerHTML = `<option value="${assignedSubject}">${assignedSubject}</option>` + prepSubSelect.innerHTML;
+                    }
+                    prepSubSelect.value = assignedSubject;
+                    prepSubSelect.disabled = true;
+                    prepSubSelect.className = "w-full border-2 border-indigo-300 rounded-lg p-2.5 bg-indigo-50/80 font-extrabold text-indigo-950 cursor-not-allowed";
+                    if (lockText) {
+                        lockText.innerHTML = `🔒 المادة مقفلة تلقائياً على تخصصك: <span class="bg-indigo-900 text-white px-2.5 py-0.5 rounded-md">${assignedSubject}</span> لمنع الخطأ أو النسيان.`;
+                    }
+                }
+            } else if (currentRole === 'admin') {
+                renderSubjects();
+                prepSubSelect.disabled = false;
+                prepSubSelect.className = "w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50 font-bold";
+                if (lockText) {
+                    lockText.innerHTML = `👑 صلاحية المدير العام: يمكنك اختيار أي مادة من المنهاج وسيطلب تأكيد النشر قبل الحفظ.`;
+                }
+            } else {
+                prepSubSelect.disabled = false;
+                prepSubSelect.className = "w-full border border-slate-300 rounded-lg p-2.5 bg-slate-50";
+            }
+        }
+
         function getActiveCloudUrl() {
             const saved = localStorage.getItem('g10_admin_cloud_url');
             return (saved && saved.trim() !== "") ? saved.trim() : DEFAULT_CLOUD_URL;
@@ -948,8 +1119,6 @@
                 document.getElementById('role-badge').innerText = `وضع الأستاذ: ${currentTeacherName} 👨‍🏫`;
                 document.getElementById('role-badge').className = "bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
                 document.getElementById('prep-teacher-label').innerText = `الأستاذ المحضّر: ${currentTeacherName}`;
-                const tObj = teachers.find(t => t.name === currentTeacherName);
-                if (tObj) document.getElementById('prep-subject').value = tObj.subject;
             } else if (currentRole === 'broadcaster') {
                 document.body.className = "bg-slate-100 text-slate-800 min-h-screen flex flex-col role-broadcaster";
                 document.getElementById('role-badge').innerText = `💻 ${currentTeacherName} (${currentHostCode})`;
@@ -964,6 +1133,9 @@
                 document.getElementById('role-badge').innerText = "وضع الطالب 👨‍🎓";
                 document.getElementById('role-badge').className = "bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs px-2.5 py-0.5 rounded-full font-bold";
             }
+
+            enforceTeacherSubjectLock();
+            restoreLessonDraftIfAny();
             updateHeaderButtons();
             updateStudentBarUI();
         }
@@ -996,30 +1168,46 @@
             }, 20000);
         });
 
-        // =========================================================================
-        // الميزة المخفية: مراقبة حقل الرمز؛ إذا بدأ بحرف H يفتح حقل كلمة السر فوراً
-        // =========================================================================
+        function updateStudentPreviewByCode(cleanCode) {
+            const namePreview = document.getElementById('reg-official-name-preview');
+            const branchPreview = document.getElementById('reg-official-branch-preview');
+            if (!namePreview || !branchPreview) return;
+
+            if (!cleanCode) {
+                namePreview.innerText = "يُعرض تلقائياً عند مطابقة الرمز";
+                branchPreview.innerText = "-";
+                return;
+            }
+
+            const matched = students.find(s => normalizeSecretText(s.code) === cleanCode);
+            if (matched) {
+                namePreview.innerText = matched.name;
+                branchPreview.innerText = matched.branch || "علمي";
+            } else if (/^A\d+$/.test(cleanCode)) {
+                namePreview.innerText = "غير موجود في القائمة المعتمدة";
+                branchPreview.innerText = "-";
+            } else {
+                namePreview.innerText = "بانتظار إدخال رمز صحيح (مثل A101)";
+                branchPreview.innerText = "-";
+            }
+        }
+
         function checkSecretHostCode(val) {
             const clean = normalizeSecretText(val);
             const pinWrapper = document.getElementById('secret-host-pin-wrapper');
             const pinInput = document.getElementById('reg-secret-host-pin');
-            const nameWrapper = document.getElementById('reg-name-wrapper');
-            const nameInput = document.getElementById('reg-student-name');
-            const branchWrapper = document.getElementById('reg-branch-wrapper');
+            const officialWrapper = document.getElementById('reg-official-info-wrapper');
 
             if (clean.startsWith('H')) {
                 pinWrapper.classList.remove('hidden');
                 pinInput.required = true;
-                nameWrapper.classList.add('hidden');
-                nameInput.required = false;
-                branchWrapper.classList.add('hidden');
+                if (officialWrapper) officialWrapper.classList.add('hidden');
             } else {
                 pinWrapper.classList.add('hidden');
                 pinInput.required = false;
                 pinInput.value = '';
-                nameWrapper.classList.remove('hidden');
-                nameInput.required = true;
-                branchWrapper.classList.remove('hidden');
+                if (officialWrapper) officialWrapper.classList.remove('hidden');
+                updateStudentPreviewByCode(clean);
             }
         }
 
@@ -1170,7 +1358,7 @@
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
                     updateStudentBarUI();
-                    openStudentRegModal(false, true, "🔄 تم إلغاء تسجيلك السابق من قِبل الإدارة، يرجى تسجيل الدخول من جديد!");
+                    openStudentRegModal(false, true, "🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة أو إعادة التسجيل!");
                     return;
                 }
                 if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
@@ -1187,6 +1375,15 @@
                     openStudentRegModal(false, true, "⛔ هذا الرمز مرتبط بهاتف آخر! يرجى تسجيل الدخول برمزك الصحيح أو مراجعة الإدارة.");
                     return;
                 }
+                // مزامنة الاسم والفرع الرسميين المعتمدين من المدير باستمرار
+                currentStudentProfile = {
+                    name: cloudStudent.name,
+                    code: normalizeSecretText(cloudStudent.code),
+                    branch: cloudStudent.branch || "علمي",
+                    deviceId: cloudStudent.deviceId
+                };
+                localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+                updateStudentBarUI();
             } else if (currentRole === 'teacher') {
                 const tObj = teachers.find(t => t.name === currentTeacherName);
                 if (!tObj || (tObj.deviceId && tObj.deviceId !== "" && tObj.deviceId !== THIS_DEVICE_ID)) {
@@ -1220,27 +1417,24 @@
             }
 
             if (showSecurityWarning) {
-                secAlert.innerText = customMsg || "⚠️ يرجى تسجيل الدخول: لا يمكنك تصفح المنصة قبل إدخال اسمك الثلاثي ورمزك (A...).";
+                secAlert.innerText = customMsg || "⚠️ يرجى إدخال رمز الطالب المعتمد من الإدارة (A...) للمتابعة.";
                 secAlert.classList.remove('hidden');
             } else {
                 secAlert.classList.add('hidden');
             }
 
+            const codeInput = document.getElementById('reg-student-code');
             if (currentStudentProfile) {
-                document.getElementById('reg-student-name').value = currentStudentProfile.name;
-                document.getElementById('reg-student-code').value = currentStudentProfile.code;
-                document.getElementById('reg-student-branch').value = currentStudentProfile.branch;
-                checkSecretHostCode(currentStudentProfile.code);
-            } else {
-                checkSecretHostCode(document.getElementById('reg-student-code').value);
+                codeInput.value = currentStudentProfile.code;
             }
+            checkSecretHostCode(codeInput.value);
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
 
         function closeStudentRegModal() {
             if (currentRole === 'student' && !currentStudentProfile) {
-                alert("⚠️ يرجى تسجيل الدخول أولاً بإدخال اسمك الثلاثي ورمزك (A...)!");
+                alert("⚠️ يرجى إدخال رمز الطالب المعتمد من الإدارة (A...) أولاً!");
                 return;
             }
             document.getElementById('student-reg-modal').classList.add('hidden');
@@ -1254,10 +1448,10 @@
             openLoginModal(mode);
         }
 
-        // معالجة الدخول من نافذة الطالب (سواء كان طالباً عادياً A أو لابتوب بث مخفي H)
         async function saveStudentFirstTime(event) {
             event.preventDefault();
             const btn = document.getElementById('reg-submit-btn');
+            const secAlert = document.getElementById('reg-security-alert');
             let code = normalizeSecretText(document.getElementById('reg-student-code').value);
 
             // 1. إذا كان الرمز يبدأ بحرف H -> معالجة دخول لابتوب البث المخفي
@@ -1301,7 +1495,6 @@
                     isStaffLoggingIn = false;
                     btn.disabled = false;
                     btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
-                    const secAlert = document.getElementById('reg-security-alert');
                     secAlert.innerText = `⛔ هذا الحساب (${hostObj.code}) مرتبط بلابتوب آخر! يجب فك القفل من لوحة المدير أولاً.`;
                     secAlert.classList.remove('hidden');
                     return;
@@ -1337,62 +1530,60 @@
                 return;
             }
 
-            // 2. إذا كان طالباً عادياً (يبدأ بحرف A)
-            const name = document.getElementById('reg-student-name').value.trim();
-            const branch = document.getElementById('reg-student-branch').value;
-
-            if (name.split(' ').filter(Boolean).length < 2) {
-                alert("⚠️ يرجى كتابة الاسم الثلاثي الكامل بشكل واضح!");
-                return;
-            }
-
+            // 2. قصر دخول الطلاب على القائمة المعتمدة من المدير وتثبيت الاسم الرسمي
             if (!/^A\d+$/.test(code)) {
                 alert("⚠️ يرجى إدخال رمز طالب صحيح يبدأ بحرف A وبجانبه رقم (مثال: A101)");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "⏳ جارٍ التحقق من بصمة الجهاز عبر السحابة...";
+            btn.innerText = "⏳ جارٍ التحقق من اعتماد الرمز وبصمة الجهاز...";
 
             await fetchFromCloud(false, true, true);
+            updateStudentPreviewByCode(code);
 
             const existingByCode = students.findIndex(s => normalizeSecretText(s.code) === code);
 
-            if (existingByCode > -1) {
-                const registeredStudent = students[existingByCode];
-                if (registeredStudent.deviceId && registeredStudent.deviceId !== "" && registeredStudent.deviceId !== THIS_DEVICE_ID) {
-                    btn.disabled = false;
-                    btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
-                    const secAlert = document.getElementById('reg-security-alert');
-                    secAlert.innerText = `⛔ مرفوض! الرمز (${code}) مسجل مسبقاً باسم (${registeredStudent.name}) ومرتبط بهاتف آخر. لا يُسمح بالدخول من جهازين مختلفين إلا بعد فك القفل من قِبل الأستاذ أو المدير.`;
-                    secAlert.classList.remove('hidden');
-                    alert(`⛔ الرمز (${code}) مرتبط بجهاز آخر! لا يمكنك الدخول من هاتفين.`);
-                    return;
-                }
+            // رفض أي رمز غير مضاف من قِبل المدير
+            if (existingByCode === -1) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = `⛔ مرفوض! الرمز (${code}) غير موجود ضمن الطلاب المضافين من قِبل المدير. لا يمكن إضافة طلاب جدد من صفحة الدخول.`;
+                secAlert.classList.remove('hidden');
+                alert(`⛔ الرمز (${code}) غير معتمد من الإدارة.`);
+                return;
             }
 
+            const registeredStudent = students[existingByCode];
+
+            // التحقق من بصمة الجهاز
+            if (registeredStudent.deviceId && registeredStudent.deviceId !== "" && registeredStudent.deviceId !== THIS_DEVICE_ID) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = `⛔ مرفوض! الرمز (${code}) الخاص بالطالب (${registeredStudent.name}) مرتبط بهاتف آخر. راجع الإدارة لفك القفل عند الحاجة.`;
+                secAlert.classList.remove('hidden');
+                alert(`⛔ الرمز (${code}) مرتبط بجهاز آخر!`);
+                return;
+            }
+
+            // اعتماد الاسم والفرع المثبتين من قِبل المدير دون السماح بتغييرهما
+            const officialName = registeredStudent.name;
+            const officialBranch = registeredStudent.branch || "علمي";
             const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
 
-            if (existingByCode > -1) {
-                students[existingByCode].name = name;
-                students[existingByCode].branch = branch;
-                students[existingByCode].deviceId = THIS_DEVICE_ID;
-                students[existingByCode].present = true;
-                students[existingByCode].time = nowTime;
-                students[existingByCode].note = "أعاد تسجيل الدخول وربط الجهاز";
-            } else {
-                students.push({
-                    name: name,
-                    code: code,
-                    branch: branch,
-                    deviceId: THIS_DEVICE_ID,
-                    present: true,
-                    time: nowTime,
-                    note: "مسجل ومقفل على جهازه"
-                });
-            }
+            students[existingByCode].name = officialName;
+            students[existingByCode].branch = officialBranch;
+            students[existingByCode].deviceId = THIS_DEVICE_ID;
+            students[existingByCode].present = true;
+            students[existingByCode].time = nowTime;
+            students[existingByCode].note = "تم الدخول وربط الجهاز بالاسم الرسمي المعتمد";
 
-            currentStudentProfile = { name, code, branch, deviceId: THIS_DEVICE_ID };
+            currentStudentProfile = {
+                name: officialName,
+                code: code,
+                branch: officialBranch,
+                deviceId: THIS_DEVICE_ID
+            };
             localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
 
             saveAllLocal();
@@ -1404,7 +1595,7 @@
             btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
             closeStudentRegModal();
             syncToCloud(false);
-            alert(`✅ تم تسجيل دخولك يا (${name}) وربط الرمز (${code}) بهذا الجهاز حصرياً!`);
+            alert(`✅ أهلاً بك يا (${officialName})! تم تثبيت اسمك الرسمي وربط الرمز (${code}) بهذا الجهاز.`);
         }
 
         function updateStudentBarUI() {
@@ -1434,9 +1625,6 @@
             el.className = `text-[11px] px-2.5 py-0.5 rounded-full font-bold ${classes}`;
         }
 
-        // =========================================================================
-        // دوال المزامنة المؤمّنة ضد مسح بيانات الطلاب والأساتذة
-        // =========================================================================
         async function fetchFromCloud(showAlert = false, silent = false, skipSessionVerify = false) {
             const url = getActiveCloudUrl();
             if (!url) return;
@@ -1446,11 +1634,9 @@
                 const data = await res.json();
                 
                 if (data && Array.isArray(data.lessons)) {
-                    // حماية قائمة الطلاب من الاستبدال بقائمة فارغة بالخطأ
                     if (Array.isArray(data.students) && (data.students.length > 0 || students.length === 0)) {
                         students = data.students;
                     }
-                    // حماية قائمة الأساتذة
                     if (Array.isArray(data.teachers) && data.teachers.length > 0) {
                         teachers = data.teachers;
                     }
@@ -1477,11 +1663,11 @@
                         localStorage.setItem('g10_admin_device_id', adminDeviceId);
                     }
 
-                    // تفعيل قفل الأمان بعد التأكد من نجاح الجلب
                     isCloudDataLoadedSafely = true;
 
                     saveAllLocal();
                     renderSubjects();
+                    enforceTeacherSubjectLock();
                     renderLessons();
                     renderStudents();
                     renderQuizzes();
@@ -1494,7 +1680,6 @@
 
                     if (showAlert) alert("✅ تم جلب أحدث المواد والدروس وحسابات الطلاب والأساتذة من السحابة بنجاح!");
                 } else {
-                    // عدم استدعاء syncToCloud تلقائياً هنا لمنع مسح السحابة من متصفح جديد فارغ
                     updateSyncBadge("⚠️ السحابة قيد التهيئة", "bg-amber-500/20 text-amber-300");
                 }
             } catch (e) {
@@ -1507,7 +1692,6 @@
             const url = getActiveCloudUrl();
             if (!url) return;
 
-            // منع أي متصفح جديد لم يحمّل البيانات بعد من مسح السحابة بالخطأ
             if (!isCloudDataLoadedSafely && !showAlert) {
                 console.warn("تم منع الرفع التلقائي لحماية السحابة لأن البيانات الأصلية لم تُجلب بعد.");
                 return;
@@ -1623,7 +1807,7 @@
             document.getElementById('login-modal').classList.remove('flex');
 
             if (currentRole === 'student' && !currentStudentProfile) {
-                openStudentRegModal(false, true, "⚠️ تنبيه: تم إلغاء الدخول. يرجى تسجيل الدخول كطالب أولاً!");
+                openStudentRegModal(false, true, "⚠️ تنبيه: تم إلغاء الدخول. يرجى إدخال رمز الطالب المعتمد أولاً!");
             }
         }
 
@@ -1645,7 +1829,6 @@
                 const pin = normalizeSecretText(document.getElementById('login-teacher-pin').value);
                 const teacher = teachers[idx];
 
-                // مقارنة ذكية تتجاهل حالة الأحرف والأرقام الهندية
                 if (teacher && normalizeSecretText(teacher.pin) === pin) {
                     if (teacher.deviceId && teacher.deviceId !== "" && teacher.deviceId !== THIS_DEVICE_ID) {
                         teacherLogs.unshift({
@@ -1800,6 +1983,10 @@
                 btnElement.classList.add('bg-indigo-600', 'text-white');
                 btnElement.classList.remove('text-indigo-200');
             }
+            if (tabId === 'prep-tab') {
+                enforceTeacherSubjectLock();
+                restoreLessonDraftIfAny();
+            }
         }
 
         function renderSubjects() {
@@ -1807,6 +1994,8 @@
             const prepSelect = document.getElementById('prep-subject');
             const quizSelect = document.getElementById('quiz-sub');
             const newTSub = document.getElementById('new-t-subject');
+            const prevPrepVal = prepSelect ? prepSelect.value : "";
+
             grid.innerHTML = ''; prepSelect.innerHTML = ''; quizSelect.innerHTML = ''; newTSub.innerHTML = '';
 
             syrianG10Subjects.forEach((sub, idx) => {
@@ -1826,6 +2015,10 @@
                 const opt = `<option value="${sub.name}">${sub.name}</option>`;
                 prepSelect.innerHTML += opt; quizSelect.innerHTML += opt; newTSub.innerHTML += opt;
             });
+
+            if (prevPrepVal && Array.from(prepSelect.options).some(o => o.value === prevPrepVal)) {
+                prepSelect.value = prevPrepVal;
+            }
         }
 
         async function addSubjectByAdmin(e) {
@@ -1986,6 +2179,7 @@
             const area = document.getElementById('prep-notes');
             area.value += " " + latex + " ";
             area.focus();
+            saveLessonDraft();
         }
 
         function renderLessons() {
@@ -2006,6 +2200,11 @@
                     ? `<span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-bold">أدبي</span>`
                     : (lesson.branch === "علمي وأدبي" ? `<span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded font-bold">علمي وأدبي</span>` : `<span class="bg-sky-100 text-sky-800 text-xs px-2 py-0.5 rounded font-bold">علمي</span>`);
                 
+                const canEditThisSubject = currentRole === 'admin' || (currentRole === 'teacher' && (isAlaaSpecialTeacher(currentTeacherName) || normalizeArabicName(lesson.teacher) === normalizeArabicName(currentTeacherName)));
+                const editSubBtn = canEditThisSubject 
+                    ? `<button onclick="editLessonSubject(${realIdx})" class="mt-1 inline-flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 px-2 py-0.5 rounded text-[10px] font-bold" title="تصحيح اسم المادة">✏️ المادة</button>`
+                    : '';
+
                 let pdfCellHtml = `<span class="text-xs text-slate-400">لا يوجد</span>`;
                 if (lesson.pdf && lesson.pdf.trim() !== "") {
                     pdfCellHtml = `
@@ -2034,7 +2233,10 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50">
-                        <td class="p-3 font-extrabold text-indigo-950">${lesson.subject}</td>
+                        <td class="p-3 font-extrabold text-indigo-950">
+                            <div>${lesson.subject}</div>
+                            ${editSubBtn}
+                        </td>
                         <td class="p-3 whitespace-nowrap">${branchBadge}</td>
                         <td class="p-3 text-xs font-bold text-amber-800">${lesson.teacher || 'الإدارة'}</td>
                         <td class="p-3 font-bold">${lesson.title}</td>
@@ -2052,6 +2254,41 @@
                 `;
             });
             if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+        }
+
+        async function editLessonSubject(index) {
+            const lesson = lessons[index];
+            if (!lesson) return;
+
+            let availableSubjects = syrianG10Subjects.map(s => s.name);
+            if (currentRole === 'teacher' && isAlaaSpecialTeacher(currentTeacherName)) {
+                availableSubjects = ["اللغة العربية", "التربية الدينية"];
+            }
+
+            const promptMsg = `✏️ تصحيح اسم المادة لدرس: "${lesson.title}"\nالمادة الحالية: ${lesson.subject}\n\nاختر أو اكتب اسم المادة الصحيح:\n(${availableSubjects.join(' - ')})`;
+            const chosen = prompt(promptMsg, lesson.subject);
+            if (!chosen || chosen.trim() === "") return;
+
+            const cleanChosen = chosen.trim();
+            if (currentRole === 'teacher' && isAlaaSpecialTeacher(currentTeacherName) && !["اللغة العربية", "التربية الدينية"].includes(cleanChosen)) {
+                return alert("⚠️ يمكنك التبديل بين (اللغة العربية) و(التربية الدينية) فقط!");
+            }
+
+            const oldSub = lesson.subject;
+            lessons[index].subject = cleanChosen;
+
+            teacherLogs.unshift({
+                teacher: currentTeacherName || "الإدارة",
+                action: `✏️ تعديل مادة الدرس (${lesson.title}) من (${oldSub}) إلى (${cleanChosen})`,
+                time: new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' })
+            });
+            if (teacherLogs.length > 50) teacherLogs.pop();
+
+            saveAllLocal();
+            renderLessons();
+            renderAdminDashboard();
+            await syncToCloud(false);
+            alert(`✅ تم تصحيح مادة الدرس إلى (${cleanChosen})!`);
         }
 
         async function attachLessonRecording(index) {
@@ -2128,12 +2365,20 @@
 
         async function saveLesson(event) {
             event.preventDefault();
-            const sub = document.getElementById('prep-subject').value;
+            enforceTeacherSubjectLock();
+
+            const subSelect = document.getElementById('prep-subject');
+            const sub = subSelect.value;
             const branch = document.getElementById('prep-branch').value;
             const title = document.getElementById('prep-title').value;
             const pdfUrl = document.getElementById('prep-pdf').value.trim();
             const videoUrl = document.getElementById('prep-video').value.trim();
             const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
+
+            if (currentRole === 'admin' || isAlaaSpecialTeacher(currentTeacherName)) {
+                const confirmed = confirm(`⚠️ تأكيد نشر الدرس:\nالمادة: (${sub})\nالفرع: (${branch})\nالعنوان: (${title})\n\nهل اسم المادة صحيح وتود حفظ الدرس؟`);
+                if (!confirmed) return;
+            }
 
             lessons.unshift({
                 subject: sub,
@@ -2153,14 +2398,23 @@
             });
             if (teacherLogs.length > 50) teacherLogs.pop();
 
+            localStorage.removeItem(getDraftStorageKey());
+            updateDraftBadgeUI(null);
+
             saveAllLocal();
             renderLessons();
             renderAdminDashboard();
-            document.getElementById('prep-form').reset();
+
+            document.getElementById('prep-title').value = '';
+            document.getElementById('prep-notes').value = '';
+            document.getElementById('prep-pdf').value = '';
+            document.getElementById('prep-video').value = '';
             document.getElementById('prep-date').value = new Date().toISOString().split('T')[0];
+            enforceTeacherSubjectLock();
+
             await syncToCloud(false);
 
-            alert('✅ تم حفظ تحضير الدرس!');
+            alert(`✅ تم حفظ تحضير الدرس بنجاح تحت مادة (${sub})!`);
             switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
         }
 
@@ -2202,7 +2456,6 @@
                     : `⏳ غير مقفل حالياً (سيُقفل تلقائياً عند أول دخول للمدير)`;
             }
 
-            // جدول إدارة المواد في لوحة المدير
             const subTbody = document.getElementById('admin-subjects-tbody');
             if (subTbody) {
                 subTbody.innerHTML = '';
@@ -2231,7 +2484,6 @@
                 });
             }
 
-            // جدول إدارة لابتوبات البث (H1, H2, H3)
             const hBody = document.getElementById('hosts-list-body');
             if (hBody) {
                 hBody.innerHTML = '';
@@ -2262,7 +2514,6 @@
                 });
             }
 
-            // جدول الأساتذة
             const tBody = document.getElementById('teachers-list-body');
             tBody.innerHTML = '';
             teachers.forEach((t, i) => {
@@ -2461,7 +2712,7 @@
                 deviceId: "",
                 present: false,
                 time: "-",
-                note: "أُضيف يدوياً (مطالب بتسجيل الدخول)"
+                note: "معتمد رسمياً من الإدارة (مطالب بتسجيل الدخول)"
             });
             nameInput.value = '';
             codeInput.value = '';
@@ -2487,7 +2738,7 @@
 
         function exportAttendanceCSV() {
             const date = new Date().toISOString().split('T')[0];
-            let csv = "\uFEFFالرقم,رمز الطالب,الاسم الثلاثي,الفرع,حالة الجهاز,التاريخ,الحالة,وقت الدخول,ملاحظات\n";
+            let csv = "\uFEFFالرقم,رمز الطالب,الاسم الثلاثي المعتمد,الفرع,حالة الجهاز,التاريخ,الحالة,وقت الدخول,ملاحظات\n";
             students.forEach((s, i) => csv += `${i+1},"${s.code || ''}","${s.name}","${s.branch || 'علمي'}","${s.deviceId ? 'مرتبط بجهاز' : 'مطالب بتسجيل الدخول'}","${date}","${s.present?'حاضر':'غائب'}","${s.time}","${s.note}"\n`);
             const link = document.createElement("a");
             link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
