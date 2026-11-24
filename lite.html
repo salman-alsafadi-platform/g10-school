@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>المنصة التعليمية الافتراضية - النسخة الخفيفة (الصف العاشر)</title>
+    <meta name="theme-color" content="#1e1b4b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- تحميل الخط بشكل غير معطل للصفحة عند ضعف الإنترنت -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" media="print" onload="this.media='all'">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Cairo', Tahoma, Arial, sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* الشريط العلوي */
+        .header {
+            background-color: #1e1b4b;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+        .header-top {
+            padding: 10px 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .logo-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background-color: #312e81;
+            border: 2px solid #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        .brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .badges-row {
+            margin-top: 2px;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+        .badge-student {
+            background-color: #0369a1;
+            color: #e0f2fe;
+        }
+        .badge-sync-wait {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        .badge-sync-ok {
+            background-color: #065f46;
+            color: #a7f3d0;
+        }
+        .badge-sync-err {
+            background-color: #9f1239;
+            color: #fecdd3;
+        }
+        .student-bar {
+            font-size: 12px;
+            color: #c7d2fe;
+            margin-top: 3px;
+        }
+        .header-actions {
+            margin-top: 4px;
+        }
+
+        /* شريط التبويبات */
+        .nav-bar {
+            background-color: #312e81;
+            border-top: 1px solid #4338ca;
+            padding: 8px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .nav-btn {
+            display: inline-block;
+            border: none;
+            background-color: transparent;
+            color: #c7d2fe;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        .nav-btn.active {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+
+        /* الأزرار العامة */
+        .btn {
+            display: inline-block;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .btn-indigo { background-color: #4338ca; color: #ffffff; }
+        .btn-emerald { background-color: #059669; color: #ffffff; }
+        .btn-amber { background-color: #f59e0b; color: #0f172a; }
+        .btn-purple { background-color: #7c3aed; color: #ffffff; }
+        .btn-green { background-color: #dcfce7; color: #166534; }
+        .btn-slate { background-color: #e2e8f0; color: #1e293b; }
+        .btn-refresh { background-color: #3730a3; color: #ffffff; border: 1px solid #6366f1; }
+
+        /* المحتوى والبطاقات */
+        .main-content {
+            padding: 16px 0 32px 0;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        /* بانر القاعة المباشرة */
+        .live-banner {
+            background-color: #1e1b4b;
+            color: #ffffff;
+            border: 1px solid #4338ca;
+        }
+        .live-banner h2 {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 6px 0 4px 0;
+        }
+        .live-banner p {
+            font-size: 12px;
+            color: #c7d2fe;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .btn-group .btn {
+            margin-left: 8px;
+            margin-bottom: 8px;
+            flex: 1 1 180px;
+        }
+
+        /* بانر الـ Drive */
+        .drive-banner {
+            background-color: #fffbeb;
+            border: 2px solid #fcd34d;
+        }
+        .drive-banner h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .drive-banner p {
+            font-size: 12px;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        /* شبكة المواد */
+        .section-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .section-head h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .subjects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -5px 14px -5px;
+        }
+        .subject-col {
+            width: 50%;
+            padding: 5px;
+        }
+        @media (min-width: 640px) {
+            .subject-col { width: 33.333%; }
+        }
+        @media (min-width: 900px) {
+            .subject-col { width: 20%; }
+        }
+        .subject-card {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            height: 100%;
+        }
+        .subject-card-top {
+            display: flex;
+            align-items: center;
+        }
+        .subject-icon {
+            font-size: 20px;
+            margin-left: 8px;
+        }
+        .subject-name {
+            font-size: 13px;
+            font-weight: 800;
+            word-break: break-word;
+        }
+        .subject-drive-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            background-color: #ffffff;
+            color: #312e81;
+            border: 1px solid #c7d2fe;
+            padding: 2px 7px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        /* جدول الدروس */
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+            font-size: 13px;
+        }
+        thead tr {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 12px;
+        }
+        th, td {
+            padding: 10px 8px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        .branch-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .branch-sci { background-color: #e0f2fe; color: #075985; }
+        .branch-lit { background-color: #fef3c7; color: #92400e; }
+        .branch-both { background-color: #f3e8ff; color: #6b21a8; }
+
+        /* سبر المعلومات */
+        .quiz-card {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+        .quiz-opt {
+            display: block;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 9px 10px;
+            margin-top: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .quiz-opt input {
+            margin-left: 8px;
+        }
+        .quiz-opt.opt-correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+            font-weight: 700;
+        }
+        .quiz-opt.opt-wrong {
+            background-color: #ffe4e6;
+            border-color: #f43f5e;
+        }
+        .score-box {
+            display: inline-block;
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        /* النوافذ المنبثقة */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.92);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            overflow-y: auto;
+        }
+        .modal-box {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 430px;
+            border-radius: 16px;
+            padding: 20px;
+            border-top: 5px solid #4f46e5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .modal-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #1e1b4b;
+            margin-bottom: 4px;
+        }
+        .modal-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 14px;
+        }
+        .alert-danger {
+            background-color: #fff1f2;
+            border: 1px solid #fda4af;
+            color: #9f1239;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            border: 1px solid #94a3b8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 15px;
+            text-align: left;
+            text-transform: uppercase;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .preview-box {
+            background-color: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        /* مشغل الفيديو المتوافق مع الهواتف القديمة */
+        .video-modal-box {
+            background-color: #0f172a;
+            width: 100%;
+            max-width: 780px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .video-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background-color: #020617;
+            color: #ffffff;
+        }
+        .video-ratio-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            background-color: #000000;
+        }
+        .video-ratio-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشريط العلوي -->
+    <header class="header">
+        <div class="container header-top">
+            <div class="brand-box">
+                <div class="logo-badge">🎓</div>
+                <div>
+                    <div class="brand-title">المنصة التعليمية - الصف العاشر</div>
+                    <div class="badges-row">
+                        <span class="badge badge-student">وضع الطالب (النسخة الخفيفة)</span>
+                        <span id="sync-status" class="badge badge-sync-wait">⏳ جارٍ الاتصال...</span>
+                    </div>
+                    <div id="student-info-bar" class="student-bar">الصف العاشر (علمي / أدبي) - المنهاج السوري</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button onclick="fetchFromCloud(true, false, false, true)" class="btn btn-sm btn-refresh">🔄 تحديث البيانات</button>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="container">
+                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn active">📚 القاعة المباشرة والمواد</button>
+                <button id="nav-btn-quiz" onclick="switchTab('quiz-tab', this)" class="nav-btn">🧠 سبر المعلومات</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container main-content">
+
+        <!-- 1. قسم القاعة المباشرة والمواد والدروس -->
+        <section id="subjects-tab" class="tab-content active">
+
+            <!-- بانر القاعة الدراسية الموحدة -->
+            <div class="card live-banner">
+                <span class="badge badge-sync-ok">● البث المباشر الموحد لليوم الدراسي</span>
+                <h2>📹 قاعة الدوام الافتراضية (Google Meet)</h2>
+                <p>اضغط على زر فرعك للدخول مباشرة إلى القاعة وتسجيل حضورك تلقائياً</p>
+                <div class="btn-group">
+                    <button onclick="joinDailyLiveRoom('علمي')" class="btn btn-emerald">🔬 دخول قاعة العلمي المباشرة</button>
+                    <button onclick="joinDailyLiveRoom('أدبي')" class="btn btn-amber">📖 دخول قاعة الأدبي المباشرة</button>
+                </div>
+            </div>
+
+            <!-- مكتبة المنهاج والوظائف -->
+            <div class="card drive-banner">
+                <h3>📂 مكتبة المنهاج الشاملة والوظائف (Google Drive)</h3>
+                <p>الوصول السريع إلى الكتب المدرسية، الملخصات، وأوراق العمل، ونموذج تسليم الوظائف</p>
+                <div class="btn-group">
+                    <button onclick="openGeneralDriveFolder()" class="btn btn-indigo">☁️ فتح مجلد المواد والملخصات (Drive) ↗</button>
+                    <button id="homework-drive-btn" onclick="openHomeworkDriveFolder()" class="btn btn-emerald hidden">📝 نموذج تسليم الوظائف ↗</button>
+                </div>
+            </div>
+
+            <!-- مواد المنهاج -->
+            <div class="section-head">
+                <h2>📚 مواد المنهاج وأرشيف الدروس</h2>
+                <button onclick="filterLessons('الكل')" class="btn btn-sm btn-indigo">عرض كل المواد</button>
+            </div>
+            <div id="subjects-grid" class="subjects-grid"></div>
+
+            <!-- جدول الدروس -->
+            <div class="card">
+                <div class="section-head" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px;">
+                    <h2>📌 جدول الدروس والتسجيلات <span id="current-filter-badge" class="badge badge-student">الكل</span></h2>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المادة</th>
+                                <th>الفرع</th>
+                                <th>الأستاذ</th>
+                                <th>عنوان الدرس</th>
+                                <th>الشرح والوظيفة</th>
+                                <th>التاريخ</th>
+                                <th>ملخص / وظيفة</th>
+                                <th>تسجيل الحصة</th>
+                                <th>مشاركة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessons-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. قسم سبر المعلومات -->
+        <section id="quiz-tab" class="tab-content">
+            <div class="card">
+                <div class="section-head" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 14px;">
+                    <div>
+                        <h2>🧠 سبر المعلومات المؤتمت</h2>
+                        <p style="font-size: 12px; color: #64748b;">اختر الإجابة الصحيحة ثم اضغط على تصحيح الاختبار</p>
+                    </div>
+                    <div id="quiz-score-badge" class="score-box hidden"></div>
+                </div>
+                <div id="quiz-questions-container"></div>
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e2e8f0; text-align: left;">
+                    <button onclick="resetQuiz()" class="btn btn-slate" style="margin-left: 8px;">إعادة المحاولة</button>
+                    <button onclick="submitQuiz()" class="btn btn-indigo">✅ تصحيح الاختبار</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- نافذة دخول الطالب الإجبارية (محصورة بالرموز المعتمدة من المدير فقط) -->
+    <div id="student-reg-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-title">👨‍🎓 تسجيل دخول الطالب المعتمد</div>
+            <div class="modal-sub">أدخل رمزك المسلّم من الإدارة؛ يظهر اسمك تلقائياً ويُربط الرمز ببصمة هذا الجهاز فقط</div>
+            <div id="reg-security-alert" class="alert-danger hidden"></div>
+
+            <form onsubmit="saveStudentFirstTime(event)">
+                <label class="form-label" for="reg-student-code">رمز الطالب (يبدأ بحرف A، مثال: A101):</label>
+                <input type="text" id="reg-student-code" class="form-input" required placeholder="A101" dir="ltr" oninput="updateStudentPreviewByCode(this.value)">
+
+                <div class="preview-box">
+                    <div class="preview-row">
+                        <span style="color:#475569; font-weight:700;">الاسم الرسمي المعتمد:</span>
+                        <span id="reg-official-name-preview" style="color:#1e1b4b; font-weight:800;">يُعرض تلقائياً عند مطابقة الرمز</span>
+                    </div>
+                    <div class="preview-row" style="margin-bottom:0;">
+                        <span style="color:#475569; font-weight:700;">الفرع المعتمد:</span>
+                        <span id="reg-official-branch-preview" style="color:#065f46; font-weight:800;">-</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="reg-submit-btn" class="btn btn-indigo" style="width:100%; padding:12px;">✅ تسجيل الدخول وربط هذا الجهاز</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة مشغل الفيديو -->
+    <div id="video-player-modal" class="modal-overlay hidden">
+        <div class="video-modal-box">
+            <div class="video-modal-head">
+                <span id="video-modal-title" style="font-size:13px; font-weight:800; color:#a5b4fc;">🎬 مشاهدة الدرس</span>
+                <div>
+                    <a id="video-external-link" href="#" target="_blank" class="btn btn-sm btn-indigo" style="margin-left:8px;">فتح خارجياً ↗</a>
+                    <button onclick="closeVideoPlayer()" class="btn btn-sm btn-slate">✕ إغلاق</button>
+                </div>
+            </div>
+            <div class="video-ratio-wrap" id="video-iframe-container"></div>
+        </div>
+    </div>
+
+    <script>
+        var DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec";
+
+        var isCloudDataLoadedSafely = false;
+        var isSyncingNow = false;
+        var localWriteEpoch = 0;
+        var lastCloudWriteAt = 0;
+        var currentSubjectFilter = "الكل";
+
+        function normalizeSecretText(str) {
+            if (!str) return "";
+            return String(str)
+                .trim()
+                .replace(/[٠-٩]/g, function(d) { return "٠١٢٣٤٥٦٧٨٩".indexOf(d); })
+                .replace(/[۰-۹]/g, function(d) { return "۰۱۲۳۴۵۶۷۸۹".indexOf(d); })
+                .toUpperCase();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function getOrCreateDeviceId() {
+            var devId = localStorage.getItem('g10_unique_device_id');
+            if (!devId) {
+                devId = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+                localStorage.setItem('g10_unique_device_id', devId);
+            }
+            return devId;
+        }
+        var THIS_DEVICE_ID = getOrCreateDeviceId();
+
+        function safeParseLocal(key, fallback) {
+            try {
+                var raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        var currentStudentProfile = safeParseLocal('g10_student_profile', null);
+        var syrianG10Subjects = safeParseLocal('g10_subjects_v10', [
+            { name: "الرياضيات", icon: "📐", driveUrl: "" },
+            { name: "الفيزياء", icon: "⚡", driveUrl: "" },
+            { name: "الكيمياء", icon: "🧪", driveUrl: "" },
+            { name: "علم الأحياء", icon: "🧬", driveUrl: "" },
+            { name: "اللغة العربية", icon: "📖", driveUrl: "" },
+            { name: "التربية الدينية", icon: "🕌", driveUrl: "" },
+            { name: "اللغة الإنكليزية", icon: "🌐", driveUrl: "" },
+            { name: "اللغة الفرنسية", icon: "🗼", driveUrl: "" },
+            { name: "المعلوماتية", icon: "💻", driveUrl: "" },
+            { name: "التاريخ", icon: "🏛️", driveUrl: "" },
+            { name: "الجغرافيا", icon: "🌍", driveUrl: "" },
+            { name: "الفلسفة", icon: "💡", driveUrl: "" },
+            { name: "التربية الوطنية", icon: "🇸🇾", driveUrl: "" }
+        ]);
+        var dailyMeetLinks = safeParseLocal('g10_daily_meet_v9', {
+            sci: "",
+            lit: "",
+            generalDrive: "",
+            homeworkDrive: ""
+        });
+        var lessons = safeParseLocal('g10_lessons_v9', []);
+        var students = safeParseLocal('g10_students_v9', []);
+        var quizzes = safeParseLocal('g10_quizzes_v9', []);
+
+        // حقول محفوظة لضمان عدم مسح بيانات الإدارة والأساتذة عند مزامنة حضور الطالب
+        var teachers = safeParseLocal('g10_teachers_v9', []);
+        var teacherLogs = safeParseLocal('g10_logs_v9', []);
+        var broadcastHosts = safeParseLocal('g10_hosts_v10', []);
+        var adminPin = localStorage.getItem('g10_admin_pin') || "9999";
+        var adminDeviceId = localStorage.getItem('g10_admin_device_id') || "";
+
+        var subjectColors = [
+            { bg: "#eff6ff", border: "#bfdbfe", text: "#1e3a8a" },
+            { bg: "#faf5ff", border: "#e9d5ff", text: "#581c87" },
+            { bg: "#ecfdf5", border: "#a7f3d0", text: "#065f46" },
+            { bg: "#fffbeb", border: "#fde68a", text: "#92400e" },
+            { bg: "#eef2ff", border: "#c7d2fe", text: "#312e81" },
+            { bg: "#fdf2f8", border: "#fbcfe8", text: "#831843" },
+            { bg: "#ecfeff", border: "#a5f3fc", text: "#164e63" }
+        ];
+
+        function getActiveCloudUrl() {
+            var saved = localStorage.getItem('g10_admin_cloud_url');
+            return (saved && saved.trim() !== "") ? saved.trim() : DEFAULT_CLOUD_URL;
+        }
+
+        function saveAllLocal() {
+            try {
+                localStorage.setItem('g10_subjects_v10', JSON.stringify(syrianG10Subjects));
+                localStorage.setItem('g10_hosts_v10', JSON.stringify(broadcastHosts));
+                localStorage.setItem('g10_lessons_v9', JSON.stringify(lessons));
+                localStorage.setItem('g10_students_v9', JSON.stringify(students));
+                localStorage.setItem('g10_quizzes_v9', JSON.stringify(quizzes));
+                localStorage.setItem('g10_teachers_v9', JSON.stringify(teachers));
+                localStorage.setItem('g10_logs_v9', JSON.stringify(teacherLogs));
+                localStorage.setItem('g10_daily_meet_v9', JSON.stringify(dailyMeetLinks));
+                localStorage.setItem('g10_admin_device_id', adminDeviceId);
+            } catch (e) {}
+        }
+
+        function updateSyncBadge(text, badgeClass) {
+            var el = document.getElementById('sync-status');
+            if (!el) return;
+            el.innerText = text;
+            el.className = "badge " + badgeClass;
+        }
+
+        function updateStudentBarUI() {
+            var bar = document.getElementById('student-info-bar');
+            if (currentStudentProfile) {
+                bar.innerHTML = "الطالب: <b style='color:#fff;'>" + escapeHtml(currentStudentProfile.name) +
+                    "</b> | الرمز: <b style='color:#fcd34d;font-family:monospace;'>" + escapeHtml(currentStudentProfile.code) +
+                    "</b> | الفرع: <b style='color:#6ee7b7;'>" + escapeHtml(currentStudentProfile.branch) + "</b>";
+            } else {
+                bar.innerText = "الصف العاشر (علمي / أدبي) - المنهاج السوري";
+            }
+        }
+
+        function updateDriveButtonsUI() {
+            var hwBtn = document.getElementById('homework-drive-btn');
+            if (dailyMeetLinks.homeworkDrive && dailyMeetLinks.homeworkDrive.trim() !== "") {
+                hwBtn.classList.remove('hidden');
+            } else {
+                hwBtn.classList.add('hidden');
+            }
+        }
+
+        function switchTab(tabId, btnEl) {
+            var tabs = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+
+            var btns = document.querySelectorAll('.nav-btn');
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.remove('active');
+            }
+            if (btnEl) btnEl.classList.add('active');
+        }
+
+        function openStudentRegModal(msg) {
+            var modal = document.getElementById('student-reg-modal');
+            var secAlert = document.getElementById('reg-security-alert');
+            if (msg) {
+                secAlert.innerText = msg;
+                secAlert.classList.remove('hidden');
+            } else {
+                secAlert.classList.add('hidden');
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeStudentRegModal() {
+            document.getElementById('student-reg-modal').classList.add('hidden');
+        }
+
+        function updateStudentPreviewByCode(rawVal) {
+            var clean = normalizeSecretText(rawVal);
+            var nameEl = document.getElementById('reg-official-name-preview');
+            var branchEl = document.getElementById('reg-official-branch-preview');
+            if (!clean) {
+                nameEl.innerText = "يُعرض تلقائياً عند مطابقة الرمز";
+                branchEl.innerText = "-";
+                return;
+            }
+            var matched = null;
+            for (var i = 0; i < students.length; i++) {
+                if (normalizeSecretText(students[i].code) === clean) {
+                    matched = students[i];
+                    break;
+                }
+            }
+            if (matched) {
+                nameEl.innerText = matched.name;
+                branchEl.innerText = matched.branch || "علمي";
+            } else if (/^A\d+$/.test(clean)) {
+                nameEl.innerText = "غير موجود في القائمة المعتمدة";
+                branchEl.innerText = "-";
+            } else {
+                nameEl.innerText = "أدخل رمزاً يبدأ بحرف A (مثال: A101)";
+                branchEl.innerText = "-";
+            }
+        }
+
+        function verifyActiveUserDeviceSession() {
+            if (!currentStudentProfile) {
+                openStudentRegModal("");
+                return;
+            }
+            var cloudStudent = null;
+            for (var i = 0; i < students.length; i++) {
+                if (normalizeSecretText(students[i].code) === normalizeSecretText(currentStudentProfile.code)) {
+                    cloudStudent = students[i];
+                    break;
+                }
+            }
+            if (!cloudStudent) {
+                localStorage.removeItem('g10_student_profile');
+                currentStudentProfile = null;
+                updateStudentBarUI();
+                openStudentRegModal("🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة.");
+                return;
+            }
+            if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
+                localStorage.removeItem('g10_student_profile');
+                currentStudentProfile = null;
+                updateStudentBarUI();
+                openStudentRegModal("🔄 تم فك ارتباط هذا الجهاز من قِبل الإدارة، يرجى إعادة تسجيل الدخول.");
+                return;
+            }
+            if (cloudStudent.deviceId !== THIS_DEVICE_ID) {
+                localStorage.removeItem('g10_student_profile');
+                currentStudentProfile = null;
+                updateStudentBarUI();
+                openStudentRegModal("⛔ هذا الرمز مرتبط بهاتف آخر! يرجى مراجعة الإدارة.");
+                return;
+            }
+            currentStudentProfile = {
+                name: cloudStudent.name,
+                code: normalizeSecretText(cloudStudent.code),
+                branch: cloudStudent.branch || "علمي",
+                deviceId: cloudStudent.deviceId
+            };
+            localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+            updateStudentBarUI();
+        }
+
+        async function fetchFromCloud(showAlert, silent, skipVerify, forceFetch) {
+            if (!forceFetch && (isSyncingNow || (Date.now() - lastCloudWriteAt < 12000))) return false;
+            var url = getActiveCloudUrl();
+            if (!url) return false;
+            var startEpoch = localWriteEpoch;
+
+            if (!silent) updateSyncBadge("⏳ جارٍ التحديث...", "badge-sync-wait");
+            try {
+                var res = await fetch(url + "?t=" + new Date().getTime(), { redirect: "follow" });
+                var data = await res.json();
+
+                if (!forceFetch && (isSyncingNow || startEpoch !== localWriteEpoch)) return false;
+
+                if (data && Array.isArray(data.lessons)) {
+                    if (Array.isArray(data.students)) students = data.students;
+                    if (Array.isArray(data.teachers) && data.teachers.length > 0) teachers = data.teachers;
+                    lessons = data.lessons;
+                    quizzes = Array.isArray(data.quizzes) ? data.quizzes : quizzes;
+                    if (Array.isArray(data.teacherLogs)) teacherLogs = data.teacherLogs;
+                    if (Array.isArray(data.subjects) && data.subjects.length > 0) syrianG10Subjects = data.subjects;
+                    if (Array.isArray(data.broadcastHosts) && data.broadcastHosts.length > 0) broadcastHosts = data.broadcastHosts;
+                    if (data.dailyMeetLinks) dailyMeetLinks = data.dailyMeetLinks;
+                    if (data.adminPin) adminPin = data.adminPin;
+                    if (typeof data.adminDeviceId !== 'undefined') adminDeviceId = data.adminDeviceId;
+
+                    isCloudDataLoadedSafely = true;
+                    saveAllLocal();
+                    updateDriveButtonsUI();
+                    renderSubjects();
+                    renderLessons();
+                    renderQuizzes();
+                    updateSyncBadge("🟢 متصل ومؤمّن", "badge-sync-ok");
+
+                    var codeInput = document.getElementById('reg-student-code');
+                    if (codeInput && codeInput.value) updateStudentPreviewByCode(codeInput.value);
+
+                    if (!skipVerify) verifyActiveUserDeviceSession();
+                    if (showAlert) alert("✅ تم تحديث الدروس والبيانات بنجاح!");
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                if (!silent) updateSyncBadge("🔴 الإنترنت ضعيف", "badge-sync-err");
+                if (showAlert) alert("⚠️ تعذر الاتصال بالسحابة، تأكد من اتصال الإنترنت وحاول مجدداً.");
+                return false;
+            }
+        }
+
+        async function syncToCloud() {
+            var url = getActiveCloudUrl();
+            if (!url || !isCloudDataLoadedSafely) return false;
+
+            isSyncingNow = true;
+            localWriteEpoch++;
+            updateSyncBadge("⬆️ جارٍ التثبيت...", "badge-sync-wait");
+            try {
+                var res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        lessons: lessons,
+                        students: students,
+                        quizzes: quizzes,
+                        teachers: teachers,
+                        teacherLogs: teacherLogs,
+                        adminPin: adminPin,
+                        adminDeviceId: adminDeviceId,
+                        dailyMeetLinks: dailyMeetLinks,
+                        subjects: syrianG10Subjects,
+                        broadcastHosts: broadcastHosts
+                    })
+                });
+                if (!res.ok) throw new Error("POST failed");
+                lastCloudWriteAt = Date.now();
+                updateSyncBadge("🟢 متصل ومؤمّن", "badge-sync-ok");
+                return true;
+            } catch (e) {
+                updateSyncBadge("🔴 تعذر التثبيت", "badge-sync-err");
+                return false;
+            } finally {
+                isSyncingNow = false;
+            }
+        }
+
+        async function saveStudentFirstTime(event) {
+            event.preventDefault();
+            var btn = document.getElementById('reg-submit-btn');
+            var secAlert = document.getElementById('reg-security-alert');
+            var code = normalizeSecretText(document.getElementById('reg-student-code').value);
+
+            if (!/^A\d+$/.test(code)) {
+                alert("⚠️ يرجى إدخال رمز طالب صحيح يبدأ بحرف A وبجانبه رقم (مثال: A101)");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ جارٍ التحقق من الرمز عبر السحابة...";
+            secAlert.classList.add('hidden');
+
+            var fetched = await fetchFromCloud(false, true, true, true);
+            updateStudentPreviewByCode(code);
+
+            if (!fetched || !isCloudDataLoadedSafely) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = "⚠️ تعذر الاتصال بالسحابة بسبب ضعف الإنترنت، يرجى المحاولة مرة أخرى.";
+                secAlert.classList.remove('hidden');
+                return;
+            }
+
+            var existingIdx = -1;
+            for (var i = 0; i < students.length; i++) {
+                if (normalizeSecretText(students[i].code) === code) {
+                    existingIdx = i;
+                    break;
+                }
+            }
+
+            if (existingIdx === -1) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = "⛔ الرمز (" + code + ") غير موجود ضمن قائمة الطلاب المعتمدين من الإدارة.";
+                secAlert.classList.remove('hidden');
+                return;
+            }
+
+            var regStudent = students[existingIdx];
+            if (regStudent.deviceId && regStudent.deviceId !== "" && regStudent.deviceId !== THIS_DEVICE_ID) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = "⛔ الرمز (" + code + ") الخاص بالطالب (" + regStudent.name + ") مرتبط بهاتف آخر! يرجى مراجعة الإدارة.";
+                secAlert.classList.remove('hidden');
+                return;
+            }
+
+            var nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
+            localWriteEpoch++;
+            students[existingIdx].deviceId = THIS_DEVICE_ID;
+            students[existingIdx].present = true;
+            students[existingIdx].time = nowTime;
+            students[existingIdx].note = "تم الدخول من النسخة الخفيفة وربط الجهاز";
+
+            btn.innerText = "⬆️ جارٍ تثبيت بصمة جهازك...";
+            var synced = await syncToCloud();
+
+            if (!synced) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                secAlert.innerText = "⚠️ الاتصال ضعيف ولم يتم تثبيت بصمتك في السحابة، اضغط مرة أخرى.";
+                secAlert.classList.remove('hidden');
+                return;
+            }
+
+            currentStudentProfile = {
+                name: regStudent.name,
+                code: code,
+                branch: regStudent.branch || "علمي",
+                deviceId: THIS_DEVICE_ID
+            };
+            localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+            saveAllLocal();
+            updateStudentBarUI();
+
+            btn.disabled = false;
+            btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+            closeStudentRegModal();
+            alert("✅ أهلاً بك يا (" + regStudent.name + ")! تم تسجيل دخولك وربط هذا الجهاز بنجاح.");
+        }
+
+        function joinDailyLiveRoom(branchType) {
+            verifyActiveUserDeviceSession();
+            if (!currentStudentProfile) return;
+
+            var targetUrl = dailyMeetLinks.sci || "";
+            if (branchType === 'أدبي' && dailyMeetLinks.lit && dailyMeetLinks.lit.trim() !== "") {
+                targetUrl = dailyMeetLinks.lit.trim();
+            }
+            if (!targetUrl || targetUrl.trim() === "") {
+                alert("لم يتم تفعيل رابط القاعة المباشرة لهذا اليوم بعد!");
+                return;
+            }
+
+            var nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
+            for (var i = 0; i < students.length; i++) {
+                if (normalizeSecretText(students[i].code) === normalizeSecretText(currentStudentProfile.code)) {
+                    if (students[i].deviceId !== THIS_DEVICE_ID) {
+                        verifyActiveUserDeviceSession();
+                        return;
+                    }
+                    localWriteEpoch++;
+                    students[i].present = true;
+                    students[i].time = nowTime;
+                    students[i].note = "متواجد في قاعة الدوام (" + branchType + ")";
+                    saveAllLocal();
+                    syncToCloud();
+                    break;
+                }
+            }
+            window.open(targetUrl, '_blank');
+        }
+
+        function openGeneralDriveFolder() {
+            if (!dailyMeetLinks.generalDrive || dailyMeetLinks.generalDrive.trim() === "") {
+                alert("📂 سيقوم الأستاذ أو الإدارة برفع رابط مجلد الـ Drive العام قريباً!");
+                return;
+            }
+            window.open(dailyMeetLinks.generalDrive.trim(), '_blank');
+        }
+
+        function openHomeworkDriveFolder() {
+            if (dailyMeetLinks.homeworkDrive && dailyMeetLinks.homeworkDrive.trim() !== "") {
+                window.open(dailyMeetLinks.homeworkDrive.trim(), '_blank');
+            }
+        }
+
+        function renderSubjects() {
+            var grid = document.getElementById('subjects-grid');
+            grid.innerHTML = '';
+            for (var i = 0; i < syrianG10Subjects.length; i++) {
+                var sub = syrianG10Subjects[i];
+                var palette = subjectColors[i % subjectColors.length];
+                var driveHtml = (sub.driveUrl && sub.driveUrl.trim() !== "")
+                    ? '<a href="' + escapeHtml(sub.driveUrl.trim()) + '" target="_blank" onclick="event.stopPropagation()" class="subject-drive-link">📁 Drive المادة ↗</a>'
+                    : '<div style="font-size:11px;opacity:0.75;margin-top:4px;">أرشيف الدروس</div>';
+
+                grid.innerHTML +=
+                    '<div class="subject-col">' +
+                        '<div onclick="filterLessonsByIdx(' + i + ')" class="subject-card" style="background-color:' + palette.bg + ';border-color:' + palette.border + ';color:' + palette.text + ';">' +
+                            '<div class="subject-card-top">' +
+                                '<span class="subject-icon">' + (sub.icon || '📘') + '</span>' +
+                                '<div class="subject-name">' + escapeHtml(sub.name) + '</div>' +
+                            '</div>' +
+                            driveHtml +
+                        '</div>' +
+                    '</div>';
+            }
+        }
+
+        function filterLessonsByIdx(idx) {
+            if (syrianG10Subjects[idx]) {
+                filterLessons(syrianG10Subjects[idx].name);
+            }
+        }
+
+        function filterLessons(subName) {
+            currentSubjectFilter = subName;
+            document.getElementById('current-filter-badge').innerText = subName;
+            renderLessons();
+        }
+
+        function renderLessons() {
+            var tbody = document.getElementById('lessons-table-body');
+            tbody.innerHTML = '';
+            var rowsCount = 0;
+
+            for (var i = 0; i < lessons.length; i++) {
+                var l = lessons[i];
+                if (currentSubjectFilter !== "الكل" && l.subject !== currentSubjectFilter) continue;
+                rowsCount++;
+
+                var branchClass = "branch-sci";
+                if (l.branch === "أدبي") branchClass = "branch-lit";
+                else if (l.branch === "علمي وأدبي") branchClass = "branch-both";
+
+                var pdfHtml = (l.pdf && l.pdf.trim() !== "")
+                    ? '<a href="' + escapeHtml(l.pdf.trim()) + '" target="_blank" class="btn btn-sm btn-amber">📄 فتح الملخص</a>'
+                    : '<span style="color:#94a3b8;font-size:12px;">لا يوجد</span>';
+
+                var videoHtml = (l.video && l.video.trim() !== "")
+                    ? '<button onclick="openVideoPlayerByIdx(' + i + ')" class="btn btn-sm btn-purple">▶️ مشاهدة</button>'
+                    : '<span style="color:#94a3b8;font-size:12px;">يُرفع بعد الحصة</span>';
+
+                tbody.innerHTML +=
+                    '<tr>' +
+                        '<td style="font-weight:800;color:#1e1b4b;">' + escapeHtml(l.subject) + '</td>' +
+                        '<td><span class="branch-pill ' + branchClass + '">' + escapeHtml(l.branch || 'علمي') + '</span></td>' +
+                        '<td style="font-size:12px;font-weight:700;color:#92400e;">' + escapeHtml(l.teacher || 'الإدارة') + '</td>' +
+                        '<td style="font-weight:700;">' + escapeHtml(l.title) + '</td>' +
+                        '<td>' + escapeHtml(l.notes) + '</td>' +
+                        '<td style="font-size:12px;color:#64748b;white-space:nowrap;">' + escapeHtml(l.date) + '</td>' +
+                        '<td>' + pdfHtml + '</td>' +
+                        '<td>' + videoHtml + '</td>' +
+                        '<td><button onclick="shareWhatsApp(' + i + ')" class="btn btn-sm btn-green">📲 واتساب</button></td>' +
+                    '</tr>';
+            }
+
+            if (rowsCount === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:24px;">لا توجد دروس محضّرة حالياً في هذا القسم.</td></tr>';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }
+
+        function openVideoPlayerByIdx(idx) {
+            var l = lessons[idx];
+            if (!l || !l.video) return;
+            var videoUrl = l.video.trim();
+            var title = (l.subject || '') + ' - ' + (l.title || '');
+
+            var embedUrl = "";
+            var ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+            var driveMatch = videoUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+
+            if (ytMatch && ytMatch[1]) {
+                embedUrl = "https://www.youtube.com/embed/" + ytMatch[1] + "?rel=0";
+            } else if (driveMatch && driveMatch[1]) {
+                embedUrl = "https://drive.google.com/file/d/" + driveMatch[1] + "/preview";
+            }
+
+            if (embedUrl) {
+                document.getElementById('video-modal-title').innerText = "🎬 " + title;
+                document.getElementById('video-external-link').href = videoUrl;
+                document.getElementById('video-iframe-container').innerHTML =
+                    '<iframe src="' + embedUrl + '" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+                document.getElementById('video-player-modal').classList.remove('hidden');
+            } else {
+                window.open(videoUrl, '_blank');
+            }
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById('video-iframe-container').innerHTML = '';
+            document.getElementById('video-player-modal').classList.add('hidden');
+        }
+
+        function shareWhatsApp(idx) {
+            var l = lessons[idx];
+            if (!l) return;
+            var text = "🎓 *ملخص درس - الصف العاشر (" + (l.branch || 'علمي') + ")*\n" +
+                       "📚 *المادة:* " + l.subject + "\n" +
+                       "👨‍🏫 *الأستاذ:* " + (l.teacher || 'الإدارة') + "\n" +
+                       "📌 *العنوان:* " + l.title + "\n" +
+                       "📝 *الشرح والوظيفة:* " + l.notes + "\n" +
+                       "📅 *التاريخ:* " + l.date;
+            if (l.video) text += "\n\n🎬 *التسجيل:*\n" + l.video;
+            if (l.pdf) text += "\n\n📄 *الملخص/الوظيفة:*\n" + l.pdf;
+            window.open("https://wa.me/?text=" + encodeURIComponent(text), '_blank');
+        }
+
+        function renderQuizzes() {
+            var container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+            if (quizzes.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:24px;">لا توجد أسئلة سبر مضافة حالياً.</div>';
+                return;
+            }
+            for (var qIdx = 0; qIdx < quizzes.length; qIdx++) {
+                var q = quizzes[qIdx];
+                var optsHtml = '';
+                for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
+                    optsHtml +=
+                        '<label id="q' + qIdx + '-opt' + oIdx + '-label" class="quiz-opt">' +
+                            '<input type="radio" name="quiz-q-' + qIdx + '" value="' + oIdx + '">' +
+                            '<span>' + escapeHtml(q.options[oIdx]) + '</span>' +
+                        '</label>';
+                }
+                container.innerHTML +=
+                    '<div class="quiz-card">' +
+                        '<span class="badge badge-student" style="margin-bottom:6px;">' + escapeHtml(q.subject) + '</span>' +
+                        '<div style="font-weight:800;font-size:14px;color:#1e293b;">' + (qIdx + 1) + '. ' + escapeHtml(q.q) + '</div>' +
+                        optsHtml +
+                    '</div>';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }
+
+        function submitQuiz() {
+            var score = 0;
+            for (var qIdx = 0; qIdx < quizzes.length; qIdx++) {
+                var q = quizzes[qIdx];
+                var sel = document.querySelector('input[name="quiz-q-' + qIdx + '"]:checked');
+                for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
+                    var lbl = document.getElementById('q' + qIdx + '-opt' + oIdx + '-label');
+                    if (lbl) {
+                        lbl.classList.remove('opt-correct', 'opt-wrong');
+                        if (oIdx === q.correct) lbl.classList.add('opt-correct');
+                    }
+                }
+                if (sel) {
+                    var ans = parseInt(sel.value, 10);
+                    if (ans === q.correct) {
+                        score++;
+                    } else {
+                        var wrongLbl = document.getElementById('q' + qIdx + '-opt' + ans + '-label');
+                        if (wrongLbl) wrongLbl.classList.add('opt-wrong');
+                    }
+                }
+            }
+            var badge = document.getElementById('quiz-score-badge');
+            badge.innerText = "النتيجة: " + score + " / " + quizzes.length;
+            badge.classList.remove('hidden');
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-score-badge').classList.add('hidden');
+            renderQuizzes();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStudentBarUI();
+            updateDriveButtonsUI();
+            renderSubjects();
+            renderLessons();
+            renderQuizzes();
+
+            if (!currentStudentProfile) {
+                openStudentRegModal("");
+            }
+
+            fetchFromCloud(false, true, false, true);
+
+            setInterval(function() {
+                if (!isSyncingNow && (Date.now() - lastCloudWriteAt > 12000)) {
+                    fetchFromCloud(false, true, false, false);
+                }
+            }, 25000);
+        });
+    </script>
+</body>
+</html>
