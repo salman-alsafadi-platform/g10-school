@@ -88,19 +88,19 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-                <button id="header-install-btn" onclick="triggerPwaInstall()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                <button id="header-install-btn" onclick="triggerPwaInstall()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg font-bold text-xs inline-flex items-center gap-1 transition shadow">
                     📲 تثبيت التطبيق
                 </button>
-                <button onclick="fetchFromCloud(true)" class="bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition">
+                <button onclick="fetchFromCloud(true, false, false, true)" class="bg-indigo-800 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg font-bold text-xs inline-flex items-center gap-1 transition">
                     🔄 تحديث البيانات
                 </button>
-                <button id="teacher-login-btn" onclick="openLoginModal('teacher')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                <button id="teacher-login-btn" onclick="openLoginModal('teacher')" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-2 rounded-lg font-bold text-xs items-center gap-1 transition shadow">
                     👨‍🏫 دخول الأستاذ
                 </button>
-                <button id="admin-login-btn" onclick="openLoginModal('admin')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1 transition shadow">
+                <button id="admin-login-btn" onclick="openLoginModal('admin')" style="display:none;" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-2 rounded-lg font-bold text-xs items-center gap-1 transition shadow">
                     👑 دخول المدير
                 </button>
-                <button id="logout-btn" onclick="logoutUser()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold text-xs items-center gap-1 transition">
+                <button id="logout-btn" onclick="logoutUser()" style="display:none;" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg font-bold text-xs items-center gap-1 transition">
                     🚪 تسجيل خروج
                 </button>
             </div>
@@ -182,6 +182,10 @@
                         <button onclick="openHomeworkDriveFolder()" id="homework-drive-btn" class="hidden flex-1 md:flex-initial bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow items-center justify-center gap-2 transition">
                             <span>📝</span> مجلد تسليم الوظائف ↗
                         </button>
+                        <!-- زر رفع الملخصات للأساتذة والمدير فقط -->
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfL4a5TwtZkplJQQssK6SZ2JmOlKFV3FPKQyZaspkfqE4WdfQ/viewform?usp=publish-editor" target="_blank" class="staff-only flex-1 md:flex-initial bg-purple-700 hover:bg-purple-600 text-white px-4 py-3 rounded-xl font-extrabold text-xs md:text-sm shadow items-center justify-center gap-2 transition">
+                            <span>📤</span> رفع ملخصات الدروس (للأساتذة) ↗
+                        </a>
                     </div>
                 </div>
 
@@ -190,7 +194,7 @@
                     <span class="block text-xs font-extrabold text-indigo-950 mb-2">⚙️ تحديث روابط مجلدات Google Drive العامة (للأساتذة والمدير):</span>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
                         <input type="url" id="general-drive-input" dir="ltr" placeholder="رابط مجلد المواد والملخصات العام (Google Drive)..." class="border border-amber-300 rounded-lg p-2 bg-white text-left font-mono">
-                        <input type="url" id="homework-drive-input" dir="ltr" placeholder="رابط مجلد الوظائف وأوراق العمل (اختياري)..." class="border border-amber-300 rounded-lg p-2 bg-white text-left font-mono">
+                        <input type="url" id="homework-drive-input" dir="ltr" placeholder="رابط نموذج/مجلد الوظائف وأوراق العمل (اختياري)..." class="border border-amber-300 rounded-lg p-2 bg-white text-left font-mono">
                         <button onclick="saveGeneralDriveLinks()" class="bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg shadow transition">
                             💾 حفظ وتعميم روابط الـ Drive للطلاب
                         </button>
@@ -281,7 +285,7 @@
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow">حفظ ومزامنة السؤال</button>
                         </form>
                     </div>
-                    <div class="text-center py-8 text-slate-500 text-sm" id="student-quiz-note">💡 تدرب على الأسئلة المؤتمتة هنا، ولإضافة أو حذف أسئلة السبر يجب تسجيل الدخول كأستاذ أو مدير.</div>
+                    <div class="text-center py-8 text-slate-500 text-sm" id="student-quiz-note">💡 تدرب على الأسئلة المؤتمتة هنا واختبر معلوماتك أولاً بأول.</div>
                 </div>
             </div>
         </section>
@@ -304,6 +308,17 @@
                         <span id="prep-draft-badge" class="hidden bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-extrabold">💾 تم حفظ المسودة تلقائياً</span>
                         <button type="button" onclick="clearLessonDraft(true)" id="clear-draft-btn" class="hidden text-rose-600 hover:underline font-bold">مسح المسودة</button>
                     </div>
+                </div>
+
+                <!-- زر سريع لنموذج رفع الملخصات الخاص بالأساتذة والمدير -->
+                <div class="mb-4 p-3.5 rounded-xl bg-purple-50 border border-purple-200 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-extrabold text-purple-950 block">📤 رفع ملخصات وملفات الدرس على Drive المدرسة:</span>
+                        <span class="text-[11px] text-purple-700">ارفع ملفات PDF أو صور الملخصات مباشرة لتنزل تلقائياً في مجلد مادتك</span>
+                    </div>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfL4a5TwtZkplJQQssK6SZ2JmOlKFV3FPKQyZaspkfqE4WdfQ/viewform?usp=publish-editor" target="_blank" class="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-extrabold text-xs shadow transition whitespace-nowrap">
+                        📤 فتح نموذج رفع الملخصات ↗
+                    </a>
                 </div>
 
                 <form id="prep-form" onsubmit="saveLesson(event)" oninput="saveLessonDraft()" onchange="saveLessonDraft()" class="space-y-4">
@@ -380,7 +395,7 @@
                             <option value="علمي">علمي</option>
                             <option value="أدبي">أدبي</option>
                         </select>
-                        <button onclick="addStudentManual()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-bold">+ إضافة الطالب</button>
+                        <button id="add-student-btn" onclick="addStudentManual()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-bold transition">+ إضافة الطالب</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto mb-6">
@@ -847,7 +862,11 @@
 
         const DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec"; 
 
+        // متغيرات حماية المزامنة لمنع التحديث التلقائي من مسح أي طالب أو تعديل جديد
         let isCloudDataLoadedSafely = false;
+        let isSyncingNow = false;
+        let localWriteEpoch = 0;
+        let lastCloudWriteAt = 0;
 
         const subjectColorPalettes = [
             "bg-blue-50 border-blue-200 text-blue-900",
@@ -925,7 +944,7 @@
         ];
 
         let teacherLogs = JSON.parse(localStorage.getItem('g10_logs_v9')) || [
-            { teacher: "النظام الأمني", action: "تفعيل قصر دخول الطلاب على القائمة المعتمدة وقفل مواد الأساتذة", time: "اليوم" }
+            { teacher: "النظام الأمني", action: "تفعيل قصر دخول الطلاب على القائمة المعتمدة وحماية المزامنة", time: "اليوم" }
         ];
 
         let lessons = JSON.parse(localStorage.getItem('g10_lessons_v9')) || [
@@ -1167,11 +1186,11 @@
                 openStudentRegModal(false, false);
             }
 
-            fetchFromCloud(false, true);
+            fetchFromCloud(false, true, false, true);
 
             setInterval(() => {
-                if (!isStaffLoggingIn) {
-                    fetchFromCloud(false, true);
+                if (!isStaffLoggingIn && !isSyncingNow && (Date.now() - lastCloudWriteAt > 12000)) {
+                    fetchFromCloud(false, true, false, false);
                 }
             }, 20000);
         });
@@ -1263,6 +1282,7 @@
 
         async function saveGeneralDriveLinks() {
             if (currentRole !== 'admin' && currentRole !== 'teacher') return;
+            localWriteEpoch++;
             dailyMeetLinks.generalDrive = document.getElementById('general-drive-input').value.trim();
             dailyMeetLinks.homeworkDrive = document.getElementById('homework-drive-input').value.trim();
 
@@ -1286,6 +1306,7 @@
             const litUrl = document.getElementById('daily-meet-lit').value.trim();
             if (!sciUrl) return alert("يرجى وضع رابط Google Meet الأساسي لليوم الدراسي!");
 
+            localWriteEpoch++;
             dailyMeetLinks.sci = sciUrl;
             dailyMeetLinks.lit = litUrl;
             teacherLogs.unshift({
@@ -1322,6 +1343,7 @@
                         verifyActiveUserDeviceSession();
                         return;
                     }
+                    localWriteEpoch++;
                     students[idx].present = true;
                     students[idx].time = nowTime;
                     students[idx].note = `متواجد في قاعة الدوام (${branchType})`;
@@ -1358,6 +1380,7 @@
 
             if (currentRole === 'student') {
                 if (!currentStudentProfile) {
+                    updateHeaderButtons();
                     openStudentRegModal(false, false);
                     return;
                 }
@@ -1365,6 +1388,7 @@
                 if (!cloudStudent) {
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
+                    updateHeaderButtons();
                     updateStudentBarUI();
                     openStudentRegModal(false, true, "🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة!");
                     return;
@@ -1372,6 +1396,7 @@
                 if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
+                    updateHeaderButtons();
                     updateStudentBarUI();
                     openStudentRegModal(false, true, "🔄 تم فك ارتباط هذا الجهاز من قِبل الأستاذ/المدير، يرجى إعادة تسجيل الدخول!");
                     return;
@@ -1379,6 +1404,7 @@
                 if (cloudStudent.deviceId !== THIS_DEVICE_ID) {
                     localStorage.removeItem('g10_student_profile');
                     currentStudentProfile = null;
+                    updateHeaderButtons();
                     updateStudentBarUI();
                     openStudentRegModal(false, true, "⛔ هذا الرمز مرتبط بهاتف آخر! يرجى تسجيل الدخول برمزك الصحيح أو مراجعة الإدارة.");
                     return;
@@ -1390,6 +1416,7 @@
                     deviceId: cloudStudent.deviceId
                 };
                 localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+                updateHeaderButtons();
                 updateStudentBarUI();
             } else if (currentRole === 'teacher') {
                 const tObj = teachers.find(t => t.name === currentTeacherName);
@@ -1475,7 +1502,7 @@
                 btn.disabled = true;
                 btn.innerText = "⏳ جارٍ التحقق من الرمز وكلمة المرور...";
 
-                await fetchFromCloud(false, true, true);
+                await fetchFromCloud(false, true, true, true);
 
                 const hIdx = broadcastHosts.findIndex(h => normalizeSecretText(h.code) === code);
                 if (hIdx === -1 || normalizeSecretText(broadcastHosts[hIdx].pin) !== secretPin) {
@@ -1489,6 +1516,7 @@
                 const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
 
                 if (hostObj.deviceId && hostObj.deviceId !== "" && hostObj.deviceId !== THIS_DEVICE_ID) {
+                    localWriteEpoch++;
                     teacherLogs.unshift({
                         teacher: `${hostObj.code} (${hostObj.name})`,
                         action: `⛔ محاولة دخول مرفوضة لحساب البث من جهاز آخر`,
@@ -1497,7 +1525,7 @@
                     if (teacherLogs.length > 50) teacherLogs.pop();
                     saveAllLocal();
                     renderAdminDashboard();
-                    syncToCloud(false);
+                    await syncToCloud(false);
 
                     isStaffLoggingIn = false;
                     btn.disabled = false;
@@ -1507,6 +1535,7 @@
                     return;
                 }
 
+                localWriteEpoch++;
                 broadcastHosts[hIdx].deviceId = THIS_DEVICE_ID;
                 broadcastHosts[hIdx].lastSeen = nowStr;
 
@@ -1527,13 +1556,14 @@
                 renderAdminDashboard();
                 renderLessons();
 
+                await syncToCloud(false);
+
                 isStaffLoggingIn = false;
                 btn.disabled = false;
                 btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
                 document.getElementById('reg-secret-host-pin').value = '';
                 document.getElementById('student-reg-modal').classList.add('hidden');
                 document.getElementById('student-reg-modal').classList.remove('flex');
-                syncToCloud(false);
                 return;
             }
 
@@ -1546,7 +1576,7 @@
             btn.disabled = true;
             btn.innerText = "⏳ جارٍ التحقق من اعتماد الرمز وبصمة الجهاز...";
 
-            await fetchFromCloud(false, true, true);
+            await fetchFromCloud(false, true, true, true);
             updateStudentPreviewByCode(code);
 
             const existingByCode = students.findIndex(s => normalizeSecretText(s.code) === code);
@@ -1573,15 +1603,26 @@
                 return;
             }
 
-            // اعتماد الاسم والفرع المثبتين من قِبل المدير فقط
+            // اعتماد الاسم والفرع المثبتين من قِبل المدير فقط وتأكيد رفع البصمة للسحابة
             const officialName = registeredStudent.name;
             const officialBranch = registeredStudent.branch || "علمي";
             const nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
 
+            localWriteEpoch++;
             students[existingByCode].deviceId = THIS_DEVICE_ID;
             students[existingByCode].present = true;
             students[existingByCode].time = nowTime;
             students[existingByCode].note = "تم الدخول وربط الجهاز بالاسم الرسمي المعتمد";
+
+            btn.innerText = "⬆️ جارٍ تثبيت بصمة جهازك في السحابة...";
+            const synced = await syncToCloud(false);
+
+            if (!synced) {
+                btn.disabled = false;
+                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                alert("⚠️ الاتصال ضعيف ولم يتم تثبيت بصمتك في السحابة بعد. يرجى المحاولة مرة أخرى!");
+                return;
+            }
 
             currentStudentProfile = {
                 name: officialName,
@@ -1592,6 +1633,7 @@
             localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
 
             saveAllLocal();
+            updateHeaderButtons();
             updateStudentBarUI();
             renderStudents();
             renderAdminDashboard();
@@ -1599,7 +1641,6 @@
             btn.disabled = false;
             btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
             closeStudentRegModal();
-            syncToCloud(false);
             alert(`✅ أهلاً بك يا (${officialName})! تم تثبيت اسمك الرسمي وربط الرمز (${code}) بهذا الجهاز.`);
         }
 
@@ -1630,13 +1671,19 @@
             el.className = `text-[11px] px-2.5 py-0.5 rounded-full font-bold ${classes}`;
         }
 
-        async function fetchFromCloud(showAlert = false, silent = false, skipSessionVerify = false) {
+        async function fetchFromCloud(showAlert = false, silent = false, skipSessionVerify = false, forceFetch = false) {
+            if (!forceFetch && (isSyncingNow || (Date.now() - lastCloudWriteAt < 12000))) return;
             const url = getActiveCloudUrl();
             if (!url) return;
+            const startEpoch = localWriteEpoch;
+
             if (!silent) updateSyncBadge("⏳ جارٍ المزامنة مع السحابة...", "bg-sky-500/20 text-sky-300");
             try {
                 const res = await fetch(url + "?t=" + new Date().getTime(), { redirect: "follow" });
                 const data = await res.json();
+
+                // إذا حدثت كتابة محلية أثناء انتظار استجابة السحابة، نلغي هذه القراءة القديمة فوراً
+                if (!forceFetch && (isSyncingNow || startEpoch !== localWriteEpoch)) return;
                 
                 if (data && Array.isArray(data.lessons)) {
                     if (Array.isArray(data.students) && (data.students.length > 0 || students.length === 0)) {
@@ -1676,6 +1723,7 @@
                     renderStudents();
                     renderQuizzes();
                     renderAdminDashboard();
+                    updateHeaderButtons();
                     updateSyncBadge("🟢 متصل ومؤمّن تلقائياً", "bg-emerald-500/20 text-emerald-300");
                     
                     if (!skipSessionVerify && !isStaffLoggingIn) {
@@ -1694,16 +1742,18 @@
 
         async function syncToCloud(showAlert = false) {
             const url = getActiveCloudUrl();
-            if (!url) return;
+            if (!url) return false;
 
             if (!isCloudDataLoadedSafely && !showAlert) {
                 console.warn("تم منع الرفع التلقائي لحماية السحابة لأن البيانات الأصلية لم تُجلب بعد.");
-                return;
+                return false;
             }
 
+            isSyncingNow = true;
+            localWriteEpoch++;
             updateSyncBadge("⬆️ جارٍ الحفظ بالسحابة...", "bg-sky-500/20 text-sky-300");
             try {
-                await fetch(url, {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
@@ -1719,11 +1769,17 @@
                         broadcastHosts
                     })
                 });
+                if (!res.ok) throw new Error("Cloud POST failed");
                 isCloudDataLoadedSafely = true;
+                lastCloudWriteAt = Date.now();
                 updateSyncBadge("🟢 متصل ومؤمّن تلقائياً", "bg-emerald-500/20 text-emerald-300");
                 if (showAlert) alert("✅ تم رفع وحفظ كافة التعديلات في السحابة بنجاح!");
+                return true;
             } catch (e) {
                 updateSyncBadge("⚠️ حُفظ على الجهاز فقط", "bg-amber-500/20 text-amber-300");
+                return false;
+            } finally {
+                isSyncingNow = false;
             }
         }
 
@@ -1751,7 +1807,7 @@
                 return;
             }
             localStorage.setItem('g10_admin_cloud_url', url);
-            fetchFromCloud(true);
+            fetchFromCloud(true, false, false, true);
             alert("✅ تم حفظ وتحديث رابط السحابة بنجاح!");
         }
 
@@ -1759,10 +1815,11 @@
             if (currentRole !== 'admin') return;
             localStorage.removeItem('g10_admin_cloud_url');
             document.getElementById('cloud-url').value = DEFAULT_CLOUD_URL;
-            fetchFromCloud(true);
+            fetchFromCloud(true, false, false, true);
         }
 
-        function openLoginModal(mode) {
+        // سحب أحدث قائمة أساتذة من السحابة تلقائياً عند فتح نافذة دخول الأستاذ
+        async function openLoginModal(mode) {
             isStaffLoggingIn = true;
             loginMode = mode;
             const modal = document.getElementById('login-modal');
@@ -1778,23 +1835,27 @@
             tFields.classList.add('hidden');
             aFields.classList.add('hidden');
 
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
             if (mode === 'teacher') {
                 title.innerText = "👨‍🏫 دخول الأستاذ (محمي ببصمة الجهاز)";
                 tFields.classList.remove('hidden');
                 const select = document.getElementById('login-teacher-select');
+                select.innerHTML = '<option value="">⏳ جارٍ جلب أسماء الأساتذة من السحابة...</option>';
+                document.getElementById('login-teacher-pin').value = '';
+
+                await fetchFromCloud(false, true, true, true);
+
                 select.innerHTML = '';
                 teachers.forEach((t, i) => {
                     select.innerHTML += `<option value="${i}">${t.name} (${t.subject})</option>`;
                 });
-                document.getElementById('login-teacher-pin').value = '';
             } else {
                 title.innerText = "👑 دخول المدير العام (محمي ببصمة الجهاز)";
                 aFields.classList.remove('hidden');
                 document.getElementById('login-admin-pin').value = '';
             }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
         }
 
         function closeLoginModalSuccess() {
@@ -1824,7 +1885,7 @@
             btn.disabled = true;
             btn.innerText = "⏳ جارٍ التحقق من بصمة الجهاز...";
 
-            await fetchFromCloud(false, true, true);
+            await fetchFromCloud(false, true, true, true);
 
             const nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
 
@@ -1835,6 +1896,7 @@
 
                 if (teacher && normalizeSecretText(teacher.pin) === pin) {
                     if (teacher.deviceId && teacher.deviceId !== "" && teacher.deviceId !== THIS_DEVICE_ID) {
+                        localWriteEpoch++;
                         teacherLogs.unshift({
                             teacher: teacher.name,
                             action: `⛔ محاولة دخول مرفوضة من جهاز غريب (حماية الاختراق)`,
@@ -1843,7 +1905,7 @@
                         if (teacherLogs.length > 50) teacherLogs.pop();
                         saveAllLocal();
                         renderAdminDashboard();
-                        syncToCloud(false);
+                        await syncToCloud(false);
 
                         btn.disabled = false;
                         btn.innerText = "دخول وتحقق من بصمة الجهاز";
@@ -1853,6 +1915,7 @@
                     }
 
                     const isFirstBind = !teacher.deviceId || teacher.deviceId === "";
+                    localWriteEpoch++;
                     teachers[idx].deviceId = THIS_DEVICE_ID;
 
                     currentRole = "teacher";
@@ -1872,11 +1935,12 @@
                     renderLessons();
                     renderQuizzes();
 
+                    await syncToCloud(false);
+
                     btn.disabled = false;
                     btn.innerText = "دخول وتحقق من بصمة الجهاز";
                     closeLoginModalSuccess();
                     switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
-                    syncToCloud(false);
                 } else {
                     btn.disabled = false;
                     btn.innerText = "دخول وتحقق من بصمة الجهاز";
@@ -1886,6 +1950,7 @@
                 const pin = normalizeSecretText(document.getElementById('login-admin-pin').value);
                 if (pin === normalizeSecretText(adminPin)) {
                     if (adminDeviceId && adminDeviceId !== "" && adminDeviceId !== THIS_DEVICE_ID) {
+                        localWriteEpoch++;
                         teacherLogs.unshift({
                             teacher: "المدير العام",
                             action: `🚨 محاولة اختراق مرفوضة لحساب المدير من جهاز غريب!`,
@@ -1894,7 +1959,7 @@
                         if (teacherLogs.length > 50) teacherLogs.pop();
                         saveAllLocal();
                         renderAdminDashboard();
-                        syncToCloud(false);
+                        await syncToCloud(false);
 
                         btn.disabled = false;
                         btn.innerText = "دخول وتحقق من بصمة الجهاز";
@@ -1904,6 +1969,7 @@
                     }
 
                     const isFirstAdminBind = !adminDeviceId || adminDeviceId === "";
+                    localWriteEpoch++;
                     adminDeviceId = THIS_DEVICE_ID;
 
                     currentRole = "admin";
@@ -1926,10 +1992,11 @@
                     renderQuizzes();
                     renderAdminDashboard();
 
+                    await syncToCloud(false);
+
                     btn.disabled = false;
                     btn.innerText = "دخول وتحقق من بصمة الجهاز";
                     switchTab('admin-tab', document.getElementById('nav-btn-admin'));
-                    syncToCloud(false);
                 } else {
                     btn.disabled = false;
                     btn.innerText = "دخول وتحقق من بصمة الجهاز";
@@ -1951,6 +2018,7 @@
             verifyActiveUserDeviceSession();
         }
 
+        // إخفاء زري الأستاذ والمدير تماماً وبشكل قاطع بمجرد تسجيل دخول الطالب
         function updateHeaderButtons() {
             const tBtn = document.getElementById('teacher-login-btn');
             const aBtn = document.getElementById('admin-login-btn');
@@ -1958,16 +2026,19 @@
             const quizNote = document.getElementById('student-quiz-note');
 
             if (currentRole === 'student') {
-                tBtn.classList.remove('hidden');
-                aBtn.classList.remove('hidden');
-                outBtn.classList.add('hidden');
-                outBtn.classList.remove('inline-flex');
+                if (currentStudentProfile) {
+                    tBtn.style.display = 'none';
+                    aBtn.style.display = 'none';
+                } else {
+                    tBtn.style.display = 'inline-flex';
+                    aBtn.style.display = 'inline-flex';
+                }
+                outBtn.style.display = 'none';
                 quizNote.style.display = 'block';
             } else {
-                tBtn.classList.add('hidden');
-                aBtn.classList.add('hidden');
-                outBtn.classList.remove('hidden');
-                outBtn.classList.add('inline-flex');
+                tBtn.style.display = 'none';
+                aBtn.style.display = 'none';
+                outBtn.style.display = 'inline-flex';
                 quizNote.style.display = 'none';
             }
         }
@@ -2021,7 +2092,6 @@
                 newTSub.innerHTML += opt;
             });
 
-            // تطبيق قفل مادة الأستاذ دائماً بعد تحديث قائمة المواد
             enforceTeacherSubjectLock();
         }
 
@@ -2037,6 +2107,7 @@
                 return alert("⚠️ هذه المادة موجودة مسبقاً في المنهاج!");
             }
 
+            localWriteEpoch++;
             const color = subjectColorPalettes[syrianG10Subjects.length % subjectColorPalettes.length];
             syrianG10Subjects.push({ name, icon, color, driveUrl });
 
@@ -2061,6 +2132,7 @@
             const newUrl = prompt(`📁 الصق رابط مجلد Google Drive الخاص بمادة (${sub.name}) ووظائفها:`, sub.driveUrl || "");
             if (newUrl === null) return;
 
+            localWriteEpoch++;
             syrianG10Subjects[idx].driveUrl = newUrl.trim();
             saveAllLocal();
             renderSubjects();
@@ -2074,6 +2146,7 @@
             const sub = syrianG10Subjects[idx];
             if (!confirm(`هل أنت متأكد من حذف مادة (${sub.name}) من المنهاج؟`)) return;
 
+            localWriteEpoch++;
             syrianG10Subjects.splice(idx, 1);
             teacherLogs.unshift({
                 teacher: "المدير العام",
@@ -2102,6 +2175,7 @@
                 return alert("⚠️ هذا الرمز مسجل مسبقاً للابتوب بث آخر!");
             }
 
+            localWriteEpoch++;
             broadcastHosts.push({ code, name, pin, deviceId: "", lastSeen: "-" });
             e.target.reset();
             saveAllLocal();
@@ -2116,6 +2190,7 @@
             const newPin = prompt(`🔑 أدخل كلمة السر الجديدة للابتوب البث (${h.code} - ${h.name}):`, h.pin);
             if (newPin === null || newPin.trim() === "") return;
 
+            localWriteEpoch++;
             broadcastHosts[idx].pin = newPin.trim();
             teacherLogs.unshift({
                 teacher: "المدير العام",
@@ -2136,6 +2211,7 @@
             const newName = prompt(`✏️ أدخل الاسم الجديد للابتوب البث (${h.code}):`, h.name);
             if (newName === null || newName.trim() === "") return;
 
+            localWriteEpoch++;
             broadcastHosts[idx].name = newName.trim();
             saveAllLocal();
             renderAdminDashboard();
@@ -2145,6 +2221,7 @@
         async function resetHostDeviceLock(idx) {
             const h = broadcastHosts[idx];
             if (!confirm(`هل تريد فك ارتباط الجهاز للابتوب البث (${h.code} - ${h.name})؟`)) return;
+            localWriteEpoch++;
             broadcastHosts[idx].deviceId = "";
             saveAllLocal();
             renderAdminDashboard();
@@ -2154,6 +2231,7 @@
 
         async function removeHostAccount(idx) {
             if (!confirm("هل تريد حذف حساب لابتوب البث هذا؟")) return;
+            localWriteEpoch++;
             broadcastHosts.splice(idx, 1);
             saveAllLocal();
             renderAdminDashboard();
@@ -2166,6 +2244,7 @@
             const newPin = prompt(`🔑 أدخل الرمز السري الجديد للأستاذ (${t.name}):`, t.pin);
             if (newPin === null || newPin.trim() === "") return;
 
+            localWriteEpoch++;
             teachers[idx].pin = newPin.trim();
             saveAllLocal();
             renderAdminDashboard();
@@ -2278,6 +2357,7 @@
                 return alert("⚠️ يمكنك التبديل بين (اللغة العربية) و(التربية الدينية) فقط!");
             }
 
+            localWriteEpoch++;
             const oldSub = lesson.subject;
             lessons[index].subject = cleanChosen;
 
@@ -2300,6 +2380,7 @@
             const newUrl = prompt("🎬 الصق رابط تسجيل الدرس من Google Drive أو YouTube بعد انتهاء الحصة:", currentUrl);
             if (newUrl === null) return;
 
+            localWriteEpoch++;
             lessons[index].video = newUrl.trim();
             teacherLogs.unshift({
                 teacher: currentTeacherName || "الأستاذ",
@@ -2320,6 +2401,7 @@
             const newUrl = prompt("📄 الصق رابط ملف الملخص أو الوظيفة من Google Drive:", currentUrl);
             if (newUrl === null) return;
 
+            localWriteEpoch++;
             lessons[index].pdf = newUrl.trim();
             teacherLogs.unshift({
                 teacher: currentTeacherName || "الأستاذ",
@@ -2384,6 +2466,7 @@
                 if (!confirmed) return;
             }
 
+            localWriteEpoch++;
             lessons.unshift({
                 subject: sub,
                 branch: branch,
@@ -2424,6 +2507,7 @@
 
         async function deleteLesson(index) {
             if (!confirm("هل تريد بالتأكيد حذف هذا الدرس؟")) return;
+            localWriteEpoch++;
             lessons.splice(index, 1);
             saveAllLocal();
             renderLessons();
@@ -2561,6 +2645,7 @@
         async function resetTeacherDeviceLock(idx) {
             const t = teachers[idx];
             if (!confirm(`هل تريد فك ارتباط الجهاز للأستاذ (${t.name})؟`)) return;
+            localWriteEpoch++;
             teachers[idx].deviceId = "";
             teacherLogs.unshift({
                 teacher: "المدير العام",
@@ -2576,6 +2661,7 @@
 
         async function resetAdminDeviceLock() {
             if (!confirm("هل تريد فك ارتباط حساب المدير العام عن هذا الجهاز؟")) return;
+            localWriteEpoch++;
             adminDeviceId = "";
             localStorage.removeItem('g10_admin_device_id');
             teacherLogs.unshift({
@@ -2592,6 +2678,7 @@
 
         async function addTeacherAccount(e) {
             e.preventDefault();
+            localWriteEpoch++;
             const name = document.getElementById('new-t-name').value.trim();
             const sub = document.getElementById('new-t-subject').value;
             const pin = document.getElementById('new-t-pin').value.trim();
@@ -2605,6 +2692,7 @@
 
         async function removeTeacher(idx) {
             if (!confirm("حذف حساب هذا الأستاذ؟")) return;
+            localWriteEpoch++;
             teachers.splice(idx, 1);
             saveAllLocal();
             renderAdminDashboard();
@@ -2613,6 +2701,7 @@
 
         async function clearTeacherLogs() {
             if (!confirm("مسح سجل نشاط الأساتذة؟")) return;
+            localWriteEpoch++;
             teacherLogs = [];
             saveAllLocal();
             renderAdminDashboard();
@@ -2622,6 +2711,7 @@
         async function updateAdminPin() {
             const val = document.getElementById('new-admin-pin').value.trim();
             if (!val) return alert("يرجى إدخال الرمز الجديد أولاً");
+            localWriteEpoch++;
             adminPin = val;
             localStorage.setItem('g10_admin_pin', val);
             document.getElementById('new-admin-pin').value = '';
@@ -2668,6 +2758,7 @@
         async function resetStudentDeviceLock(index) {
             const st = students[index];
             if (!confirm(`هل تريد فك ارتباط الجهاز للطالب (${st.name} - ${st.code})؟`)) return;
+            localWriteEpoch++;
             students[index].deviceId = "";
             students[index].present = false;
             students[index].note = "تم فك قفل الجهاز (مطالب بتسجيل الدخول)";
@@ -2675,6 +2766,7 @@
             if (currentStudentProfile && normalizeSecretText(currentStudentProfile.code) === normalizeSecretText(st.code)) {
                 localStorage.removeItem('g10_student_profile');
                 currentStudentProfile = null;
+                updateHeaderButtons();
                 updateStudentBarUI();
             }
 
@@ -2686,6 +2778,7 @@
         }
 
         async function toggleAttendance(i) {
+            localWriteEpoch++;
             students[i].present = !students[i].present;
             students[i].time = students[i].present ? new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' }) : '-';
             saveAllLocal();
@@ -2695,11 +2788,13 @@
         }
 
         async function updateNote(i, val) {
+            localWriteEpoch++;
             students[i].note = val;
             saveAllLocal();
             await syncToCloud(false);
         }
 
+        // إضافة طالب جديد محمية ضد التحديث التلقائي مع تأكيد الحفظ في السحابة
         async function addStudentManual() {
             if (currentRole !== 'admin') {
                 return alert("⛔ إضافة الطلاب محصورة بالمدير العام فقط!");
@@ -2707,12 +2802,30 @@
             const nameInput = document.getElementById('new-student-name');
             const codeInput = document.getElementById('new-student-code');
             const branchInput = document.getElementById('new-student-branch');
+            const addBtn = document.getElementById('add-student-btn');
+
             const name = nameInput.value.trim();
             let code = normalizeSecretText(codeInput.value);
             if (!name || !code) return alert("يرجى إدخال الاسم الثلاثي والرمز!");
             if (!/^A\d+$/.test(code)) return alert("يجب أن يبدأ رمز الطالب بحرف A متبوعاً برقم (مثال: A105)");
-            if (students.some(s => normalizeSecretText(s.code) === code)) return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
 
+            if (addBtn) {
+                addBtn.disabled = true;
+                addBtn.innerText = "⏳ جارٍ الحفظ بالسحابة...";
+            }
+
+            // جلب أحدث قائمة طلاب قبل الإضافة لضمان عدم ضياع أي دخول جديد لطلاب آخرين
+            await fetchFromCloud(false, true, true, true);
+
+            if (students.some(s => normalizeSecretText(s.code) === code)) {
+                if (addBtn) {
+                    addBtn.disabled = false;
+                    addBtn.innerText = "+ إضافة الطالب";
+                }
+                return alert("هذا الرمز مسجل مسبقاً لطالب آخر!");
+            }
+
+            localWriteEpoch++;
             students.push({
                 name: name,
                 code: code,
@@ -2722,21 +2835,36 @@
                 time: "-",
                 note: "معتمد رسمياً من الإدارة (مطالب بتسجيل الدخول)"
             });
-            nameInput.value = '';
-            codeInput.value = '';
+
             saveAllLocal();
             renderStudents();
             renderAdminDashboard();
-            await syncToCloud(false);
+
+            const savedOk = await syncToCloud(false);
+
+            if (addBtn) {
+                addBtn.disabled = false;
+                addBtn.innerText = "+ إضافة الطالب";
+            }
+
+            if (savedOk) {
+                nameInput.value = '';
+                codeInput.value = '';
+                alert(`✅ تم إضافة الطالب (${name} - ${code}) وتثبيته في السحابة بنجاح!`);
+            } else {
+                alert("⚠️ حُفظ الطالب مؤقتاً على جهازك فقط بسبب ضعف الإنترنت؛ اضغط على (⬆️ رفع البيانات يدوياً) في لوحة المدير لتثبيته في السحابة.");
+            }
         }
 
         async function removeStudent(i) {
             if (currentRole !== 'admin') return alert("⛔ حذف الطلاب محصور بالمدير العام فقط!");
             if (!confirm("هل تريد حذف هذا الطالب من السجل؟")) return;
+            localWriteEpoch++;
             const removed = students.splice(i, 1)[0];
             if (removed && currentStudentProfile && normalizeSecretText(currentStudentProfile.code) === normalizeSecretText(removed.code)) {
                 localStorage.removeItem('g10_student_profile');
                 currentStudentProfile = null;
+                updateHeaderButtons();
                 updateStudentBarUI();
             }
             saveAllLocal();
@@ -2793,6 +2921,7 @@
 
         async function addQuizQuestion(e) {
             e.preventDefault();
+            localWriteEpoch++;
             const sub = document.getElementById('quiz-sub').value;
             quizzes.push({
                 subject: sub,
@@ -2823,6 +2952,7 @@
 
         async function deleteQuizQuestion(qIdx) {
             if (!confirm("هل تريد حذف هذا السؤال من سبر المعلومات؟")) return;
+            localWriteEpoch++;
             const removed = quizzes.splice(qIdx, 1)[0];
 
             teacherLogs.unshift({
