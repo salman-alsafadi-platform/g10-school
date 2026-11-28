@@ -8,7 +8,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- تحميل الخط بشكل غير معطل للصفحة عند ضعف الإنترنت -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" media="print" onload="this.media='all'">
 
     <script>
@@ -20,11 +19,7 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Cairo', Tahoma, Arial, sans-serif;
             background-color: #f1f5f9;
@@ -32,14 +27,8 @@
             line-height: 1.6;
             min-height: 100vh;
         }
-        .hidden {
-            display: none !important;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 12px;
-        }
+        .hidden { display: none !important; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 12px; }
 
         /* الشريط العلوي */
         .header {
@@ -57,64 +46,24 @@
             justify-content: space-between;
             align-items: center;
         }
-        .brand-box {
-            display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-        }
+        .brand-box { display: flex; align-items: center; margin-bottom: 6px; }
         .logo-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background-color: #312e81;
-            border: 2px solid #fbbf24;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-left: 10px;
-            flex-shrink: 0;
+            width: 42px; height: 42px; border-radius: 10px;
+            background-color: #312e81; border: 2px solid #fbbf24;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-left: 10px; flex-shrink: 0;
         }
-        .brand-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-        .badges-row {
-            margin-top: 2px;
-        }
+        .brand-title { font-size: 16px; font-weight: 800; color: #ffffff; }
+        .badges-row { margin-top: 2px; }
         .badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 4px;
+            display: inline-block; font-size: 11px; font-weight: 700;
+            padding: 2px 8px; border-radius: 20px; margin-left: 4px;
         }
-        .badge-student {
-            background-color: #0369a1;
-            color: #e0f2fe;
-        }
-        .badge-sync-wait {
-            background-color: #334155;
-            color: #e2e8f0;
-        }
-        .badge-sync-ok {
-            background-color: #065f46;
-            color: #a7f3d0;
-        }
-        .badge-sync-err {
-            background-color: #9f1239;
-            color: #fecdd3;
-        }
-        .student-bar {
-            font-size: 12px;
-            color: #c7d2fe;
-            margin-top: 3px;
-        }
-        .header-actions {
-            margin-top: 4px;
-        }
+        .badge-student { background-color: #0369a1; color: #e0f2fe; }
+        .badge-sync-wait { background-color: #334155; color: #e2e8f0; }
+        .badge-sync-ok { background-color: #065f46; color: #a7f3d0; }
+        .badge-sync-err { background-color: #9f1239; color: #fecdd3; }
+        .student-bar { font-size: 12px; color: #c7d2fe; margin-top: 3px; }
 
         /* شريط التبويبات */
         .nav-bar {
@@ -125,41 +74,19 @@
             white-space: nowrap;
         }
         .nav-btn {
-            display: inline-block;
-            border: none;
-            background-color: transparent;
-            color: #c7d2fe;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 7px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-left: 6px;
+            display: inline-block; border: none; background-color: transparent;
+            color: #c7d2fe; font-family: inherit; font-size: 13px; font-weight: 700;
+            padding: 7px 14px; border-radius: 8px; cursor: pointer; margin-left: 6px;
         }
-        .nav-btn.active {
-            background-color: #4f46e5;
-            color: #ffffff;
-        }
+        .nav-btn.active { background-color: #4f46e5; color: #ffffff; }
 
-        /* الأزرار العامة */
+        /* الأزرار */
         .btn {
-            display: inline-block;
-            border: none;
-            border-radius: 10px;
-            padding: 9px 14px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
+            display: inline-block; border: none; border-radius: 10px;
+            padding: 9px 14px; font-family: inherit; font-size: 13px;
+            font-weight: 800; cursor: pointer; text-decoration: none; text-align: center;
         }
-        .btn-sm {
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 8px;
-        }
+        .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
         .btn-indigo { background-color: #4338ca; color: #ffffff; }
         .btn-emerald { background-color: #059669; color: #ffffff; }
         .btn-amber { background-color: #f59e0b; color: #0f172a; }
@@ -168,316 +95,188 @@
         .btn-slate { background-color: #e2e8f0; color: #1e293b; }
         .btn-refresh { background-color: #3730a3; color: #ffffff; border: 1px solid #6366f1; }
 
-        /* المحتوى والبطاقات */
-        .main-content {
-            padding: 16px 0 32px 0;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
+        /* البطاقات والأقسام */
+        .main-content { padding: 16px 0 32px 0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .card {
-            background-color: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
+            background-color: #ffffff; border: 1px solid #cbd5e1;
+            border-radius: 14px; padding: 16px; margin-bottom: 16px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
         }
+        .live-banner { background-color: #1e1b4b; color: #ffffff; border: 1px solid #4338ca; }
+        .live-banner h2 { font-size: 17px; font-weight: 800; margin: 6px 0 4px 0; }
+        .live-banner p { font-size: 12px; color: #c7d2fe; margin-bottom: 12px; }
+        .btn-group { display: flex; flex-wrap: wrap; }
+        .btn-group .btn { margin-left: 8px; margin-bottom: 8px; flex: 1 1 160px; }
 
-        /* بانر القاعة المباشرة */
-        .live-banner {
-            background-color: #1e1b4b;
-            color: #ffffff;
-            border: 1px solid #4338ca;
+        .drive-banner { background-color: #fffbeb; border: 2px solid #fcd34d; }
+        .drive-banner h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+        .drive-banner p { font-size: 12px; color: #475569; margin-bottom: 12px; }
+
+        .section-head {
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; margin-bottom: 10px;
         }
-        .live-banner h2 {
-            font-size: 17px;
-            font-weight: 800;
-            margin: 6px 0 4px 0;
+        .section-head h2 { font-size: 16px; font-weight: 800; color: #1e293b; }
+
+        /* شريط حصص اليوم السريع */
+        .quick-strip { border: 1px solid #a5b4fc; background-color: #ffffff; }
+        .pill-list { display: flex; flex-wrap: wrap; margin-top: 8px; }
+        .quick-pill {
+            display: inline-block; font-family: inherit; font-size: 12px; font-weight: 700;
+            padding: 5px 10px; border-radius: 8px; margin-left: 6px; margin-bottom: 6px;
+            border: 1px solid #c7d2fe; background-color: #eef2ff; color: #1e1b4b; cursor: pointer;
         }
-        .live-banner p {
-            font-size: 12px;
-            color: #c7d2fe;
-            margin-bottom: 12px;
+        .quick-pill-free {
+            border: 1px dashed #cbd5e1; background-color: #f8fafc; color: #64748b; cursor: default;
         }
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .btn-group .btn {
-            margin-left: 8px;
-            margin-bottom: 8px;
-            flex: 1 1 180px;
+        .quick-pill-break {
+            border: 1px solid #fcd34d; background-color: #fffbeb; color: #92400e; cursor: default;
         }
 
-        /* بانر الـ Drive */
-        .drive-banner {
-            background-color: #fffbeb;
-            border: 2px solid #fcd34d;
+        /* البرنامج التفاعلي الأسبوعي */
+        .day-tabs { display: flex; flex-wrap: wrap; margin-bottom: 12px; }
+        .day-btn {
+            border: 1px solid #cbd5e1; background-color: #f1f5f9; color: #334155;
+            font-family: inherit; font-size: 13px; font-weight: 800;
+            padding: 7px 13px; border-radius: 10px; cursor: pointer;
+            margin-left: 6px; margin-bottom: 6px;
         }
-        .drive-banner h3 {
-            font-size: 15px;
-            font-weight: 800;
-            color: #0f172a;
-            margin-bottom: 4px;
+        .day-btn.is-today { background-color: #d1fae5; border-color: #10b981; color: #065f46; }
+        .day-btn.active { background-color: #4f46e5; border-color: #4f46e5; color: #ffffff; }
+
+        .sched-grid { display: flex; flex-wrap: wrap; margin: 0 -5px; }
+        .sched-col { width: 100%; padding: 5px; }
+        @media (min-width: 640px) { .sched-col { width: 50%; } }
+
+        .sched-card {
+            background-color: #f8fafc; border: 1px solid #c7d2fe;
+            border-radius: 12px; padding: 12px; cursor: pointer; height: 100%;
         }
-        .drive-banner p {
-            font-size: 12px;
-            color: #475569;
-            margin-bottom: 12px;
+        .sched-card-free {
+            background-color: #f8fafc; border: 2px dashed #cbd5e1;
+            border-radius: 12px; padding: 12px; text-align: center; color: #64748b; height: 100%;
+        }
+        .sched-card-top {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; margin-bottom: 6px;
+        }
+        .time-tag {
+            font-family: monospace; font-weight: 700; font-size: 11px;
+            background-color: #e0e7ff; color: #312e81; padding: 2px 7px; border-radius: 6px;
+        }
+        .break-bar {
+            background-color: #fffbeb; border: 1px solid #fcd34d; color: #92400e;
+            border-radius: 10px; padding: 7px 12px; margin: 8px 0;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; font-weight: 800;
+        }
+        .filter-select {
+            border: 1px solid #94a3b8; border-radius: 8px; padding: 6px 10px;
+            font-family: inherit; font-size: 12px; font-weight: 700;
+            background-color: #f8fafc; color: #1e293b;
         }
 
         /* شبكة المواد */
-        .section-head {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .section-head h2 {
-            font-size: 16px;
-            font-weight: 800;
-            color: #1e293b;
-        }
-        .subjects-grid {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -5px 14px -5px;
-        }
-        .subject-col {
-            width: 50%;
-            padding: 5px;
-        }
-        @media (min-width: 640px) {
-            .subject-col { width: 33.333%; }
-        }
-        @media (min-width: 900px) {
-            .subject-col { width: 20%; }
-        }
+        .subjects-grid { display: flex; flex-wrap: wrap; margin: 0 -5px 14px -5px; }
+        .subject-col { width: 50%; padding: 5px; }
+        @media (min-width: 640px) { .subject-col { width: 33.333%; } }
+        @media (min-width: 900px) { .subject-col { width: 20%; } }
         .subject-card {
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e3a8a;
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            height: 100%;
+            background-color: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a;
+            border-radius: 12px; padding: 10px; cursor: pointer; height: 100%;
         }
-        .subject-card-top {
-            display: flex;
-            align-items: center;
-        }
-        .subject-icon {
-            font-size: 20px;
-            margin-left: 8px;
-        }
-        .subject-name {
-            font-size: 13px;
-            font-weight: 800;
-            word-break: break-word;
-        }
+        .subject-card-top { display: flex; align-items: center; }
+        .subject-icon { font-size: 20px; margin-left: 8px; }
+        .subject-name { font-size: 13px; font-weight: 800; word-break: break-word; }
         .subject-drive-link {
-            display: inline-block;
-            margin-top: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            background-color: #ffffff;
-            color: #312e81;
-            border: 1px solid #c7d2fe;
-            padding: 2px 7px;
-            border-radius: 6px;
-            text-decoration: none;
+            display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700;
+            background-color: #ffffff; color: #312e81; border: 1px solid #c7d2fe;
+            padding: 2px 7px; border-radius: 6px; text-decoration: none;
         }
 
-        /* جدول الدروس */
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 680px;
-            font-size: 13px;
-        }
-        thead tr {
-            background-color: #f1f5f9;
-            color: #475569;
-            font-size: 12px;
-        }
-        th, td {
-            padding: 10px 8px;
-            text-align: right;
-            border-bottom: 1px solid #e2e8f0;
-            vertical-align: middle;
-        }
+        /* الجداول */
+        .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 13px; }
+        thead tr { background-color: #f1f5f9; color: #475569; font-size: 12px; }
+        th, td { padding: 10px 8px; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        .sched-table { min-width: 860px; font-size: 12px; }
+        .sched-table th, .sched-table td { text-align: center; border: 1px solid #e2e8f0; padding: 7px 5px; }
+        .sched-table thead tr { background-color: #1e1b4b; color: #ffffff; }
+        .sched-break-th { background-color: #78350f !important; color: #fde68a !important; }
+        .sched-break-td { background-color: #fffbeb; color: #92400e; font-weight: 700; font-size: 11px; }
+
         .branch-pill {
-            display: inline-block;
-            padding: 2px 7px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
+            display: inline-block; padding: 2px 7px; border-radius: 6px;
+            font-size: 11px; font-weight: 700; white-space: nowrap;
         }
         .branch-sci { background-color: #e0f2fe; color: #075985; }
         .branch-lit { background-color: #fef3c7; color: #92400e; }
         .branch-both { background-color: #f3e8ff; color: #6b21a8; }
 
         /* سبر المعلومات */
-        .quiz-card {
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 14px;
-        }
+        .quiz-card { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
         .quiz-opt {
-            display: block;
-            background-color: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 9px 10px;
-            margin-top: 8px;
-            cursor: pointer;
-            font-size: 13px;
+            display: block; background-color: #ffffff; border: 1px solid #cbd5e1;
+            border-radius: 8px; padding: 9px 10px; margin-top: 8px; cursor: pointer; font-size: 13px;
         }
-        .quiz-opt input {
-            margin-left: 8px;
-        }
-        .quiz-opt.opt-correct {
-            background-color: #d1fae5;
-            border-color: #10b981;
-            font-weight: 700;
-        }
-        .quiz-opt.opt-wrong {
-            background-color: #ffe4e6;
-            border-color: #f43f5e;
-        }
+        .quiz-opt input { margin-left: 8px; }
+        .quiz-opt.opt-correct { background-color: #d1fae5; border-color: #10b981; font-weight: 700; }
+        .quiz-opt.opt-wrong { background-color: #ffe4e6; border-color: #f43f5e; }
         .score-box {
-            display: inline-block;
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 13px;
+            display: inline-block; background-color: #d1fae5; color: #065f46;
+            padding: 6px 12px; border-radius: 10px; font-weight: 800; font-size: 13px;
         }
 
         /* النوافذ المنبثقة */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(15, 23, 42, 0.92);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px;
-            overflow-y: auto;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(15, 23, 42, 0.92); z-index: 999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 14px; overflow-y: auto;
         }
         .modal-box {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 430px;
-            border-radius: 16px;
-            padding: 20px;
-            border-top: 5px solid #4f46e5;
+            background-color: #ffffff; width: 100%; max-width: 430px;
+            border-radius: 16px; padding: 20px; border-top: 5px solid #4f46e5;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
-        .modal-title {
-            font-size: 17px;
-            font-weight: 800;
-            color: #1e1b4b;
-            margin-bottom: 4px;
-        }
-        .modal-sub {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 14px;
-        }
+        .modal-title { font-size: 17px; font-weight: 800; color: #1e1b4b; margin-bottom: 4px; }
+        .modal-sub { font-size: 12px; color: #64748b; margin-bottom: 12px; }
         .alert-danger {
-            background-color: #fff1f2;
-            border: 1px solid #fda4af;
-            color: #9f1239;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            background-color: #fff1f2; border: 1px solid #fda4af; color: #9f1239;
+            padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700; margin-bottom: 10px;
         }
-        .form-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #334155;
-            margin-bottom: 6px;
+        .alert-warn {
+            background-color: #fffbeb; border: 1px solid #fcd34d; color: #92400e;
+            padding: 9px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-bottom: 10px;
         }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
         .form-input {
-            width: 100%;
-            border: 1px solid #94a3b8;
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-family: monospace;
-            font-size: 15px;
-            text-align: left;
-            text-transform: uppercase;
-            background-color: #f8fafc;
-            color: #0f172a;
+            width: 100%; border: 1px solid #94a3b8; border-radius: 10px;
+            padding: 10px 12px; font-family: monospace; font-size: 15px;
+            text-align: left; text-transform: uppercase; background-color: #f8fafc; color: #0f172a;
         }
         .preview-box {
-            background-color: #eef2ff;
-            border: 1px solid #c7d2fe;
-            border-radius: 10px;
-            padding: 10px 12px;
-            margin: 12px 0;
-            font-size: 12px;
+            background-color: #eef2ff; border: 1px solid #c7d2fe;
+            border-radius: 10px; padding: 10px 12px; margin: 12px 0; font-size: 12px;
         }
-        .preview-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
+        .preview-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
 
-        /* مشغل الفيديو المتوافق مع الهواتف القديمة */
+        /* مشغل الفيديو */
         .video-modal-box {
-            background-color: #0f172a;
-            width: 100%;
-            max-width: 780px;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid #334155;
+            background-color: #0f172a; width: 100%; max-width: 780px;
+            border-radius: 14px; overflow: hidden; border: 1px solid #334155;
         }
         .video-modal-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            background-color: #020617;
-            color: #ffffff;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 14px; background-color: #020617; color: #ffffff;
         }
         .video-ratio-wrap {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            height: 0;
-            background-color: #000000;
+            position: relative; width: 100%; padding-bottom: 56.25%;
+            height: 0; background-color: #000000;
         }
-        .video-ratio-wrap iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+        .video-ratio-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     </style>
 </head>
 <body>
@@ -496,14 +295,15 @@
                     <div id="student-info-bar" class="student-bar">الصف العاشر (علمي / أدبي) - المنهاج السوري</div>
                 </div>
             </div>
-            <div class="header-actions">
+            <div>
                 <button onclick="fetchFromCloud(true, false, false, true)" class="btn btn-sm btn-refresh">🔄 تحديث البيانات</button>
             </div>
         </div>
 
         <nav class="nav-bar">
             <div class="container">
-                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn active">📚 القاعة المباشرة والمواد</button>
+                <button id="nav-btn-subjects" onclick="switchTab('subjects-tab', this)" class="nav-btn active">📚 القاعة والمواد</button>
+                <button id="nav-btn-schedule" onclick="switchTab('schedule-tab', this)" class="nav-btn">📅 البرنامج الأسبوعي</button>
                 <button id="nav-btn-quiz" onclick="switchTab('quiz-tab', this)" class="nav-btn">🧠 سبر المعلومات</button>
             </div>
         </nav>
@@ -519,17 +319,21 @@
             <div class="card live-banner">
                 <span class="badge badge-sync-ok">● البث المباشر الموحد لليوم الدراسي</span>
                 <h2>📹 قاعة الدوام الافتراضية (Google Meet)</h2>
-                <p>اضغط على زر فرعك للدخول مباشرة إلى القاعة وتسجيل حضورك تلقائياً</p>
+                <p>اضغط على زر فرعك للدخول إلى القاعة وتسجيل حضورك تلقائياً بتاريخ اليوم</p>
                 <div class="btn-group">
                     <button onclick="joinDailyLiveRoom('علمي')" class="btn btn-emerald">🔬 دخول قاعة العلمي المباشرة</button>
                     <button onclick="joinDailyLiveRoom('أدبي')" class="btn btn-amber">📖 دخول قاعة الأدبي المباشرة</button>
+                    <button onclick="switchTab('schedule-tab', document.getElementById('nav-btn-schedule'))" class="btn btn-indigo">📅 حصص اليوم</button>
                 </div>
             </div>
+
+            <!-- شريط مصغّر لحصص اليوم -->
+            <div id="today-quick-strip" class="card quick-strip"></div>
 
             <!-- مكتبة المنهاج والوظائف -->
             <div class="card drive-banner">
                 <h3>📂 مكتبة المنهاج الشاملة والوظائف (Google Drive)</h3>
-                <p>الوصول السريع إلى الكتب المدرسية، الملخصات، وأوراق العمل، ونموذج تسليم الوظائف</p>
+                <p>الوصول السريع إلى الكتب المدرسية، الملخصات، أوراق العمل، ونموذج تسليم الوظائف</p>
                 <div class="btn-group">
                     <button onclick="openGeneralDriveFolder()" class="btn btn-indigo">☁️ فتح مجلد المواد والملخصات (Drive) ↗</button>
                     <button id="homework-drive-btn" onclick="openHomeworkDriveFolder()" class="btn btn-emerald hidden">📝 نموذج تسليم الوظائف ↗</button>
@@ -569,7 +373,41 @@
             </div>
         </section>
 
-        <!-- 2. قسم سبر المعلومات -->
+        <!-- 2. قسم البرنامج التفاعلي الأسبوعي -->
+        <section id="schedule-tab" class="tab-content">
+            <div class="card">
+                <div class="section-head" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 12px;">
+                    <div>
+                        <h2>📅 البرنامج الأسبوعي للدروس</h2>
+                        <p style="font-size: 12px; color: #64748b;">الأحد إلى الخميس • 6 حصص × 45 دقيقة (08:00 ص – 01:00 ظ) مع استراحتين</p>
+                    </div>
+                    <select id="schedule-branch-filter" onchange="renderWeeklySchedule()" class="filter-select" style="margin-top:6px;">
+                        <option value="الكل">كل الفروع (علمي + أدبي)</option>
+                        <option value="علمي">الفرع العلمي فقط 🔬</option>
+                        <option value="أدبي">الفرع الأدبي فقط 📖</option>
+                    </select>
+                </div>
+
+                <!-- أزرار أيام الأسبوع -->
+                <div id="schedule-days-tabs" class="day-tabs"></div>
+
+                <!-- بطاقات اليوم المختار مع فواصل الاستراحة -->
+                <div id="schedule-selected-day-cards"></div>
+
+                <!-- الجدول الأسبوعي الكامل -->
+                <div style="margin-top: 18px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                    <h3 style="font-size: 14px; font-weight: 800; color: #1e1b4b; margin-bottom: 10px;">📋 الجدول الأسبوعي الكامل (الأحد – الخميس):</h3>
+                    <div class="table-wrap">
+                        <table class="sched-table">
+                            <thead id="schedule-full-thead"></thead>
+                            <tbody id="schedule-full-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. قسم سبر المعلومات -->
         <section id="quiz-tab" class="tab-content">
             <div class="card">
                 <div class="section-head" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 14px;">
@@ -588,16 +426,18 @@
         </section>
     </main>
 
-    <!-- نافذة دخول الطالب الإجبارية (محصورة بالرموز المعتمدة من المدير فقط) -->
+    <!-- نافذة دخول الطالب (النظام المدمج: جلسة نشطة + 3 تبديلات حد أقصى) -->
     <div id="student-reg-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <div class="modal-title">👨‍🎓 تسجيل دخول الطالب المعتمد</div>
-            <div class="modal-sub">أدخل رمزك المسلّم من الإدارة؛ يظهر اسمك تلقائياً ويُربط الرمز ببصمة هذا الجهاز فقط</div>
+            <div class="modal-sub">الدخول بالرمز المسلّم من الإدارة • جلسة واحدة نشطة وبصمة محصّنة</div>
+            <div id="inapp-browser-warning" class="alert-warn hidden">💡 نصيحة: يفضّل فتح الرابط في متصفح Chrome أو Firefox (وليس داخل واتساب) لضمان ثبات جلستك.</div>
             <div id="reg-security-alert" class="alert-danger hidden"></div>
 
             <form onsubmit="saveStudentFirstTime(event)">
                 <label class="form-label" for="reg-student-code">رمز الطالب (يبدأ بحرف A، مثال: A101):</label>
                 <input type="text" id="reg-student-code" class="form-input" required placeholder="A101" dir="ltr" oninput="updateStudentPreviewByCode(this.value)">
+                <p style="font-size:11px; color:#64748b; margin-top:4px;">🛡️ يعمل الرمز على جلسة واحدة نشطة، ويُقفل تلقائياً عند تجاوز 3 تبديلات للأجهزة.</p>
 
                 <div class="preview-box">
                     <div class="preview-row">
@@ -610,7 +450,7 @@
                     </div>
                 </div>
 
-                <button type="submit" id="reg-submit-btn" class="btn btn-indigo" style="width:100%; padding:12px;">✅ تسجيل الدخول وربط هذا الجهاز</button>
+                <button type="submit" id="reg-submit-btn" class="btn btn-indigo" style="width:100%; padding:12px;">✅ تسجيل الدخول وتفعيل الجلسة</button>
             </form>
         </div>
     </div>
@@ -631,12 +471,45 @@
 
     <script>
         var DEFAULT_CLOUD_URL = "https://script.google.com/macros/s/AKfycbzoOp5PCZdUxl8shKoJm5oGak7bhc8wwmPr1gGItWw_UaBfZfVKNUCgtMlTX0OWJX1EYA/exec";
+        var MAX_DEVICE_SWITCHES = 3;
+        var WEEK_DAYS = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"];
+        var BREAK_1_TIME = "09:30 - 09:45";
+        var BREAK_2_TIME = "11:15 - 11:30";
+        var defaultPeriodTimes = [
+            "08:00 - 08:45", "08:45 - 09:30",
+            "09:45 - 10:30", "10:30 - 11:15",
+            "11:30 - 12:15", "12:15 - 01:00"
+        ];
 
         var isCloudDataLoadedSafely = false;
         var isSyncingNow = false;
         var localWriteEpoch = 0;
         var lastCloudWriteAt = 0;
         var currentSubjectFilter = "الكل";
+        var jsDayNow = new Date().getDay();
+        var selectedScheduleDay = (jsDayNow >= 0 && jsDayNow <= 4) ? jsDayNow : 0;
+
+        function formatLocalDateISO(d) {
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1);
+            var day = String(d.getDate());
+            if (m.length < 2) m = "0" + m;
+            if (day.length < 2) day = "0" + day;
+            return y + "-" + m + "-" + day;
+        }
+
+        function getTodayISO() {
+            return formatLocalDateISO(new Date());
+        }
+
+        function isWeekendISO(isoDate) {
+            if (!isoDate) return false;
+            var parts = isoDate.split('-');
+            if (parts.length !== 3) return false;
+            var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            var day = d.getDay();
+            return day === 5 || day === 6; // الجمعة والسبت
+        }
 
         function normalizeSecretText(str) {
             if (!str) return "";
@@ -653,26 +526,108 @@
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;");
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function setCookie(name, value, days) {
+            try {
+                var d = new Date();
+                d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+                document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+            } catch (e) {}
+        }
+
+        function getCookie(name) {
+            try {
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? decodeURIComponent(match[2]) : "";
+            } catch (e) { return ""; }
         }
 
         function getOrCreateDeviceId() {
-            var devId = localStorage.getItem('g10_unique_device_id');
+            var lsId = "";
+            try { lsId = localStorage.getItem('g10_unique_device_id') || ""; } catch (e) {}
+            var ckId = getCookie('g10_unique_device_id');
+            var devId = lsId || ckId;
             if (!devId) {
                 devId = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
-                localStorage.setItem('g10_unique_device_id', devId);
             }
+            try { localStorage.setItem('g10_unique_device_id', devId); } catch (e) {}
+            setCookie('g10_unique_device_id', devId, 365);
             return devId;
         }
         var THIS_DEVICE_ID = getOrCreateDeviceId();
+
+        function getSavedSessionId() {
+            var lsS = "";
+            try { lsS = localStorage.getItem('g10_active_session_id') || ""; } catch (e) {}
+            var s = lsS || getCookie('g10_active_session_id') || "";
+            if (s) {
+                try { localStorage.setItem('g10_active_session_id', s); } catch (e) {}
+                setCookie('g10_active_session_id', s, 365);
+            }
+            return s;
+        }
+
+        function saveSessionId(id) {
+            MY_SESSION_ID = id || "";
+            if (id) {
+                try { localStorage.setItem('g10_active_session_id', id); } catch (e) {}
+                setCookie('g10_active_session_id', id, 365);
+            } else {
+                try { localStorage.removeItem('g10_active_session_id'); } catch (e) {}
+                setCookie('g10_active_session_id', '', -1);
+            }
+        }
+        var MY_SESSION_ID = getSavedSessionId();
 
         function safeParseLocal(key, fallback) {
             try {
                 var raw = localStorage.getItem(key);
                 return raw ? JSON.parse(raw) : fallback;
-            } catch (e) {
-                return fallback;
+            } catch (e) { return fallback; }
+        }
+
+        function createEmptyDaySlots() {
+            var arr = [];
+            for (var i = 0; i < 6; i++) arr.push({ subject: "فراغ", teacher: "", branch: "علمي وأدبي" });
+            return arr;
+        }
+
+        function normalizeWeeklySchedule(ws) {
+            var base = {
+                periodTimes: defaultPeriodTimes.slice(),
+                days: {
+                    "0": createEmptyDaySlots(), "1": createEmptyDaySlots(),
+                    "2": createEmptyDaySlots(), "3": createEmptyDaySlots(), "4": createEmptyDaySlots()
+                }
+            };
+            if (!ws || typeof ws !== 'object') return base;
+            if (Array.isArray(ws.periodTimes) && ws.periodTimes.length === 6) {
+                for (var t = 0; t < 6; t++) {
+                    if (ws.periodTimes[t] && String(ws.periodTimes[t]).trim()) {
+                        base.periodTimes[t] = String(ws.periodTimes[t]).trim();
+                    }
+                }
             }
+            if (ws.days && typeof ws.days === 'object') {
+                var keys = ["0", "1", "2", "3", "4"];
+                for (var k = 0; k < keys.length; k++) {
+                    var dk = keys[k];
+                    if (Array.isArray(ws.days[dk])) {
+                        var slots = [];
+                        for (var p = 0; p < 6; p++) {
+                            var s = ws.days[dk][p];
+                            slots.push((s && typeof s === 'object')
+                                ? { subject: s.subject || "فراغ", teacher: s.teacher || "", branch: s.branch || "علمي وأدبي" }
+                                : { subject: "فراغ", teacher: "", branch: "علمي وأدبي" });
+                        }
+                        base.days[dk] = slots;
+                    }
+                }
+            }
+            return base;
         }
 
         var currentStudentProfile = safeParseLocal('g10_student_profile', null);
@@ -692,16 +647,14 @@
             { name: "التربية الوطنية", icon: "🇸🇾", driveUrl: "" }
         ]);
         var dailyMeetLinks = safeParseLocal('g10_daily_meet_v9', {
-            sci: "",
-            lit: "",
-            generalDrive: "",
-            homeworkDrive: ""
+            sci: "", lit: "", generalDrive: "", homeworkDrive: "", weeklySchedule: null
         });
+        var weeklySchedule = normalizeWeeklySchedule(dailyMeetLinks.weeklySchedule || safeParseLocal('g10_weekly_schedule_v10', null));
+        dailyMeetLinks.weeklySchedule = weeklySchedule;
+
         var lessons = safeParseLocal('g10_lessons_v9', []);
         var students = safeParseLocal('g10_students_v9', []);
         var quizzes = safeParseLocal('g10_quizzes_v9', []);
-
-        // حقول محفوظة لضمان عدم مسح بيانات الإدارة والأساتذة عند مزامنة حضور الطالب
         var teachers = safeParseLocal('g10_teachers_v9', []);
         var teacherLogs = safeParseLocal('g10_logs_v9', []);
         var broadcastHosts = safeParseLocal('g10_hosts_v10', []);
@@ -718,14 +671,61 @@
             { bg: "#ecfeff", border: "#a5f3fc", text: "#164e63" }
         ];
 
+        function ensureStudentFields(s) {
+            if (!s.attendance || typeof s.attendance !== 'object') s.attendance = {};
+            if (typeof s.deviceSwitchCount !== 'number') s.deviceSwitchCount = 0;
+            if (typeof s.isLocked !== 'boolean') s.isLocked = false;
+            if (typeof s.activeSessionId !== 'string') s.activeSessionId = "";
+            return s;
+        }
+
+        function pruneStudentAttendance(st) {
+            if (!st.attendance || typeof st.attendance !== 'object') return;
+            var allKeys = Object.keys(st.attendance);
+            var validDates = [];
+            for (var i = 0; i < allKeys.length; i++) {
+                if (!isWeekendISO(allKeys[i])) validDates.push(allKeys[i]);
+            }
+            validDates.sort();
+            if (validDates.length > 60) {
+                for (var j = 0; j < validDates.length - 60; j++) {
+                    delete st.attendance[validDates[j]];
+                }
+            }
+        }
+
+        function markStudentPresentToday(studentIdx, defaultNote) {
+            var today = getTodayISO();
+            var nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
+            var st = ensureStudentFields(students[studentIdx]);
+
+            if (isWeekendISO(today)) {
+                st.time = nowTime;
+                return;
+            }
+            var existing = st.attendance[today];
+            st.attendance[today] = {
+                present: true,
+                time: (existing && existing.time && existing.time !== "-") ? existing.time : nowTime,
+                note: (existing && existing.note) ? existing.note : defaultNote
+            };
+            st.present = true;
+            st.time = st.attendance[today].time;
+            st.note = st.attendance[today].note;
+            pruneStudentAttendance(st);
+        }
+
         function getActiveCloudUrl() {
-            var saved = localStorage.getItem('g10_admin_cloud_url');
+            var saved = "";
+            try { saved = localStorage.getItem('g10_admin_cloud_url') || ""; } catch (e) {}
             return (saved && saved.trim() !== "") ? saved.trim() : DEFAULT_CLOUD_URL;
         }
 
         function saveAllLocal() {
+            dailyMeetLinks.weeklySchedule = weeklySchedule;
             try {
                 localStorage.setItem('g10_subjects_v10', JSON.stringify(syrianG10Subjects));
+                localStorage.setItem('g10_weekly_schedule_v10', JSON.stringify(weeklySchedule));
                 localStorage.setItem('g10_hosts_v10', JSON.stringify(broadcastHosts));
                 localStorage.setItem('g10_lessons_v9', JSON.stringify(lessons));
                 localStorage.setItem('g10_students_v9', JSON.stringify(students));
@@ -766,17 +766,14 @@
 
         function switchTab(tabId, btnEl) {
             var tabs = document.querySelectorAll('.tab-content');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove('active');
-            }
+            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
             var target = document.getElementById(tabId);
             if (target) target.classList.add('active');
 
             var btns = document.querySelectorAll('.nav-btn');
-            for (var j = 0; j < btns.length; j++) {
-                btns[j].classList.remove('active');
-            }
+            for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
             if (btnEl) btnEl.classList.add('active');
+            if (tabId === 'schedule-tab') renderWeeklySchedule();
         }
 
         function openStudentRegModal(msg) {
@@ -795,6 +792,14 @@
             document.getElementById('student-reg-modal').classList.add('hidden');
         }
 
+        function clearLocalStudentSession(msg) {
+            try { localStorage.removeItem('g10_student_profile'); } catch (e) {}
+            saveSessionId("");
+            currentStudentProfile = null;
+            updateStudentBarUI();
+            openStudentRegModal(msg);
+        }
+
         function updateStudentPreviewByCode(rawVal) {
             var clean = normalizeSecretText(rawVal);
             var nameEl = document.getElementById('reg-official-name-preview');
@@ -806,10 +811,7 @@
             }
             var matched = null;
             for (var i = 0; i < students.length; i++) {
-                if (normalizeSecretText(students[i].code) === clean) {
-                    matched = students[i];
-                    break;
-                }
+                if (normalizeSecretText(students[i].code) === clean) { matched = students[i]; break; }
             }
             if (matched) {
                 nameEl.innerText = matched.name;
@@ -831,38 +833,41 @@
             var cloudStudent = null;
             for (var i = 0; i < students.length; i++) {
                 if (normalizeSecretText(students[i].code) === normalizeSecretText(currentStudentProfile.code)) {
-                    cloudStudent = students[i];
+                    cloudStudent = ensureStudentFields(students[i]);
                     break;
                 }
             }
             if (!cloudStudent) {
-                localStorage.removeItem('g10_student_profile');
-                currentStudentProfile = null;
-                updateStudentBarUI();
-                openStudentRegModal("🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة.");
+                clearLocalStudentSession("🔄 رمزك غير موجود في القائمة المعتمدة حالياً، يرجى مراجعة الإدارة.");
+                return;
+            }
+            if (cloudStudent.isLocked) {
+                clearLocalStudentSession("⛔ تم إيقاف هذا الحساب مؤقتاً لتجاوز الحد المسموح لتبديل الأجهزة (" + MAX_DEVICE_SWITCHES + " تبديلات). يرجى مراجعة الإدارة.");
                 return;
             }
             if (!cloudStudent.deviceId || cloudStudent.deviceId === "") {
-                localStorage.removeItem('g10_student_profile');
-                currentStudentProfile = null;
-                updateStudentBarUI();
-                openStudentRegModal("🔄 تم فك ارتباط هذا الجهاز من قِبل الإدارة، يرجى إعادة تسجيل الدخول.");
+                clearLocalStudentSession("🔄 تم فك ارتباط هذا الجهاز من قِبل الإدارة، يرجى إعادة تسجيل الدخول.");
                 return;
             }
-            if (cloudStudent.deviceId !== THIS_DEVICE_ID) {
-                localStorage.removeItem('g10_student_profile');
-                currentStudentProfile = null;
-                updateStudentBarUI();
-                openStudentRegModal("⛔ هذا الرمز مرتبط بهاتف آخر! يرجى مراجعة الإدارة.");
+            if (cloudStudent.activeSessionId) {
+                if (!MY_SESSION_ID && cloudStudent.deviceId === THIS_DEVICE_ID) {
+                    saveSessionId(cloudStudent.activeSessionId);
+                } else if (cloudStudent.activeSessionId !== MY_SESSION_ID) {
+                    clearLocalStudentSession("🔄 تم فتح حسابك من جهاز أو متصفح آخر، فتم إنهاء هذه الجلسة تلقائياً (نظام الجلسة الواحدة النشطة).");
+                    return;
+                }
+            } else if (cloudStudent.deviceId !== THIS_DEVICE_ID) {
+                clearLocalStudentSession("🔄 يرجى إعادة تسجيل الدخول برمزك لتفعيل الجلسة على هذا الجهاز.");
                 return;
             }
+
             currentStudentProfile = {
                 name: cloudStudent.name,
                 code: normalizeSecretText(cloudStudent.code),
                 branch: cloudStudent.branch || "علمي",
                 deviceId: cloudStudent.deviceId
             };
-            localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+            try { localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile)); } catch (e) {}
             updateStudentBarUI();
         }
 
@@ -880,14 +885,25 @@
                 if (!forceFetch && (isSyncingNow || startEpoch !== localWriteEpoch)) return false;
 
                 if (data && Array.isArray(data.lessons)) {
-                    if (Array.isArray(data.students)) students = data.students;
+                    if (Array.isArray(data.students)) {
+                        students = [];
+                        for (var sIdx = 0; sIdx < data.students.length; sIdx++) {
+                            students.push(ensureStudentFields(data.students[sIdx]));
+                        }
+                    }
                     if (Array.isArray(data.teachers) && data.teachers.length > 0) teachers = data.teachers;
                     lessons = data.lessons;
                     quizzes = Array.isArray(data.quizzes) ? data.quizzes : quizzes;
                     if (Array.isArray(data.teacherLogs)) teacherLogs = data.teacherLogs;
                     if (Array.isArray(data.subjects) && data.subjects.length > 0) syrianG10Subjects = data.subjects;
                     if (Array.isArray(data.broadcastHosts) && data.broadcastHosts.length > 0) broadcastHosts = data.broadcastHosts;
-                    if (data.dailyMeetLinks) dailyMeetLinks = data.dailyMeetLinks;
+                    if (data.dailyMeetLinks) {
+                        dailyMeetLinks = data.dailyMeetLinks;
+                        if (data.dailyMeetLinks.weeklySchedule) {
+                            weeklySchedule = normalizeWeeklySchedule(data.dailyMeetLinks.weeklySchedule);
+                        }
+                        dailyMeetLinks.weeklySchedule = weeklySchedule;
+                    }
                     if (data.adminPin) adminPin = data.adminPin;
                     if (typeof data.adminDeviceId !== 'undefined') adminDeviceId = data.adminDeviceId;
 
@@ -895,6 +911,7 @@
                     saveAllLocal();
                     updateDriveButtonsUI();
                     renderSubjects();
+                    renderWeeklySchedule();
                     renderLessons();
                     renderQuizzes();
                     updateSyncBadge("🟢 متصل ومؤمّن", "badge-sync-ok");
@@ -903,7 +920,7 @@
                     if (codeInput && codeInput.value) updateStudentPreviewByCode(codeInput.value);
 
                     if (!skipVerify) verifyActiveUserDeviceSession();
-                    if (showAlert) alert("✅ تم تحديث الدروس والبيانات بنجاح!");
+                    if (showAlert) alert("✅ تم تحديث البرنامج والدروس والبيانات بنجاح!");
                     return true;
                 }
                 return false;
@@ -920,6 +937,7 @@
 
             isSyncingNow = true;
             localWriteEpoch++;
+            dailyMeetLinks.weeklySchedule = weeklySchedule;
             updateSyncBadge("⬆️ جارٍ التثبيت...", "badge-sync-wait");
             try {
                 var res = await fetch(url, {
@@ -970,7 +988,7 @@
 
             if (!fetched || !isCloudDataLoadedSafely) {
                 btn.disabled = false;
-                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
                 secAlert.innerText = "⚠️ تعذر الاتصال بالسحابة بسبب ضعف الإنترنت، يرجى المحاولة مرة أخرى.";
                 secAlert.classList.remove('hidden');
                 return;
@@ -978,61 +996,96 @@
 
             var existingIdx = -1;
             for (var i = 0; i < students.length; i++) {
-                if (normalizeSecretText(students[i].code) === code) {
-                    existingIdx = i;
-                    break;
-                }
+                if (normalizeSecretText(students[i].code) === code) { existingIdx = i; break; }
             }
 
             if (existingIdx === -1) {
                 btn.disabled = false;
-                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+                btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
                 secAlert.innerText = "⛔ الرمز (" + code + ") غير موجود ضمن قائمة الطلاب المعتمدين من الإدارة.";
                 secAlert.classList.remove('hidden');
                 return;
             }
 
-            var regStudent = students[existingIdx];
-            if (regStudent.deviceId && regStudent.deviceId !== "" && regStudent.deviceId !== THIS_DEVICE_ID) {
+            var regStudent = ensureStudentFields(students[existingIdx]);
+            var nowStr = new Date().toLocaleString('ar-SY', { dateStyle: 'short', timeStyle: 'short' });
+
+            if (regStudent.isLocked) {
                 btn.disabled = false;
-                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
-                secAlert.innerText = "⛔ الرمز (" + code + ") الخاص بالطالب (" + regStudent.name + ") مرتبط بهاتف آخر! يرجى مراجعة الإدارة.";
+                btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
+                secAlert.innerText = "⛔ الرمز (" + code + ") الخاص بالطالب (" + regStudent.name + ") مقفل أمنياً لتجاوز " + MAX_DEVICE_SWITCHES + " تبديلات للأجهزة. راجع الإدارة لفك القفل.";
                 secAlert.classList.remove('hidden');
                 return;
             }
 
-            var nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
-            localWriteEpoch++;
-            students[existingIdx].deviceId = THIS_DEVICE_ID;
-            students[existingIdx].present = true;
-            students[existingIdx].time = nowTime;
-            students[existingIdx].note = "تم الدخول من النسخة الخفيفة وربط الجهاز";
+            var switchNotice = "";
+            if (!regStudent.deviceId || regStudent.deviceId === "") {
+                regStudent.deviceId = THIS_DEVICE_ID;
+                regStudent.deviceSwitchCount = 0;
+            } else if (regStudent.deviceId !== THIS_DEVICE_ID) {
+                var nextCount = (regStudent.deviceSwitchCount || 0) + 1;
+                if (nextCount > MAX_DEVICE_SWITCHES) {
+                    localWriteEpoch++;
+                    regStudent.isLocked = true;
+                    teacherLogs.unshift({
+                        teacher: regStudent.name + " (" + regStudent.code + ")",
+                        action: "🚨 قفل الحساب تلقائياً من النسخة الخفيفة! تجاوز حد تبديل الأجهزة (" + nextCount + ")",
+                        time: nowStr
+                    });
+                    if (teacherLogs.length > 50) teacherLogs.pop();
+                    saveAllLocal();
+                    await syncToCloud();
 
-            btn.innerText = "⬆️ جارٍ تثبيت بصمة جهازك...";
+                    btn.disabled = false;
+                    btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
+                    secAlert.innerText = "⛔ تم قفل الرمز (" + code + ") تلقائياً لتجاوز الحد المسموح لتبديل الأجهزة (" + MAX_DEVICE_SWITCHES + " تبديلات). تم إبلاغ المدير العام.";
+                    secAlert.classList.remove('hidden');
+                    return;
+                } else {
+                    regStudent.deviceSwitchCount = nextCount;
+                    regStudent.deviceId = THIS_DEVICE_ID;
+                    switchNotice = "\n⚠️ تنبيه حماية: تم تفعيل الجلسة على هذا الجهاز وإغلاق الجلسة السابقة (تبديل " + nextCount + " من " + MAX_DEVICE_SWITCHES + ").";
+                    teacherLogs.unshift({
+                        teacher: regStudent.name + " (" + regStudent.code + ")",
+                        action: "⚠️ تبديل جهاز وطرد الجلسة السابقة عبر النسخة الخفيفة (" + nextCount + "/" + MAX_DEVICE_SWITCHES + ")",
+                        time: nowStr
+                    });
+                    if (teacherLogs.length > 50) teacherLogs.pop();
+                }
+            }
+
+            var newSessionId = 'SESS-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            localWriteEpoch++;
+            regStudent.activeSessionId = newSessionId;
+            markStudentPresentToday(existingIdx, "دخول من النسخة الخفيفة");
+
+            btn.innerText = "⬆️ جارٍ تثبيت الجلسة في السحابة...";
             var synced = await syncToCloud();
 
             if (!synced) {
                 btn.disabled = false;
-                btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
-                secAlert.innerText = "⚠️ الاتصال ضعيف ولم يتم تثبيت بصمتك في السحابة، اضغط مرة أخرى.";
+                btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
+                secAlert.innerText = "⚠️ الاتصال ضعيف ولم يتم تثبيت دخولك في السحابة، اضغط مرة أخرى.";
                 secAlert.classList.remove('hidden');
                 return;
             }
 
+            saveSessionId(newSessionId);
             currentStudentProfile = {
                 name: regStudent.name,
                 code: code,
                 branch: regStudent.branch || "علمي",
                 deviceId: THIS_DEVICE_ID
             };
-            localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile));
+            try { localStorage.setItem('g10_student_profile', JSON.stringify(currentStudentProfile)); } catch (e) {}
             saveAllLocal();
             updateStudentBarUI();
+            renderWeeklySchedule();
 
             btn.disabled = false;
-            btn.innerText = "✅ تسجيل الدخول وربط هذا الجهاز";
+            btn.innerText = "✅ تسجيل الدخول وتفعيل الجلسة";
             closeStudentRegModal();
-            alert("✅ أهلاً بك يا (" + regStudent.name + ")! تم تسجيل دخولك وربط هذا الجهاز بنجاح.");
+            alert("✅ أهلاً بك يا (" + regStudent.name + ")! تم تفعيل جلستك بنجاح." + switchNotice);
         }
 
         function joinDailyLiveRoom(branchType) {
@@ -1048,17 +1101,15 @@
                 return;
             }
 
-            var nowTime = new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' });
             for (var i = 0; i < students.length; i++) {
                 if (normalizeSecretText(students[i].code) === normalizeSecretText(currentStudentProfile.code)) {
-                    if (students[i].deviceId !== THIS_DEVICE_ID) {
+                    var st = ensureStudentFields(students[i]);
+                    if (st.isLocked || (st.activeSessionId && st.activeSessionId !== MY_SESSION_ID)) {
                         verifyActiveUserDeviceSession();
                         return;
                     }
                     localWriteEpoch++;
-                    students[i].present = true;
-                    students[i].time = nowTime;
-                    students[i].note = "متواجد في قاعة الدوام (" + branchType + ")";
+                    markStudentPresentToday(i, "متواجد في قاعة الدوام (" + branchType + ")");
                     saveAllLocal();
                     syncToCloud();
                     break;
@@ -1081,6 +1132,164 @@
             }
         }
 
+        // =========================================================================
+        // البرنامج التفاعلي الأسبوعي (6 حصص + استراحتان حتى 01:00)
+        // =========================================================================
+        function renderWeeklySchedule() {
+            var branchEl = document.getElementById('schedule-branch-filter');
+            if (!branchEl) return;
+
+            if (currentStudentProfile && branchEl.getAttribute('data-auto-set') !== currentStudentProfile.code) {
+                branchEl.value = currentStudentProfile.branch || "علمي";
+                branchEl.setAttribute('data-auto-set', currentStudentProfile.code);
+            }
+            var branchFilter = branchEl.value;
+            var times = weeklySchedule.periodTimes || defaultPeriodTimes;
+
+            // أزرار الأيام
+            var tabsHtml = '';
+            for (var d = 0; d < WEEK_DAYS.length; d++) {
+                var isToday = (d === jsDayNow);
+                var cls = 'day-btn';
+                if (d === selectedScheduleDay) cls += ' active';
+                else if (isToday) cls += ' is-today';
+                tabsHtml += '<button onclick="selectScheduleDay(' + d + ')" class="' + cls + '">' +
+                    WEEK_DAYS[d] + (isToday ? ' (اليوم)' : '') + '</button>';
+            }
+            document.getElementById('schedule-days-tabs').innerHTML = tabsHtml;
+
+            // بطاقات اليوم المختار
+            var daySlots = weeklySchedule.days[String(selectedScheduleDay)] || createEmptyDaySlots();
+            function buildCard(pIdx) {
+                var slot = daySlots[pIdx] || { subject: "فراغ", teacher: "", branch: "علمي وأدبي" };
+                var isFree = !slot.subject || slot.subject === "فراغ";
+                if (!isFree && branchFilter !== "الكل" && slot.branch !== "علمي وأدبي" && slot.branch !== branchFilter) {
+                    return '';
+                }
+                if (isFree) {
+                    return '<div class="sched-col"><div class="sched-card-free">' +
+                        '<div class="sched-card-top"><span>الحصة ' + (pIdx + 1) + '</span><span dir="ltr" class="time-tag" style="background:#e2e8f0;color:#475569;">' + escapeHtml(times[pIdx] || '') + '</span></div>' +
+                        '<div style="padding:8px 0;font-weight:800;">🌿 حصة فراغ</div>' +
+                    '</div></div>';
+                }
+                var bCls = slot.branch === "أدبي" ? "branch-lit" : (slot.branch === "علمي وأدبي" ? "branch-both" : "branch-sci");
+                return '<div class="sched-col"><div onclick="jumpToSubjectFromSlot(' + selectedScheduleDay + ',' + pIdx + ')" class="sched-card">' +
+                    '<div class="sched-card-top"><span style="font-weight:800;color:#4338ca;">الحصة ' + (pIdx + 1) + '</span><span dir="ltr" class="time-tag">' + escapeHtml(times[pIdx] || '') + '</span></div>' +
+                    '<div style="font-size:15px;font-weight:800;color:#1e1b4b;">' + escapeHtml(slot.subject) + '</div>' +
+                    '<div style="font-size:12px;color:#475569;margin:2px 0 8px 0;">👨‍🏫 ' + escapeHtml(slot.teacher || 'أستاذ المادة') + '</div>' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e8f0;padding-top:6px;font-size:11px;">' +
+                        '<span class="branch-pill ' + bCls + '">' + escapeHtml(slot.branch || 'علمي') + '</span>' +
+                        '<span style="color:#4338ca;font-weight:800;">دروس المادة ←</span>' +
+                    '</div>' +
+                '</div></div>';
+            }
+
+            var g1 = buildCard(0) + buildCard(1);
+            var g2 = buildCard(2) + buildCard(3);
+            var g3 = buildCard(4) + buildCard(5);
+            var cardsWrap = document.getElementById('schedule-selected-day-cards');
+
+            if (!g1 && !g2 && !g3) {
+                cardsWrap.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">لا توجد حصص مطابقة للفلتر في هذا اليوم.</div>';
+            } else {
+                cardsWrap.innerHTML =
+                    (g1 ? '<div class="sched-grid">' + g1 + '</div>' : '') +
+                    '<div class="break-bar"><span>☕ الاستراحة الأولى (15 دقيقة)</span><span dir="ltr" style="font-family:monospace;">' + BREAK_1_TIME + '</span></div>' +
+                    (g2 ? '<div class="sched-grid">' + g2 + '</div>' : '') +
+                    '<div class="break-bar"><span>☕ الاستراحة الثانية (15 دقيقة)</span><span dir="ltr" style="font-family:monospace;">' + BREAK_2_TIME + '</span></div>' +
+                    (g3 ? '<div class="sched-grid">' + g3 + '</div>' : '');
+            }
+
+            // الجدول الشبكي الكامل
+            document.getElementById('schedule-full-thead').innerHTML =
+                '<tr>' +
+                    '<th>اليوم</th>' +
+                    '<th>ح1<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[0]) + '</span></th>' +
+                    '<th>ح2<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[1]) + '</span></th>' +
+                    '<th class="sched-break-th">استراحة 1<br><span dir="ltr" style="font-size:10px;">' + BREAK_1_TIME + '</span></th>' +
+                    '<th>ح3<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[2]) + '</span></th>' +
+                    '<th>ح4<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[3]) + '</span></th>' +
+                    '<th class="sched-break-th">استراحة 2<br><span dir="ltr" style="font-size:10px;">' + BREAK_2_TIME + '</span></th>' +
+                    '<th>ح5<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[4]) + '</span></th>' +
+                    '<th>ح6<br><span dir="ltr" style="font-size:10px;color:#fcd34d;">' + escapeHtml(times[5]) + '</span></th>' +
+                '</tr>';
+
+            var tbodyHtml = '';
+            for (var r = 0; r < WEEK_DAYS.length; r++) {
+                var slots = weeklySchedule.days[String(r)] || createEmptyDaySlots();
+                var rowBg = (r === jsDayNow) ? 'background-color:#ecfdf5;' : '';
+                function cellHtml(p) {
+                    var s = slots[p] || { subject: "فراغ", teacher: "", branch: "علمي وأدبي" };
+                    var isFree = !s.subject || s.subject === "فراغ";
+                    var okBranch = (branchFilter === "الكل") || isFree || s.branch === "علمي وأدبي" || s.branch === branchFilter;
+                    if (isFree || !okBranch) return '<td style="color:#94a3b8;background:#f8fafc;">' + (isFree ? 'فراغ' : '—') + '</td>';
+                    return '<td onclick="jumpToSubjectFromSlot(' + r + ',' + p + ')" style="cursor:pointer;">' +
+                        '<div style="font-weight:800;color:#1e1b4b;">' + escapeHtml(s.subject) + '</div>' +
+                        '<div style="font-size:10px;color:#64748b;">' + escapeHtml(s.teacher || '') + '</div>' +
+                    '</td>';
+                }
+                tbodyHtml += '<tr style="' + rowBg + '">' +
+                    '<td style="font-weight:800;color:#1e1b4b;white-space:nowrap;">' + WEEK_DAYS[r] + (r === jsDayNow ? ' 🟢' : '') + '</td>' +
+                    cellHtml(0) + cellHtml(1) + '<td class="sched-break-td">☕ 15 د</td>' +
+                    cellHtml(2) + cellHtml(3) + '<td class="sched-break-td">☕ 15 د</td>' +
+                    cellHtml(4) + cellHtml(5) +
+                '</tr>';
+            }
+            document.getElementById('schedule-full-tbody').innerHTML = tbodyHtml;
+
+            renderTodayQuickStrip();
+        }
+
+        function renderTodayQuickStrip() {
+            var strip = document.getElementById('today-quick-strip');
+            if (!strip) return;
+            var isWeekend = (jsDayNow === 5 || jsDayNow === 6);
+            var displayDay = isWeekend ? 0 : jsDayNow;
+            var slots = weeklySchedule.days[String(displayDay)] || createEmptyDaySlots();
+            var times = weeklySchedule.periodTimes || defaultPeriodTimes;
+            var studentBranch = currentStudentProfile ? (currentStudentProfile.branch || "الكل") : "الكل";
+
+            var pills = '';
+            for (var i = 0; i < 6; i++) {
+                if (i === 2) pills += '<span class="quick-pill quick-pill-break">☕ استراحة 09:30</span>';
+                if (i === 4) pills += '<span class="quick-pill quick-pill-break">☕ استراحة 11:15</span>';
+                var s = slots[i] || { subject: "فراغ", branch: "علمي وأدبي" };
+                var isFree = !s.subject || s.subject === "فراغ";
+                if (!isFree && studentBranch !== "الكل" && s.branch !== "علمي وأدبي" && s.branch !== studentBranch) continue;
+                if (isFree) {
+                    pills += '<span class="quick-pill quick-pill-free">ح' + (i + 1) + ': فراغ</span>';
+                } else {
+                    var startT = (times[i] || '').split('-')[0].trim();
+                    pills += '<button onclick="jumpToSubjectFromSlot(' + displayDay + ',' + i + ')" class="quick-pill">ح' + (i + 1) + ' (' + escapeHtml(startT) + '): ' + escapeHtml(s.subject) + '</button>';
+                }
+            }
+
+            strip.innerHTML =
+                '<div class="section-head" style="margin-bottom:4px;">' +
+                    '<span style="font-size:13px;font-weight:800;color:#1e1b4b;">⚡ ' +
+                        (isWeekend ? 'اليوم عطلة رسمية — برنامج يوم الأحد القادم:' : 'حصص اليوم (' + WEEK_DAYS[displayDay] + '):') +
+                    '</span>' +
+                    '<button onclick="switchTab(\'schedule-tab\', document.getElementById(\'nav-btn-schedule\'))" class="btn btn-sm btn-slate">البرنامج الكامل ↗</button>' +
+                '</div>' +
+                '<div class="pill-list">' + pills + '</div>';
+        }
+
+        function selectScheduleDay(dayIdx) {
+            selectedScheduleDay = dayIdx;
+            renderWeeklySchedule();
+        }
+
+        function jumpToSubjectFromSlot(dayIdx, periodIdx) {
+            var slots = weeklySchedule.days[String(dayIdx)];
+            if (slots && slots[periodIdx] && slots[periodIdx].subject && slots[periodIdx].subject !== "فراغ") {
+                filterLessons(slots[periodIdx].subject);
+                switchTab('subjects-tab', document.getElementById('nav-btn-subjects'));
+            }
+        }
+
+        // =========================================================================
+        // المواد والدروس والفيديو وسبر المعلومات
+        // =========================================================================
         function renderSubjects() {
             var grid = document.getElementById('subjects-grid');
             grid.innerHTML = '';
@@ -1105,9 +1314,7 @@
         }
 
         function filterLessonsByIdx(idx) {
-            if (syrianG10Subjects[idx]) {
-                filterLessons(syrianG10Subjects[idx].name);
-            }
+            if (syrianG10Subjects[idx]) filterLessons(syrianG10Subjects[idx].name);
         }
 
         function filterLessons(subName) {
@@ -1163,16 +1370,12 @@
             if (!l || !l.video) return;
             var videoUrl = l.video.trim();
             var title = (l.subject || '') + ' - ' + (l.title || '');
-
             var embedUrl = "";
             var ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
             var driveMatch = videoUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
 
-            if (ytMatch && ytMatch[1]) {
-                embedUrl = "https://www.youtube.com/embed/" + ytMatch[1] + "?rel=0";
-            } else if (driveMatch && driveMatch[1]) {
-                embedUrl = "https://drive.google.com/file/d/" + driveMatch[1] + "/preview";
-            }
+            if (ytMatch && ytMatch[1]) embedUrl = "https://www.youtube.com/embed/" + ytMatch[1] + "?rel=0";
+            else if (driveMatch && driveMatch[1]) embedUrl = "https://drive.google.com/file/d/" + driveMatch[1] + "/preview";
 
             if (embedUrl) {
                 document.getElementById('video-modal-title').innerText = "🎬 " + title;
@@ -1245,9 +1448,8 @@
                 }
                 if (sel) {
                     var ans = parseInt(sel.value, 10);
-                    if (ans === q.correct) {
-                        score++;
-                    } else {
+                    if (ans === q.correct) score++;
+                    else {
                         var wrongLbl = document.getElementById('q' + qIdx + '-opt' + ans + '-label');
                         if (wrongLbl) wrongLbl.classList.add('opt-wrong');
                     }
@@ -1264,9 +1466,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            var ua = navigator.userAgent || "";
+            if (/WhatsApp|FBAN|FBAV|Instagram|Telegram|wv\)/i.test(ua)) {
+                var w = document.getElementById('inapp-browser-warning');
+                if (w) w.classList.remove('hidden');
+            }
+
             updateStudentBarUI();
             updateDriveButtonsUI();
             renderSubjects();
+            renderWeeklySchedule();
             renderLessons();
             renderQuizzes();
 
